@@ -1,17 +1,17 @@
 <template>
   <section class="document-workspace templates-page">
-    <header class="page-heading">
-      <div>
-        <h1>文档模板</h1>
-        <p>选择或上传 Word 模板，填写变量并生成文档。</p>
-      </div>
-      <RouterLink to="/create" class="button primary"
-        ><Plus :size="16" />上传模板</RouterLink
-      >
-    </header>
+    <UiPageHeader
+      title="文档模板"
+      description="选择或上传 Word 模板，填写变量并生成文档。"
+      ><template #actions
+        ><UiButton to="/create" variant="primary"
+          ><Plus :size="16" />上传模板</UiButton
+        ></template
+      ></UiPageHeader
+    >
     <section class="catalog-panel" aria-label="模板库">
       <div class="catalog-toolbar">
-        <label class="catalog-search"
+        <label class="catalog-search ui-search-field"
           ><Search :size="17" /><input
             v-model="searchQuery"
             type="search"
@@ -21,25 +21,29 @@
         /></label>
         <span class="catalog-total">{{ filteredTemplates.length }} 个模板</span>
         <div class="view-switch" role="group" aria-label="模板显示方式">
-          <button
-            class="icon-button"
+          <UiButton
             :aria-pressed="viewMode === 'grid'"
+            size="compact"
             aria-label="网格视图"
             @click="viewMode = 'grid'"
-          >
-            <LayoutGrid :size="17" /></button
-          ><button
-            class="icon-button"
+            variant="ghost"
+            icon-only
+            ><LayoutGrid :size="17" /></UiButton
+          ><UiButton
             :aria-pressed="viewMode === 'list'"
+            size="compact"
             aria-label="列表视图"
             @click="viewMode = 'list'"
-          >
-            <List :size="18" />
-          </button>
+            variant="ghost"
+            icon-only
+            ><List :size="18"
+          /></UiButton>
         </div>
       </div>
       <div class="catalog-categories" role="group" aria-label="模板分类">
-        <button
+        <UiButton
+          variant="ghost"
+          size="compact"
           v-for="category in categories"
           :key="category"
           :aria-pressed="selectedCategory === category"
@@ -49,49 +53,51 @@
           "
         >
           {{ category }}
-        </button>
+        </UiButton>
       </div>
-      <div v-if="loading" class="document-empty" role="status">
-        <LoaderCircle :size="24" class="spin" />
-        <p>正在读取模板…</p>
-      </div>
-      <div v-else-if="loadError" class="document-empty" role="alert">
-        <AlertCircle :size="28" />
-        <h2>暂时无法读取模板</h2>
-        <p>{{ loadError }}</p>
-        <button class="button" @click="loadTemplates">
-          <RefreshCw :size="15" />重新加载
-        </button>
-      </div>
-      <div v-else-if="!filteredTemplates.length" class="document-empty">
-        <Files :size="36" :stroke-width="1.3" />
-        <h2>
-          {{
-            searchQuery || selectedCategory !== "全部"
-              ? "没有匹配的模板"
-              : "把常用文档，变成可复用的模板"
-          }}
-        </h2>
-        <p>
-          {{
-            searchQuery || selectedCategory !== "全部"
-              ? "换一个关键词或分类，再试一次。"
-              : "上传 Word 文件，自动识别变量。每次填写新内容，保留熟悉的文档格式。"
-          }}
-        </p>
-        <button
+      <UiEmptyState
+        v-if="loading"
+        :icon="LoaderCircle"
+        description="正在读取模板…"
+        state="loading"
+      ></UiEmptyState>
+      <UiEmptyState
+        v-else-if="loadError"
+        :icon="AlertCircle"
+        title="暂时无法读取模板"
+        :description="loadError"
+        state="error"
+        heading="h2"
+        ><UiButton @click="loadTemplates"
+          ><RefreshCw :size="15" />重新加载
+        </UiButton></UiEmptyState
+      >
+      <UiEmptyState
+        v-else-if="!filteredTemplates.length"
+        :icon="Files"
+        :title="
+          searchQuery || selectedCategory !== '全部'
+            ? '没有匹配的模板'
+            : '把常用文档，变成可复用的模板'
+        "
+        :description="
+          searchQuery || selectedCategory !== '全部'
+            ? '换一个关键词或分类，再试一次。'
+            : '上传 Word 文件，自动识别变量。每次填写新内容，保留熟悉的文档格式。'
+        "
+        heading="h2"
+        ><UiButton
           v-if="searchQuery || selectedCategory !== '全部'"
-          class="button"
           @click="
             searchQuery = '';
             selectedCategory = '全部';
           "
         >
-          清除筛选</button
-        ><RouterLink v-else to="/create" class="button primary"
-          ><Plus :size="15" />创建第一个模板</RouterLink
-        >
-      </div>
+          清除筛选</UiButton
+        ><UiButton v-else to="/create" variant="primary"
+          ><Plus :size="15" />创建第一个模板</UiButton
+        ></UiEmptyState
+      >
       <div
         v-else
         class="template-catalog"
@@ -121,14 +127,14 @@
             </p>
             <div class="template-entry-footer">
               <span>{{ template.variables?.length || 0 }} 个变量</span
-              ><RouterLink
-                class="text-button"
+              ><UiButton
                 :to="{
                   name: 'generate',
                   params: { templateId: template.name },
                 }"
+                variant="text"
                 >使用模板<ArrowRight :size="15"
-              /></RouterLink>
+              /></UiButton>
             </div>
           </div>
         </article>
@@ -136,22 +142,22 @@
       <footer class="catalog-footer">
         <span>上传的模板保存在当前共享工作区。</span>
         <div v-if="totalPages > 1" class="pagination-controls">
-          <button
-            class="icon-button"
+          <UiButton
             aria-label="上一页模板"
             :disabled="currentPage === 1"
             @click="currentPage--"
-          >
-            <ChevronLeft :size="17" /></button
+            variant="ghost"
+            icon-only
+            ><ChevronLeft :size="17" /></UiButton
           ><span>{{ currentPage }} / {{ totalPages }}</span
-          ><button
-            class="icon-button"
+          ><UiButton
             aria-label="下一页模板"
             :disabled="currentPage === totalPages"
             @click="currentPage++"
-          >
-            <ChevronRight :size="17" />
-          </button>
+            variant="ghost"
+            icon-only
+            ><ChevronRight :size="17"
+          /></UiButton>
         </div>
       </footer>
     </section>
@@ -163,6 +169,9 @@
   </section>
 </template>
 <script setup>
+import UiEmptyState from "../components/ui/UiEmptyState.vue";
+import UiPageHeader from "../components/ui/UiPageHeader.vue";
+import UiButton from "../components/ui/UiButton.vue";
 import { computed, onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
 import {

@@ -1,19 +1,15 @@
 <template>
   <section class="document-workspace writing-page">
-    <header class="page-heading">
-      <div>
-        <h1>文档写作</h1>
-        <p>
-          选择资料，确认章节，生成可下载的 Word 文档。生成内容仍需人工核对。
-        </p>
-      </div>
-      <RouterLink to="/knowledge" class="button"
-        ><Library :size="16" />整理参考资料</RouterLink
-      >
-    </header>
-    <p v-if="message" class="notice" role="status">
-      <Info :size="17" /><span>{{ message }}</span>
-    </p>
+    <UiPageHeader
+      title="文档写作"
+      description="选择资料，确认章节，生成可下载的 Word 文档。生成内容仍需人工核对。"
+      ><template #actions
+        ><UiButton to="/knowledge"
+          ><Library :size="16" />整理参考资料</UiButton
+        ></template
+      ></UiPageHeader
+    >
+    <UiNotice v-if="message" :message="message" />
     <div class="document-editor writing-editor">
       <form class="editor-main" @submit.prevent="generate">
         <section class="editor-section">
@@ -68,14 +64,13 @@
               <h2>章节大纲</h2>
               <p>每行一章，可手动填写或生成后调整。</p>
             </div>
-            <button
+            <UiButton
               type="button"
-              class="button small"
               :disabled="busy || !topic.trim()"
               @click="outline"
-            >
-              <Sparkles :size="15" />生成大纲
-            </button>
+              size="compact"
+              ><Sparkles :size="15" />生成大纲
+            </UiButton>
           </div>
           <label class="sr-only" for="writing-sections"
             >章节（每行一章，可编辑）</label
@@ -89,12 +84,15 @@
         </section>
         <footer class="editor-submit">
           <span><Info :size="15" />使用生成模型，内容需人工核对。</span
-          ><button class="button primary" :disabled="busy || !topic.trim()">
-            <LoaderCircle v-if="busy" :size="16" class="spin" /><FileOutput
+          ><UiButton
+            type="submit"
+            :disabled="busy || !topic.trim()"
+            variant="primary"
+            ><LoaderCircle v-if="busy" :size="16" class="spin" /><FileOutput
               v-else
               :size="16"
             />开始生成文档
-          </button>
+          </UiButton>
         </footer>
       </form>
       <aside class="editor-aside generation-history" aria-label="生成记录">
@@ -105,11 +103,13 @@
             jobs.length
           }}</span>
         </div>
-        <div v-if="!jobs.length" class="history-empty">
-          <Files :size="30" :stroke-width="1.3" />
-          <h3>还没有生成记录</h3>
-          <p>任务和已生成内容会保存在当前工作区。</p>
-        </div>
+        <UiEmptyState
+          v-if="!jobs.length"
+          :icon="Files"
+          title="还没有生成记录"
+          description="任务和已生成内容会保存在当前工作区。"
+          compact
+        ></UiEmptyState>
         <ul v-else class="generation-list">
           <li v-for="job in jobs" :key="job.id">
             <button
@@ -131,21 +131,19 @@
               max="100"
               :aria-label="job.request.topic + '生成进度'"
             ></progress
-            ><button
+            ><UiButton
               v-if="job.filename"
-              class="text-button"
               @click="downloadFile('/download/' + job.filename)"
-            >
-              <Download :size="14" />下载 Word
-            </button>
-            <p v-if="job.error" class="editor-status">{{ job.error }}</p>
-            <button
+              variant="text"
+              ><Download :size="14" />下载 Word
+            </UiButton>
+            <UiNotice v-if="job.error" :message="job.error" />
+            <UiButton
               v-if="['failed', 'interrupted'].includes(job.status)"
-              class="text-button"
               @click="retry(job)"
-            >
-              <RefreshCw :size="14" />重新生成
-            </button>
+              variant="text"
+              ><RefreshCw :size="14" />重新生成
+            </UiButton>
           </li>
         </ul>
         <div class="editor-guidance">
@@ -177,6 +175,10 @@
   </section>
 </template>
 <script setup>
+import UiNotice from "../components/ui/UiNotice.vue";
+import UiEmptyState from "../components/ui/UiEmptyState.vue";
+import UiPageHeader from "../components/ui/UiPageHeader.vue";
+import UiButton from "../components/ui/UiButton.vue";
 import { RouterLink } from "vue-router";
 import {
   ChevronRight,

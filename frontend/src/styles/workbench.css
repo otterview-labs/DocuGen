@@ -27,12 +27,11 @@
   --text-secondary: var(--muted);
   --text-tertiary: var(--muted);
   --border: var(--line);
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Microsoft YaHei", sans-serif;
+  font-family: var(--font-family-working);
   color: var(--ink);
   background: var(--ground);
   font-synthesis: none;
+  --brand-symbol: #dce8b6;
 }
 * {
   box-sizing: border-box;
@@ -40,22 +39,9 @@
 }
 body {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-body);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-}
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-button,
-a,
-input,
-textarea,
-select {
-  -webkit-tap-highlight-color: transparent;
 }
 button {
   cursor: pointer;
@@ -71,27 +57,12 @@ a {
   color: inherit;
   text-decoration: none;
 }
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-summary:focus-visible,
-[tabindex]:focus-visible {
-  outline: 3px solid #7aab8e;
-  outline-offset: 3px;
-}
-input,
-textarea,
-select {
-  caret-color: var(--accent);
-}
 ::selection {
-  background: #d5e5d7;
-  color: #183628;
+  background: var(--surface-subtle);
+  color: var(--muted);
 }
 ::placeholder {
-  color: #68765d;
+  color: var(--muted);
   opacity: 1;
 }
 * {
@@ -137,7 +108,7 @@ select {
   width: 35px;
   display: grid;
   place-items: center;
-  color: #dce8b6;
+  color: var(--brand-symbol);
 }
 .brand-copy strong {
   font-family: Georgia, "Times New Roman", serif;
@@ -166,9 +137,9 @@ select {
   align-items: center;
   gap: 11px;
   padding: 11px 12px;
-  border-radius: 7px;
+  border-radius: var(--control-radius);
   color: #bccdbf;
-  font-size: 14px;
+  font-size: var(--font-body);
   font-weight: 500;
   transition:
     background 0.15s,
@@ -196,7 +167,7 @@ select {
   padding-top: 22px;
   border-top: 1px solid #365044;
   color: #a9bead;
-  font-size: 12px;
+  font-size: var(--font-meta);
   line-height: 1.8;
 }
 .sidebar-note svg {
@@ -220,7 +191,7 @@ select {
   height: 31px;
   background: #345347;
   border: 1px solid #4b695a;
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   font-family: Georgia, serif;
   color: #e4edce;
 }
@@ -243,7 +214,7 @@ select {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 12px;
+  font-size: var(--font-meta);
   cursor: pointer;
   color: #c3d0c1;
 }
@@ -262,25 +233,18 @@ select {
   color: var(--ink);
   border: 1px solid var(--line);
   padding: 18px;
-  border-radius: 9px;
+  border-radius: var(--radius-panel);
   box-shadow: 0 15px 40px #11251b24;
   z-index: 50;
 }
 .connection-form label {
   display: grid;
   gap: 7px;
-  font-size: 13px;
+  font-size: var(--font-control);
   font-weight: 600;
 }
-.connection-form input {
-  width: 100%;
-  padding: 9px 10px;
-  border: 1px solid #b6c6b9;
-  border-radius: 5px;
-  background: white;
-}
 .connection-form p {
-  font-size: 11px;
+  font-size: var(--font-meta);
   line-height: 1.7;
   color: var(--muted);
   margin: 10px 0 14px;
@@ -296,36 +260,36 @@ select {
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
-  background: #fcfcf7;
+  background: var(--surface-subtle);
   gap: 12px;
 }
 .breadcrumbs {
   display: flex;
   align-items: center;
   gap: 11px;
-  font-size: 13px;
+  font-size: var(--font-control);
   color: var(--muted);
 }
 .breadcrumbs strong {
-  color: #3b4c40;
+  color: var(--ink);
   font-weight: 500;
 }
 .workspace-bar-actions {
   display: flex;
   align-items: center;
   gap: 22px;
-  font-size: 12px;
+  font-size: var(--font-meta);
 }
 .model-state {
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #7b6842;
+  color: var(--amber);
 }
 .status-dot {
   width: 5px;
   height: 5px;
-  background: #b08a43;
+  background: var(--amber);
   border-radius: 50%;
 }
 .model-state.ready {
@@ -343,101 +307,6 @@ select {
 .app-content {
   padding: 29px 30px 36px;
   min-width: 0;
-}
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-height: 40px;
-  padding: 9px 14px;
-  border: 1px solid #ccd8cb;
-  background: var(--paper);
-  border-radius: 6px;
-  color: #3d5241;
-  font-size: 13px;
-  font-weight: 550;
-  line-height: 1.5;
-  white-space: nowrap;
-  transition:
-    background 0.15s,
-    border-color 0.15s;
-}
-.button:hover:not(:disabled) {
-  background: #f0f4e9;
-  border-color: #a8bfa9;
-}
-.button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fffdf3;
-}
-.button.primary:hover:not(:disabled) {
-  background: var(--accent-hover);
-}
-.button.ghost {
-  background: transparent;
-  border-color: transparent;
-}
-.button.danger {
-  color: var(--danger);
-  border-color: #dfbcb3;
-  background: var(--danger-soft);
-}
-.button.small {
-  min-height: 34px;
-  padding: 5px 10px;
-  font-size: 12px;
-}
-.icon-button {
-  display: inline-grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  color: var(--muted);
-}
-.icon-button:hover {
-  background: #eaf0e5;
-  color: var(--accent);
-}
-.text-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 0;
-  border: 0;
-  background: none;
-  color: var(--accent);
-  font-size: 13px;
-}
-.text-button:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.field-input {
-  width: 100%;
-  border: 1px solid #cbd6c9;
-  border-radius: 6px;
-  background: #fffefa;
-  padding: 9px 11px;
-  color: var(--ink);
-  font-size: 14px;
-  min-height: 40px;
-  font-weight: 400;
-}
-.field-input:focus {
-  border-color: #729b7d;
-}
-.field-label {
-  display: grid;
-  gap: 7px;
-  color: #3f5042;
-  font-size: 13px;
-  font-weight: 550;
 }
 .muted {
   color: var(--muted);
@@ -520,7 +389,7 @@ select {
     width: 28px;
   }
   .brand-copy strong {
-    font-size: 25px;
+    font-size: var(--font-page-mobile);
   }
   .brand-copy small {
     display: none;
@@ -534,7 +403,7 @@ select {
   }
   .workspace-nav a {
     padding: 9px 4px;
-    font-size: 11px;
+    font-size: var(--font-meta);
     gap: 5px;
     justify-content: center;
   }
@@ -559,7 +428,7 @@ select {
     padding: 6px;
   }
   .connection-settings summary span {
-    font-size: 11px;
+    font-size: var(--font-meta);
   }
   .connection-settings summary svg:last-child {
     display: none;
@@ -583,10 +452,10 @@ select {
     display: none;
   }
   .model-state {
-    font-size: 10px;
+    font-size: var(--font-meta);
   }
   .breadcrumbs {
-    font-size: 11px;
+    font-size: var(--font-meta);
     gap: 7px;
   }
   .app-content {
@@ -604,38 +473,13 @@ select {
 }
 
 @media (max-width: 640px) {
-  .button {
-    min-height: 44px;
-  }
-  .button.small {
-    min-height: 40px;
-  }
-  .icon-button {
-    width: 40px;
-    height: 40px;
-  }
-  .field-input {
-    min-height: 44px;
-    font-size: 16px;
-  }
-  .text-button {
-    min-height: 36px;
-  }
-  .page-heading {
-    gap: 18px;
-  }
-  .page-heading p {
-    font-size: 13px;
-    line-height: 1.9;
-    max-width: 40ch;
-  }
   .workspace-nav a {
     min-height: 42px;
   }
   .workspace-bar-actions {
-    font-size: 11px;
+    font-size: var(--font-meta);
   }
   .breadcrumbs {
-    font-size: 12px;
+    font-size: var(--font-meta);
   }
 }

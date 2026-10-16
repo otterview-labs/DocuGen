@@ -8,3 +8,6 @@
 - Provider failures must remain explicit; do not replace failed retrieval or generation with example output.
 - Run Quill tests and Ruff for workspace backend changes. Run inherited engine tests in their own process for knowledge changes. Run the Vue build for frontend changes, and browser smoke checks for changed upload/download or navigation flows.
 - No paid model calls are required for the normal test suite.
+- Core UI controls use `frontend/src/components/ui/` and the canonical `frontend/src/styles/ui.css`. Page CSS may arrange shared controls, but must not redefine their font, color, radius, height or icon size. Use an explicit compact variant for compact toolbars, and match repeated actions across routes.
+- Shared buttons default to `type="button"`; form submissions must explicitly use `type="submit"`. Preserve focus transfer/restoration and keyboard tab behavior when changing wrappers.
+- Verify UI consistency with the cross-route computed-style browser checks as well as screenshots and functional flows. Keep DESIGN.md and its sidecar aligned with accepted shared-token changes; passing functional tests alone does not establish visual consistency.

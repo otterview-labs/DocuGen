@@ -42,13 +42,16 @@
           <form @submit.prevent="saveKey" class="connection-form">
             <label
               >访问密钥<input
+                class="field-input"
                 type="password"
                 v-model="accessKey"
                 autocomplete="off"
                 placeholder="输入工作区访问密钥"
             /></label>
             <p>保存在当前标签页中。共享工作区内的资料对持有密钥的成员可见。</p>
-            <button class="button primary small">保存并连接</button>
+            <UiButton type="submit" variant="primary" size="compact"
+              >保存并连接</UiButton
+            >
           </form>
         </details>
       </div>
@@ -80,6 +83,7 @@
   </div>
 </template>
 <script setup>
+import UiButton from "./components/ui/UiButton.vue";
 import { computed, onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
 import {
@@ -97,6 +101,7 @@ import {
 import { api } from "./api/client";
 import "./styles/workbench.css";
 import "./styles/documents.css";
+import "./styles/ui.css";
 const route = useRoute();
 const accessKey = ref(sessionStorage.getItem("quill-key") || "");
 const modelConfigured = ref(null);

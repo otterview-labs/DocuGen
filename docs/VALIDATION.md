@@ -43,4 +43,24 @@ The subsequent user request supplied VoltAgent/awesome-design-md. Sources, exact
 - The single design-detector scan returned no findings. No model was called. Backend code and model contracts were unchanged in this refinement.
 - The independent full review accepted the preserved workbench and all 21 captures. A breadcrumb contrast finding was withdrawn after verifying the actual cascade. The final verdict returned `ship` for the canonical breadcrumb declaration, regular field weight and mobile retrieval-control correction batch, with no observed regressions within that scope.
 
+## Canonical control correction after user feedback
+
+The user rejected the earlier visual-unity claim and specifically identified buttons, typography and colors. This correction replaces page-specific implementations with shared Vue components and a single primitive stylesheet; it does not imply that the entire product is ready for an open-source release.
+
+All 17 browser cases passed in the final correction/confirmation run. In addition to the existing workflows and capture matrix, checks cover computed font family, size, weight, semantic color, radius, height and icon geometry; repeated AI-fill action parity; keyboard tab navigation; and explicit form submission. Outline/job responses are controlled in the submission test, so no paid model is called. Backend code and contracts were unchanged.
+
+| Viewport | Routes checked | Visible button instances across routes | Button type / weight / radius | Heights | Working font families |
+| --- | --- | --- | --- | --- | --- |
+| 1440px | 5 | 37 | 13px / 500 / 6px | 40px standard, 32px compact | 1 |
+| 1024px | 5 | 37 | 13px / 500 / 6px | 40px standard, 32px compact | 1 |
+| 390px | 5 | 37 | 13px / 500 / 6px | 44px standard, 40px compact | 1 |
+
+Fifteen field instances across the five routes were checked at each width: 14px regular text at desktop/tablet and 16px on mobile, using the same inherited working family and ink role. Source-preview focus, manual DOCX upload/fill/download and knowledge management continued to pass.
+
+The fresh independent full review found seven bounded corrections. The single correction batch restored field/action gaps, normalized native control font inheritance and repeated AI-fill sizing, corrected highlighted-text contrast, padded retrieval controls, restored shell colors and synchronized design documentation. The same 21 captures were confirmed after correction. One detector scan returned no findings; no second scan was run.
+
+The final independent verdict scored all seven fixes resolved and returned `ship` for that correction list, with no material regression observed in the recaptures. The deployed 8080 template page was also checked for the canonical 40px/13px/500/6px primary action. Existing persisted collection and template counts remained unchanged; test fixtures stayed in an isolated runtime.
+
+A subsequent deployed acceptance check exposed a shared link-wrapper regression: forwarding an undefined `href` to RouterLink removed its native anchor destination. Mutually exclusive prop binding corrected the wrapper, and a new regression checks link role, actual `href` and Enter navigation for upload, return and template-use actions. All ten noncapture browser cases passed after this functional fix, including the existing workflows and computed contracts. The preceding 17-case full run and 21 confirmed captures remain the visual evidence; the link fix changed no CSS and generated no further screenshots. On the rebuilt 8080 runtime, the upload action retained its canonical metrics and `/create` destination, and keyboard navigation passed. Persisted counts remained one collection and one template.
+
 Known inherited warnings include Starlette/AnyIO deprecation and Pydantic field-alias metadata warnings. They did not fail the verified checks.

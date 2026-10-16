@@ -1,14 +1,14 @@
 <template>
   <section class="document-workspace">
-    <header class="page-heading">
-      <div>
-        <h1>{{ template?.name || "生成文档" }}</h1>
-        <p>{{ template?.description || "填写占位符，生成 DOCX 文档" }}</p>
-      </div>
-      <button class="button" @click="goBack">
-        <ArrowLeft :size="15" />返回模板库
-      </button>
-    </header>
+    <UiPageHeader
+      :title="template?.name || '生成文档'"
+      :description="template?.description || '填写占位符，生成 DOCX 文档'"
+      ><template #actions
+        ><UiButton @click="goBack"
+          ><ArrowLeft :size="15" />返回模板库
+        </UiButton></template
+      ></UiPageHeader
+    >
     <div class="document-editor">
       <section class="editor-main">
         <div class="editor-section">
@@ -20,16 +20,15 @@
               </h2>
               <p>填写内容将替换模板中对应的占位符。</p>
             </div>
-            <button
-              class="button small"
+            <UiButton
               :disabled="loadingVars"
               @click="loadVariables"
-            >
-              <RefreshCw
+              size="compact"
+              ><RefreshCw
                 :size="15"
                 :class="{ spin: loadingVars }"
               />重新提取变量
-            </button>
+            </UiButton>
           </div>
           <div class="retrieval-assist">
             <label class="assist-toggle"
@@ -48,22 +47,22 @@
               >
                 {{ knowledgeBase.name }}
               </option></select
-            ><button
-              class="button"
+            ><UiButton
+              size="compact"
               :disabled="aiFilling || !variables.length"
               @click="aiFill"
-            >
-              <LoaderCircle v-if="aiFilling" :size="15" class="spin" /><Sparkles
-                v-else
+              ><LoaderCircle
+                v-if="aiFilling"
                 :size="15"
-              />AI 填充</button
-            ><button
-              class="text-button"
+                class="spin"
+              /><Sparkles v-else :size="15" />AI 填充</UiButton
+            ><UiButton
               :disabled="!variables.length"
               @click="clearValues"
+              variant="text"
             >
               清空
-            </button>
+            </UiButton>
           </div>
           <details class="reference-disclosure">
             <summary>
@@ -80,14 +79,19 @@
             </label>
             <p>AI 填充会优先参考这些内容。</p>
           </details>
-          <div v-if="loadingVars" class="editor-empty" role="status">
-            <LoaderCircle :size="23" class="spin" />
-            <p>正在获取变量…</p>
-          </div>
-          <div v-else-if="!variables.length" class="editor-empty">
-            <TextCursorInput :size="27" />
-            <p>未提取到占位符，请尝试重新提取变量。</p>
-          </div>
+          <UiEmptyState
+            v-if="loadingVars"
+            :icon="LoaderCircle"
+            description="正在获取变量…"
+            state="loading"
+            compact
+          ></UiEmptyState>
+          <UiEmptyState
+            v-else-if="!variables.length"
+            :icon="TextCursorInput"
+            description="未提取到占位符，请尝试重新提取变量。"
+            compact
+          ></UiEmptyState>
           <div v-else class="variables-grid">
             <label
               v-for="(variable, index) in variables"
@@ -127,25 +131,23 @@
           <dt>导出格式</dt>
           <dd>Word · DOCX</dd>
         </dl>
-        <button
-          class="button primary full-width"
+        <UiButton
           :disabled="generating || !variables.length"
           @click="generateDoc"
-        >
-          <LoaderCircle v-if="generating" :size="16" class="spin" /><FileOutput
+          class="full-width"
+          variant="primary"
+          ><LoaderCircle v-if="generating" :size="16" class="spin" /><FileOutput
             v-else
             :size="16"
-          />{{ generating ? "生成中…" : "生成文档" }}
-        </button>
-        <p v-if="lastMessage" class="editor-status" role="status">
-          {{ lastMessage }}
-        </p>
+          />{{ generating ? "生成中…" : "生成文档" }}</UiButton
+        >
+        <UiNotice v-if="lastMessage" :message="lastMessage" />
         <div v-if="downloadUrl" class="document-download">
           <CheckCircle2 :size="22" /><strong>文档已生成</strong>
           <p>下载后请核对内容与排版。</p>
-          <button class="button" @click="downloadFile(downloadUrl)">
-            <Download :size="16" />下载 Word
-          </button>
+          <UiButton @click="downloadFile(downloadUrl)"
+            ><Download :size="16" />下载 Word
+          </UiButton>
         </div>
         <div v-if="lastSources.length" class="editor-guidance">
           <h3>取材记录</h3>
@@ -168,6 +170,10 @@
   </section>
 </template>
 <script setup>
+import UiNotice from "../components/ui/UiNotice.vue";
+import UiEmptyState from "../components/ui/UiEmptyState.vue";
+import UiPageHeader from "../components/ui/UiPageHeader.vue";
+import UiButton from "../components/ui/UiButton.vue";
 import {
   ArrowLeft,
   BookOpen,

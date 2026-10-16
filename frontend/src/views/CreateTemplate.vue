@@ -1,14 +1,14 @@
 <template>
   <section class="document-workspace">
-    <header class="page-heading">
-      <div>
-        <h1>上传模板</h1>
-        <p>选择模板，填写变量，生成可下载的 Word 文档。</p>
-      </div>
-      <RouterLink class="button" to="/templates"
-        ><ArrowLeft :size="15" />返回模板库</RouterLink
-      >
-    </header>
+    <UiPageHeader
+      title="上传模板"
+      description="选择模板，填写变量，生成可下载的 Word 文档。"
+      ><template #actions
+        ><UiButton to="/templates"
+          ><ArrowLeft :size="15" />返回模板库</UiButton
+        ></template
+      ></UiPageHeader
+    >
     <div class="document-editor">
       <div class="editor-main">
         <section class="editor-section">
@@ -17,14 +17,14 @@
               <h2>模板与变量</h2>
               <p>选择已有模板，或上传新的 Word 文件。</p>
             </div>
-            <button
-              class="icon-button"
+            <UiButton
               aria-label="重新加载模板"
               :disabled="loadingTemplates"
               @click="loadTemplates"
-            >
-              <RefreshCw :size="17" :class="{ spin: loadingTemplates }" />
-            </button>
+              variant="ghost"
+              icon-only
+              ><RefreshCw :size="17" :class="{ spin: loadingTemplates }"
+            /></UiButton>
           </div>
           <label class="field-label" for="selected-template">选择模板</label>
           <div class="template-select-row">
@@ -42,17 +42,15 @@
               >
                 {{ template.name }}（{{ template.category || "通用" }}）
               </option></select
-            ><button
-              class="button"
+            ><UiButton
               :disabled="!selectedTemplateName || loadingVars"
               @click="loadVariables"
-            >
-              <ScanText :size="15" />提取变量
-            </button>
+              ><ScanText :size="15" />提取变量
+            </UiButton>
           </div>
           <div class="upload-divider"><span>或上传新模板</span></div>
           <label
-            class="template-upload-drop"
+            class="template-upload-drop ui-upload"
             for="template-upload"
             @dragover.prevent
             @drop.prevent="
@@ -76,16 +74,14 @@
               class="field-input"
               aria-label="模板名称"
               placeholder="模板名称（可选，默认用文件名）"
-            /><button
-              class="button"
+            /><UiButton
               :disabled="uploading || !uploadFile"
               @click="handleUpload"
-            >
-              <LoaderCircle v-if="uploading" :size="15" class="spin" /><Upload
+              ><LoaderCircle v-if="uploading" :size="15" class="spin" /><Upload
                 v-else
                 :size="15"
-              />{{ uploading ? "上传中…" : "上传并入库" }}
-            </button>
+              />{{ uploading ? "上传中…" : "上传并入库" }}</UiButton
+            >
           </div>
         </section>
         <section class="editor-section">
@@ -100,23 +96,22 @@
               </p>
             </div>
             <div class="inline-actions">
-              <button
-                class="button small"
+              <UiButton
                 :disabled="aiFilling || !variables.length"
                 @click="aiFill"
-              >
-                <LoaderCircle
+                size="compact"
+                ><LoaderCircle
                   v-if="aiFilling"
                   :size="14"
                   class="spin"
-                /><Sparkles v-else :size="14" />AI 填充</button
-              ><button
-                class="text-button"
+                /><Sparkles v-else :size="14" />AI 填充</UiButton
+              ><UiButton
                 :disabled="!variables.length"
                 @click="clearValues"
+                variant="text"
               >
                 清空
-              </button>
+              </UiButton>
             </div>
           </div>
           <details class="reference-disclosure">
@@ -134,14 +129,19 @@
             </label>
             <p>仅在 AI 填充时使用，生成结果仍需核对。</p>
           </details>
-          <div v-if="loadingVars" class="editor-empty" role="status">
-            <LoaderCircle :size="23" class="spin" />
-            <p>正在提取变量…</p>
-          </div>
-          <div v-else-if="!variables.length" class="editor-empty">
-            <TextCursorInput :size="27" :stroke-width="1.4" />
-            <p>选择或上传模板后，在这里填写变量。</p>
-          </div>
+          <UiEmptyState
+            v-if="loadingVars"
+            :icon="LoaderCircle"
+            description="正在提取变量…"
+            state="loading"
+            compact
+          ></UiEmptyState>
+          <UiEmptyState
+            v-else-if="!variables.length"
+            :icon="TextCursorInput"
+            description="选择或上传模板后，在这里填写变量。"
+            compact
+          ></UiEmptyState>
           <div v-else class="variables-grid">
             <label
               v-for="(variable, index) in variables"
@@ -183,23 +183,23 @@
           <dt>导出格式</dt>
           <dd>Word · DOCX</dd>
         </dl>
-        <button
-          class="button primary full-width"
+        <UiButton
           :disabled="generating || !variables.length"
           @click="generateDoc"
-        >
-          <LoaderCircle v-if="generating" :size="16" class="spin" /><FileOutput
+          class="full-width"
+          variant="primary"
+          ><LoaderCircle v-if="generating" :size="16" class="spin" /><FileOutput
             v-else
             :size="16"
-          />{{ generating ? "生成中…" : "生成文档" }}
-        </button>
-        <p v-if="status" class="editor-status" role="status">{{ status }}</p>
+          />{{ generating ? "生成中…" : "生成文档" }}</UiButton
+        >
+        <UiNotice v-if="status" :message="status" />
         <div v-if="downloadUrl" class="document-download">
           <CheckCircle2 :size="22" /><strong>文档已生成</strong>
           <p>下载后请核对内容与排版。</p>
-          <button class="button" @click="downloadFile(downloadUrl)">
-            <Download :size="16" />下载 Word
-          </button>
+          <UiButton @click="downloadFile(downloadUrl)"
+            ><Download :size="16" />下载 Word
+          </UiButton>
         </div>
         <div class="editor-guidance">
           <h3>占位符规范</h3>
@@ -215,6 +215,10 @@
   </section>
 </template>
 <script setup>
+import UiNotice from "../components/ui/UiNotice.vue";
+import UiEmptyState from "../components/ui/UiEmptyState.vue";
+import UiPageHeader from "../components/ui/UiPageHeader.vue";
+import UiButton from "../components/ui/UiButton.vue";
 import { RouterLink } from "vue-router";
 import {
   ArrowLeft,

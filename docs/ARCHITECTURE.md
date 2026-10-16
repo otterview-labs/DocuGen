@@ -16,6 +16,8 @@ flowchart LR
 
 The shared Vue shell and knowledge screen use a reading workbench: collection navigation, document management, retrieval and an adjacent source preview. Template browsing, upload/variable entry, generation and writing now use the same paper/green controls, headings, forms and result presentation. Their backend contracts remain unchanged. `DESIGN.md` records the shipped visual system.
 
+Canonical UI primitives live in `frontend/src/components/ui/`: UiButton, UiPageHeader, UiNotice, UiEmptyState and UiTabs. `styles/ui.css` owns control geometry, typography, color and focus treatment. Page styles handle composition rather than overriding primitive appearance. Buttons expose focus for source-preview restoration, links retain Vue Router behavior, form submits are explicit, and tabs share keyboard navigation. Computed-style checks compare the rendered primitives across routes and viewport sizes.
+
 ## Contracts
 
 Quill routes use `/api/v1/knowledge/*` and `/api/v1/documents/*`. A narrow set of DocuGen routes (`/api/templates`, template upload/fill/render, `/download/*`) is maintained for the inherited frontend. Unsupported old routes are not carried forward.
