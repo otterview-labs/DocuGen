@@ -38,7 +38,7 @@ for (const viewport of [{width:1440,height:1000},{width:390,height:844}]) {
     await page.setViewportSize(viewport);
     await page.goto('/knowledge');
     await expect(page.getByRole('heading',{name:'知识库',exact:true})).toBeVisible();
-    await expect(page.getByRole('button',{name:'保存资料',exact:true})).toBeVisible();
+    await expect(page.getByRole('button',{name:'导入资料',exact:true})).toBeVisible();
     await page.getByRole('link',{name:'文档写作',exact:true}).click();
     for (const label of ['知识库','文档写作','文档模板','上传模板']) {
       await expect(page.getByRole('link',{name:label,exact:true})).toBeInViewport();

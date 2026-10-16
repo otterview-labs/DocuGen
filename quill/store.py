@@ -16,7 +16,7 @@ def now() -> str:
 class Store:
     def __init__(self, root: Path):
         self.root = root.resolve()
-        for name in ("templates", "downloads"):
+        for name in ("templates", "downloads", "knowledge-files"):
             (self.root / name).mkdir(parents=True, exist_ok=True)
         self.path = self.root / "quill.db"
         with self.connect() as db:
@@ -26,6 +26,7 @@ class Store:
             )
             db.execute("CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, body TEXT)")
             db.execute("CREATE TABLE IF NOT EXISTS artifacts (filename TEXT PRIMARY KEY, body TEXT)")
+            db.execute("CREATE TABLE IF NOT EXISTS knowledge_files (resource_id TEXT PRIMARY KEY, body TEXT)")
 
     @contextmanager
     def connect(self):
@@ -104,3 +105,21 @@ class Store:
                 return metadata
             row = db.execute("SELECT body FROM artifacts WHERE filename=?", (filename,)).fetchone()
         return json.loads(row[0]) if row else None
+
+    def knowledge_file(self, resource_id: str, metadata: dict | None = None) -> dict | None:
+        with self.connect() as db:
+            if metadata is not None:
+                db.execute(
+                    "INSERT OR IGNORE INTO knowledge_files VALUES (?, ?)", (resource_id, json.dumps(metadata))
+                )
+            row = db.execute(
+                "SELECT body FROM knowledge_files WHERE resource_id=?", (resource_id,)
+            ).fetchone()
+        return json.loads(row[0]) if row else None
+
+    def delete_knowledge_file(self, resource_id: str) -> None:
+        metadata = self.knowledge_file(resource_id)
+        if metadata:
+            (self.root / "knowledge-files" / metadata["stored_name"]).unlink(missing_ok=True)
+        with self.connect() as db:
+            db.execute("DELETE FROM knowledge_files WHERE resource_id=?", (resource_id,))

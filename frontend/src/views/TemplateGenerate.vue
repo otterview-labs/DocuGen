@@ -169,7 +169,7 @@ onMounted(async () => {
 });
 
 function goBack() {
-  router.push('/');
+  router.push('/templates');
 }
 
 async function loadTemplateMeta() {

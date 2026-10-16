@@ -13,13 +13,13 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export async function downloadFile(url) {
+export async function downloadFile(url, filename) {
   try {
     const response = await api.get(url, { responseType: 'blob' });
     const blobUrl = URL.createObjectURL(response.data);
     const link = document.createElement('a');
     link.href = blobUrl;
-    link.download = url.split('/').pop();
+    link.download = filename || url.split('/').pop();
     link.click();
     setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
   } catch (error) {

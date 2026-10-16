@@ -4,7 +4,9 @@ from quill.config import Settings
 
 
 class ProviderError(Exception):
-    pass
+    def __init__(self, message: str, status_code: int = 502):
+        super().__init__(message)
+        self.status_code = status_code
 
 
 class KnowledgeClient:
@@ -22,6 +24,11 @@ class KnowledgeClient:
                 headers=headers,
                 timeout=120,
             )
+            if response.status_code in {400, 404, 409, 422, 502}:
+                body = response.json()
+                detail = body.get("detail") or body.get("message")
+                if isinstance(detail, str):
+                    raise ProviderError(detail, response.status_code)
             response.raise_for_status()
             data = response.json()
         except (httpx.HTTPError, ValueError) as exc:
@@ -41,14 +48,23 @@ class KnowledgeClient:
                 return items
         raise ProviderError("集合数量超过当前列表上限。")
 
-    async def search(self, query: str, collections: list[str], mode: str = "intelligent") -> list[dict]:
+    async def search(
+        self,
+        query: str,
+        collections: list[str],
+        mode: str = "intelligent",
+        *,
+        top_k: int = 5,
+        similarity_threshold: float = 0.15,
+    ) -> list[dict]:
         data = await self.request(
             "search/unified",
             {
                 "query": query,
                 "collection_id": collections,
                 "search_mode": mode,
-                "top_k": 5,
+                "top_k": top_k,
+                "similarity_threshold": similarity_threshold,
                 "include_content": True,
                 "answer_with_file": False,
             },

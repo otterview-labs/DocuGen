@@ -17,6 +17,8 @@ This repository therefore does **not** assign a blanket MIT/Apache license to up
 
 Inherited trailing whitespace is normalized. Integration fixes include portable inherited test paths, non-conflicting operation-log index names, removing accidentally inherited composite integer primary keys from batch models, bounded Word placeholder replacement, and a proper Word TOC field without a leading blank cover page.
 
+The knowledge-workbench increment adds private Quill resource-management routes, file metadata/deduplication and explicit reindexing. It removes the engine's invented localhost embedding fallback when no local embedding endpoint is configured. The Vue shell and knowledge surface are replaced with the Quill reading workbench; inherited template/rendering attribution is retained. Gateway PDF/DOCX text extraction and private original storage are new Quill integration code.
+
 ## Intentionally excluded
 
 - Source deployment scripts, server addresses, operational reports, local configs and `.env` files.

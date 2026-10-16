@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 
 from quill.config import Settings
 from quill.generation import GenerationService
+from quill.knowledge import knowledge_router
 from quill.legacy.template import BaseTemplatesGenerator
 from quill.providers import KnowledgeClient, LLMClient, ProviderError, reference_text
 from quill.store import Store
@@ -34,6 +35,8 @@ class SearchRequest(BaseModel):
     query: str = Field(min_length=1, max_length=2000)
     collection_ids: list[str] = Field(min_length=1, max_length=20)
     mode: str = Field(default="intelligent", pattern="^(intelligent|semantic|keyword|file)$")
+    top_k: int = Field(5, ge=1, le=20)
+    similarity_threshold: float = Field(0.15, ge=0, le=1)
 
 
 class CollectionRequest(BaseModel):
@@ -45,6 +48,7 @@ class TextRequest(BaseModel):
     collection_id: str = Field(min_length=1, max_length=64)
     title: str = Field(min_length=1, max_length=255)
     content: str = Field(min_length=1, max_length=200000)
+    tags: list[str] = Field(default_factory=list, max_length=20)
 
 
 class FillRequest(BaseModel):
@@ -83,10 +87,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 raise HTTPException(401, "请在工作台设置访问密钥。", headers={"WWW-Authenticate": "Bearer"})
 
     secured = [Depends(authorize)]
+    app.include_router(knowledge_router(config, store), dependencies=secured)
 
     @app.exception_handler(ProviderError)
     async def provider_error(request, exc):
-        return JSONResponse({"detail": str(exc)}, status_code=502)
+        return JSONResponse({"detail": str(exc)}, status_code=exc.status_code)
 
     @app.get("/health")
     async def health():
@@ -112,11 +117,25 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.post("/api/v1/knowledge/search", dependencies=secured)
     async def search(body: SearchRequest):
-        return {"sources": await app.state.knowledge.search(body.query, body.collection_ids, body.mode)}
+        return {
+            "sources": await app.state.knowledge.search(
+                body.query,
+                body.collection_ids,
+                body.mode,
+                top_k=body.top_k,
+                similarity_threshold=body.similarity_threshold,
+            )
+        }
 
     @app.post("/api/v1/knowledge/answer", dependencies=secured)
     async def answer(body: SearchRequest):
-        sources = await app.state.knowledge.search(body.query, body.collection_ids, body.mode)
+        sources = await app.state.knowledge.search(
+            body.query,
+            body.collection_ids,
+            body.mode,
+            top_k=body.top_k,
+            similarity_threshold=body.similarity_threshold,
+        )
         if not sources:
             raise HTTPException(422, "未检索到相关资料，请调整问题或补充资料。")
         text = await app.state.llm.chat(
@@ -127,6 +146,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.post("/api/v1/knowledge/text", dependencies=secured)
     async def ingest_text(body: TextRequest):
+        if not body.title.strip() or not body.content.strip():
+            raise HTTPException(422, "资料标题和正文不能为空。")
         return await app.state.knowledge.request("quill/text", body.model_dump())
 
     @app.get("/api/templates", dependencies=secured)

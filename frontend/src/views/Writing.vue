@@ -28,8 +28,10 @@
 </template>
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { api, handleError, downloadFile } from '../api/client';
-const collections=ref([]),selected=ref(''),topic=ref(''),reference=ref(''),instructions=ref(''),sections=ref(''),busy=ref(false),message=ref(''),jobs=ref([]),selectedJob=ref(null);
+const route = useRoute();
+const collections=ref([]),selected=ref(String(route.query.collection || '')),topic=ref(''),reference=ref(''),instructions=ref(''),sections=ref(''),busy=ref(false),message=ref(''),jobs=ref([]),selectedJob=ref(null);
 const labels={queued:'排队中',running:'生成中',completed:'已完成',failed:'失败',interrupted:'已中断'};
 let timer;
 async function refresh(){try{jobs.value=(await api.get('/api/v1/documents/jobs')).data.jobs;if(selectedJob.value)selectedJob.value=jobs.value.find(j=>j.id===selectedJob.value.id)||selectedJob.value;}catch(e){message.value=handleError(e);}}

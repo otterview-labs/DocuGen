@@ -18,14 +18,16 @@ npm --prefix frontend run build
 .venv/bin/uvicorn quill.main:app --host 127.0.0.1 --port 8080 --workers 1
 ```
 
-Open http://127.0.0.1:8080. Enter the shared access key in the header if `QUILL_API_KEY` is set. The UI currently uses Chinese. Manual template filling works without a model. Manual reference text works without the knowledge service when a model is configured.
+Open http://127.0.0.1:8080. Enter the shared access key in the navigation's connection settings if `QUILL_API_KEY` is set. The UI currently uses Chinese. Manual template filling works without a model. Manual reference text works without the knowledge service when a model is configured.
 
 For the full local stack, set `QUILL_API_KEY` and `POSTGRES_PASSWORD`, then run `docker compose -p quill up -d --build`. Only the workspace binds to loopback. Keep the private knowledge engine and PostgreSQL off public networks. Semantic retrieval requires an embedding model with a matching configured dimension.
 
 ## Current boundaries
 
 - DOCX templates, variable extraction, manual/AI filling, and authenticated Word downloads.
-- Knowledge collections, text ingestion, and keyword/semantic/intelligent retrieval through an adapter.
+- Collection creation/editing, PDF/DOCX/Markdown/TXT/CSV/JSON import, per-collection file deduplication, original downloads, title/tag editing, filtering, pagination and bulk removal.
+- A source table and reading pane, content preview, reading segments, highlighted retrieval results and source navigation. Reading segments are not vector chunks.
+- Text extraction is limited to 20 MB per file, 200 PDF pages and 200,000 extracted characters; scanned PDFs require prior OCR. Keyword retrieval works without a model; vector indexing and semantic retrieval require a configured embedding provider.
 - Outline generation, per-section evidence retrieval, persisted jobs, and source snapshots.
 - Interrupted jobs retain existing content and can be regenerated; they do not automatically resume.
 - One API process and one task worker; no horizontal scaling or concurrent API workers.

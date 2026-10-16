@@ -187,6 +187,19 @@ def test_resolve_embedding_runtime_config_prefers_settings_model(monkeypatch) ->
     assert runtime_config["openai_model"] == "configured-openai-model"
 
 
+def test_unconfigured_embedding_does_not_invent_a_local_endpoint(monkeypatch) -> None:
+    monkeypatch.delenv("LOCAL_EMBEDDING_URL", raising=False)
+    module = _load_service_module(monkeypatch, _build_settings())
+    captured = []
+    monkeypatch.setattr(module, "create_embedding_model", lambda **kwargs: captured.append(kwargs))
+    assert module._resolve_embedding_runtime_config()["local_url"] == ""
+    service = object.__new__(module.EnhancedRAGService)
+    service.embedding_model = None
+    module.EnhancedRAGService._init_embedding_model(service)
+    assert service.embedding_model is None
+    assert captured == []
+
+
 def test_init_embedding_model_prefers_configured_provider_over_other_available_backends(monkeypatch) -> None:
     module = _load_service_module(
         monkeypatch,

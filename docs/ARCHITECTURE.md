@@ -14,13 +14,17 @@ flowchart LR
   Engine --> DB[PostgreSQL + pgvector]
 ```
 
-The first merge preserves the existing Vue templates and layout. Quill adds knowledge and writing screens using the same form language, with a shared header and navigation. This is a functional integration, not a finished product redesign.
+The shared Vue shell and knowledge screen use a reading workbench: collection navigation, document management, retrieval and an adjacent source preview. Existing template and writing flows remain within the shared shell. `DESIGN.md` records the shipped visual system.
 
 ## Contracts
 
 Quill routes use `/api/v1/knowledge/*` and `/api/v1/documents/*`. A narrow set of DocuGen routes (`/api/templates`, template upload/fill/render, `/download/*`) is maintained for the inherited frontend. Unsupported old routes are not carried forward.
 
 The adapter maps collection pagination and `collection_id: list[str]` to the upstream API. Search results become source records with title, content snapshot, resource/content/collection identifiers, version if supplied, and score. These snapshots travel with the generated artifact metadata. Template sources are explicitly user-confirmed/client-supplied metadata; they are not signed attestations.
+
+File ingestion is owned by the Quill gateway. It extracts text from PDF/DOCX and supported text formats, rejects empty/scanned/oversized inputs, computes a SHA-256 digest and stores an opaque-named original under the private workspace directory. The knowledge engine deduplicates digests per collection and owns the resource metadata, content and index. SQLite maps resource IDs to original files; original downloads verify the resource through the engine and require the workspace key. Deletion cascades engine content/indexes and then removes the local original; incomplete index cleanup is reported. File and database operations span services and are not a distributed transaction.
+
+The `/api/v1/rag/quill/*` compatibility routes provide aggregated collection statistics, filtered resource pagination, preview, metadata update, deletion and reindexing. Preview reading segments are computed for display and make no claim about vector index chunks. Missing embedding configuration returns a visible HTTP 409 on reindexing.
 
 For writing, each section retrieves its own evidence. No-hit retrieval fails clearly. A failure preserves previous sections. Startup marks unfinished jobs interrupted, including queued jobs; the UI can submit the same request again. It does not claim automatic continuation or exactly-once delivery. An in-memory bounded queue dispatches jobs, while job state and output are persistent.
 
@@ -35,8 +39,8 @@ Legacy knowledge code is retained under `services/knowledge`; source-level defec
 ## Next integration increments
 
 1. Validate a real business template and complete a generation using the intended model/provider.
-2. Add PDF/DOCX knowledge uploads to the unified workbench and validate parser dependencies.
-3. Improve question-answering source navigation and citation review.
+2. Validate larger real-world PDF/DOCX corpora and define OCR/complex-layout requirements.
+3. Improve sentence-level citation review and generated-answer verification.
 4. Improve template formatting fidelity, variable review and source navigation.
-5. Add model-specific embedding configuration and reindex controls.
+5. Add model-specific embedding configuration and verify reindexing with a real provider.
 6. Introduce user identity only after defining workspace ownership and data access.

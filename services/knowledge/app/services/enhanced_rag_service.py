@@ -101,7 +101,7 @@ def _resolve_embedding_runtime_config() -> Dict[str, str]:
     local_url = (
         (getattr(settings.embedding, "LOCAL_EMBEDDING_URL", "") or "").strip()
         or (os.getenv("LOCAL_EMBEDDING_URL") or "").strip()
-        or "http://localhost:8001"
+        or ""
     )
     local_model = (
         (getattr(settings.embedding, "LOCAL_EMBEDDING_MODEL", "") or "").strip()
