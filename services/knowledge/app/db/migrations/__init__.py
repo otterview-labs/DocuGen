@@ -1,0 +1,1 @@
+"""DB migrations package"""
