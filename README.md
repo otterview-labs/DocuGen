@@ -6,7 +6,7 @@ Quill 将 JetLinks 知识引擎与 DocuGen 的 Word 模板处理能力整理在�
 
 当前为 **0.1.0 本地整合版**。采用一个共享工作区和一个访问密钥，适合个人或可信团队自部署。没有多租户、独立用户权限或协同编辑。来源记录表示模型取材依据，不等同于逐句事实核验。
 
-[English](README.en.md) · [架构与边界](docs/ARCHITECTURE.md) · [源码来源与发布条件](docs/PROVENANCE.md)
+[English](README.en.md) · [架构与边界](docs/ARCHITECTURE.md) · [界面设计参考](docs/UI_REFERENCES.md) · [源码来源与发布条件](docs/PROVENANCE.md)
 
 ## 已接入的流程
 

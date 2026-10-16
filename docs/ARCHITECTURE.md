@@ -14,7 +14,7 @@ flowchart LR
   Engine --> DB[PostgreSQL + pgvector]
 ```
 
-The shared Vue shell and knowledge screen use a reading workbench: collection navigation, document management, retrieval and an adjacent source preview. Existing template and writing flows remain within the shared shell. `DESIGN.md` records the shipped visual system.
+The shared Vue shell and knowledge screen use a reading workbench: collection navigation, document management, retrieval and an adjacent source preview. Template browsing, upload/variable entry, generation and writing now use the same paper/green controls, headings, forms and result presentation. Their backend contracts remain unchanged. `DESIGN.md` records the shipped visual system.
 
 ## Contracts
 

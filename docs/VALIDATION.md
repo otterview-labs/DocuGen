@@ -29,6 +29,18 @@ The Docker build initially encountered a dependency-download DNS failure. A retr
 
 The generation pipeline is exercised with controlled model responses in tests. A real model/provider was not configured or called. Therefore real model quality, semantic embedding quality, token costs, citations at sentence level, and complex Word layout fidelity have not been accepted. OCR/video/graph parsers and multi-user isolation are outside this verification scope.
 
-The six browser cases passed across the bounded capture and correction runs. A new focus-restoration assertion initially exposed row replacement during metadata refresh; stable resource-based restoration was added and the complete management workflow then passed. The independent design reviewer scored all three requested fixes resolved and returned `ship` for that fix list. This is not an independent review of backend model quality.
+In the initial reading-workbench iteration, six browser cases passed across the bounded capture and correction runs. A new focus-restoration assertion exposed row replacement during metadata refresh; stable resource-based restoration was added and the complete management workflow then passed. The independent design reviewer scored all three requested fixes resolved and returned `ship` for that fix list. This is not an independent review of backend model quality.
+
+## Reference-driven UI refinement
+
+The subsequent user request supplied VoltAgent/awesome-design-md. Sources, exact reference revision and application boundaries are recorded in [UI_REFERENCES.md](UI_REFERENCES.md).
+
+- Vue production build passed; no new production dependency was added.
+- All 11 Playwright cases passed in the first batched inspection and again in the single correction/confirmation run.
+- The matrix covers 1440px, 1024px and 390px. Knowledge management, source preview and search account for nine captures; catalog, upload/variable entry, template generation and writing account for twelve captures. No horizontal page overflow or browser exceptions were observed.
+- Real template upload, manual variable filling and authenticated DOCX downloads passed through both template entry paths. Catalog search, list/grid switching and keyboard entry passed. The existing knowledge import, deduplication, metadata, source focus/return and deletion workflow passed.
+- Shared field text uses explicit normal weight; source prose uses 15px ink text; the mobile primary retrieval action is at least 44px high. Breadcrumb computed foreground is `rgb(102, 115, 107)` on `rgb(252, 252, 247)`.
+- The single design-detector scan returned no findings. No model was called. Backend code and model contracts were unchanged in this refinement.
+- The independent full review accepted the preserved workbench and all 21 captures. A breadcrumb contrast finding was withdrawn after verifying the actual cascade. The final verdict returned `ship` for the canonical breadcrumb declaration, regular field weight and mobile retrieval-control correction batch, with no observed regressions within that scope.
 
 Known inherited warnings include Starlette/AnyIO deprecation and Pydantic field-alias metadata warnings. They did not fail the verified checks.

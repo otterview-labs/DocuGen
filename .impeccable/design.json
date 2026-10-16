@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-16T16:17:53+08:00",
+  "generatedAt": "2026-10-16T16:38:06+08:00",
   "title": "Design System: Quill",
   "extensions": {
     "colorMeta": {
       "accent": {
         "role": "primary",
-        "displayName": "Accent",
+        "displayName": "Working Green",
         "tonalRamp": [
           "oklch(15% 0.0726 166.3)",
           "oklch(27% 0.0726 166.3)",
@@ -20,7 +20,7 @@
       },
       "accent-hover": {
         "role": "primary",
-        "displayName": "Accent Hover",
+        "displayName": "Working Green Hover",
         "tonalRamp": [
           "oklch(15% 0.0633 165.2)",
           "oklch(27% 0.0633 165.2)",
@@ -34,7 +34,7 @@
       },
       "ink": {
         "role": "neutral",
-        "displayName": "Ink",
+        "displayName": "Deep Ink",
         "tonalRamp": [
           "oklch(15% 0.0264 176.2)",
           "oklch(27% 0.0264 176.2)",
@@ -48,7 +48,7 @@
       },
       "muted": {
         "role": "neutral",
-        "displayName": "Muted",
+        "displayName": "Muted Neutral",
         "tonalRamp": [
           "oklch(15% 0.0199 158.7)",
           "oklch(27% 0.0199 158.7)",
@@ -60,37 +60,9 @@
           "oklch(95% 0.0199 158.7)"
         ]
       },
-      "olive-text": {
-        "role": "neutral",
-        "displayName": "Olive Text",
-        "tonalRamp": [
-          "oklch(15% 0.0413 131.5)",
-          "oklch(27% 0.0413 131.5)",
-          "oklch(38% 0.0413 131.5)",
-          "oklch(49% 0.0413 131.5)",
-          "oklch(61% 0.0413 131.5)",
-          "oklch(73% 0.0413 131.5)",
-          "oklch(84% 0.0413 131.5)",
-          "oklch(95% 0.0413 131.5)"
-        ]
-      },
-      "reading-text": {
-        "role": "neutral",
-        "displayName": "Reading Text",
-        "tonalRamp": [
-          "oklch(15% 0.0672 133.5)",
-          "oklch(27% 0.0672 133.5)",
-          "oklch(38% 0.0672 133.5)",
-          "oklch(49% 0.0672 133.5)",
-          "oklch(61% 0.0672 133.5)",
-          "oklch(73% 0.0672 133.5)",
-          "oklch(84% 0.0672 133.5)",
-          "oklch(95% 0.0672 133.5)"
-        ]
-      },
       "paper": {
         "role": "neutral",
-        "displayName": "Paper",
+        "displayName": "Warm Paper",
         "tonalRamp": [
           "oklch(15% 0.0054 95.1)",
           "oklch(27% 0.0054 95.1)",
@@ -104,7 +76,7 @@
       },
       "ground": {
         "role": "neutral",
-        "displayName": "Ground",
+        "displayName": "Workbench Ground",
         "tonalRamp": [
           "oklch(15% 0.0079 106.5)",
           "oklch(27% 0.0079 106.5)",
@@ -118,7 +90,7 @@
       },
       "line": {
         "role": "neutral",
-        "displayName": "Line",
+        "displayName": "Fine Rule",
         "tonalRamp": [
           "oklch(15% 0.0132 130.8)",
           "oklch(27% 0.0132 130.8)",
@@ -132,7 +104,7 @@
       },
       "sidebar": {
         "role": "neutral",
-        "displayName": "Sidebar",
+        "displayName": "Deep Navigation",
         "tonalRamp": [
           "oklch(15% 0.0314 175.3)",
           "oklch(27% 0.0314 175.3)",
@@ -146,7 +118,7 @@
       },
       "sidebar-text": {
         "role": "neutral",
-        "displayName": "Sidebar Text",
+        "displayName": "Navigation Text",
         "tonalRamp": [
           "oklch(15% 0.0187 150.5)",
           "oklch(27% 0.0187 150.5)",
@@ -160,7 +132,7 @@
       },
       "nav-selected": {
         "role": "neutral",
-        "displayName": "Nav Selected",
+        "displayName": "Pale Leaf",
         "tonalRamp": [
           "oklch(15% 0.0419 125.0)",
           "oklch(27% 0.0419 125.0)",
@@ -174,7 +146,7 @@
       },
       "action-text": {
         "role": "neutral",
-        "displayName": "Action Text",
+        "displayName": "Warm Action White",
         "tonalRamp": [
           "oklch(15% 0.0133 97.4)",
           "oklch(27% 0.0133 97.4)",
@@ -188,7 +160,7 @@
       },
       "danger": {
         "role": "neutral",
-        "displayName": "Danger",
+        "displayName": "Destructive Red",
         "tonalRamp": [
           "oklch(15% 0.1336 27.2)",
           "oklch(27% 0.1336 27.2)",
@@ -202,7 +174,7 @@
       },
       "danger-soft": {
         "role": "neutral",
-        "displayName": "Danger Soft",
+        "displayName": "Destructive Surface",
         "tonalRamp": [
           "oklch(15% 0.0141 39.4)",
           "oklch(27% 0.0141 39.4)",
@@ -216,7 +188,7 @@
       },
       "focus": {
         "role": "neutral",
-        "displayName": "Focus",
+        "displayName": "Focus Green",
         "tonalRamp": [
           "oklch(15% 0.0675 158.1)",
           "oklch(27% 0.0675 158.1)",
@@ -226,6 +198,62 @@
           "oklch(73% 0.0675 158.1)",
           "oklch(84% 0.0675 158.1)",
           "oklch(95% 0.0675 158.1)"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Soft Green",
+        "tonalRamp": [
+          "oklch(15% 0.0136 145.5)",
+          "oklch(27% 0.0136 145.5)",
+          "oklch(38% 0.0136 145.5)",
+          "oklch(49% 0.0136 145.5)",
+          "oklch(61% 0.0136 145.5)",
+          "oklch(73% 0.0136 145.5)",
+          "oklch(84% 0.0136 145.5)",
+          "oklch(95% 0.0136 145.5)"
+        ]
+      },
+      "surface-subtle": {
+        "role": "neutral",
+        "displayName": "Subtle Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0067 115.7)",
+          "oklch(27% 0.0067 115.7)",
+          "oklch(38% 0.0067 115.7)",
+          "oklch(49% 0.0067 115.7)",
+          "oklch(61% 0.0067 115.7)",
+          "oklch(73% 0.0067 115.7)",
+          "oklch(84% 0.0067 115.7)",
+          "oklch(95% 0.0067 115.7)"
+        ]
+      },
+      "amber": {
+        "role": "neutral",
+        "displayName": "Warning Amber",
+        "tonalRamp": [
+          "oklch(15% 0.0931 76.8)",
+          "oklch(27% 0.0931 76.8)",
+          "oklch(38% 0.0931 76.8)",
+          "oklch(49% 0.0931 76.8)",
+          "oklch(61% 0.0931 76.8)",
+          "oklch(73% 0.0931 76.8)",
+          "oklch(84% 0.0931 76.8)",
+          "oklch(95% 0.0931 76.8)"
+        ]
+      },
+      "amber-soft": {
+        "role": "neutral",
+        "displayName": "Warning Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0253 86.9)",
+          "oklch(27% 0.0253 86.9)",
+          "oklch(38% 0.0253 86.9)",
+          "oklch(49% 0.0253 86.9)",
+          "oklch(61% 0.0253 86.9)",
+          "oklch(73% 0.0253 86.9)",
+          "oklch(84% 0.0253 86.9)",
+          "oklch(95% 0.0253 86.9)"
         ]
       }
     },
@@ -248,11 +276,19 @@
       },
       "reading": {
         "displayName": "Reading",
-        "purpose": "Source preview prose at desktop and mobile."
+        "purpose": "Original source, answers and generated text; 15px with line-height 1.95."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Shared standard buttons."
+        "purpose": "Shared standard 13px buttons; 12px small variant."
+      },
+      "section": {
+        "displayName": "Section",
+        "purpose": "Document editor and supporting aside headings."
+      },
+      "field": {
+        "displayName": "Field",
+        "purpose": "Regular-weight 14px shared field text; 16px on mobile."
       }
     },
     "shadows": [
@@ -264,7 +300,7 @@
       {
         "name": "floating-preview",
         "value": "-12px 15px 40px #22331b1a",
-        "purpose": "Preview at widths 641px–1199px."
+        "purpose": "Floating preview from 641px through 1359px."
       }
     ],
     "motion": [
@@ -290,12 +326,20 @@
         "value": "640px"
       },
       {
+        "name": "editor-stack-max",
+        "value": "800px"
+      },
+      {
         "name": "icon-rail-max",
         "value": "1050px"
       },
       {
+        "name": "two-column-catalog-max",
+        "value": "1100px"
+      },
+      {
         "name": "inline-preview-min",
-        "value": "1200px"
+        "value": "1360px"
       },
       {
         "name": "wide-preview-min",
@@ -314,7 +358,7 @@
       "refersTo": "button-primary",
       "description": "Primary Button from the shared workbench control family.",
       "html": "<button class=\"ds-button-primary\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5v14M5 12h14\"/></svg>导入资料</button>",
-      "css": ".ds-button-primary{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:8px 13px;border:1px solid;border-radius:6px;cursor:pointer;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:12px;font-weight:550;line-height:1.5;background:var(--accent,#28644e);border-color:var(--accent,#28644e);color:#fffdf3;transition:background .15s,border-color .15s}.ds-button-primary:hover:not(:disabled){background:var(--accent-hover,#1c4e3b);}.ds-button-primary:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-primary:disabled{opacity:.52;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none}}"
+      "css": ".ds-button-primary{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 14px;border:1px solid;border-radius:6px;cursor:pointer;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:13px;font-weight:550;line-height:1.5;background:var(--accent,#28644e);border-color:var(--accent,#28644e);color:#fffdf3;transition:background .15s,border-color .15s}.ds-button-primary:hover:not(:disabled){background:var(--accent-hover,#1c4e3b);border-color:#a8bfa9;}.ds-button-primary:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-primary:disabled{opacity:.52;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none}}@media(max-width:640px){.ds-button-primary{min-height:44px}}"
     },
     {
       "name": "Secondary Button",
@@ -322,7 +366,7 @@
       "refersTo": "button-secondary",
       "description": "Secondary Button from the shared workbench control family.",
       "html": "<button class=\"ds-button-secondary\">复制正文</button>",
-      "css": ".ds-button-secondary{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:8px 13px;border:1px solid;border-radius:6px;cursor:pointer;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:12px;font-weight:550;line-height:1.5;background:var(--paper,#fffefa);border-color:#ccd8cb;color:#3d5241;transition:background .15s,border-color .15s}.ds-button-secondary:hover:not(:disabled){background:#f0f4e9;border-color:#a8bfa9;}.ds-button-secondary:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-secondary:disabled{opacity:.52;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button-secondary{transition:none}}"
+      "css": ".ds-button-secondary{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 14px;border:1px solid;border-radius:6px;cursor:pointer;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:13px;font-weight:550;line-height:1.5;background:var(--paper,#fffefa);border-color:#ccd8cb;color:#3d5241;transition:background .15s,border-color .15s}.ds-button-secondary:hover:not(:disabled){background:#f0f4e9;border-color:#a8bfa9;}.ds-button-secondary:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-secondary:disabled{opacity:.52;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button-secondary{transition:none}}@media(max-width:640px){.ds-button-secondary{min-height:44px}}"
     },
     {
       "name": "Ghost Button",
@@ -330,7 +374,7 @@
       "refersTo": "button-ghost",
       "description": "Low-emphasis action with a transparent resting surface.",
       "html": "<button class=\"ds-button-ghost\">取消</button>",
-      "css": ".ds-button-ghost{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:8px 13px;border:1px solid;border-radius:6px;cursor:pointer;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:12px;font-weight:550;line-height:1.5;background:transparent;border-color:transparent;color:#3d5241;transition:background .15s,border-color .15s}.ds-button-ghost:hover:not(:disabled){background:#f0f4e9;border-color:#a8bfa9;}.ds-button-ghost:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-ghost:disabled{opacity:.52;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button-ghost{transition:none}}"
+      "css": ".ds-button-ghost{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 14px;border:1px solid;border-radius:6px;cursor:pointer;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:13px;font-weight:550;line-height:1.5;background:transparent;border-color:transparent;color:#3d5241;transition:background .15s,border-color .15s}.ds-button-ghost:hover:not(:disabled){background:#f0f4e9;border-color:#a8bfa9;}.ds-button-ghost:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-ghost:disabled{opacity:.52;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button-ghost{transition:none}}@media(max-width:640px){.ds-button-ghost{min-height:44px}}"
     },
     {
       "name": "Destructive Button",
@@ -338,7 +382,7 @@
       "refersTo": "button-danger",
       "description": "Destructive Button from the shared workbench control family.",
       "html": "<button class=\"ds-button-danger\">确认移除资料</button>",
-      "css": ".ds-button-danger{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:8px 13px;border:1px solid;border-radius:6px;cursor:pointer;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:12px;font-weight:550;line-height:1.5;background:var(--danger-soft,#fcf0ec);border-color:#dfbcb3;color:var(--danger,#9d3a33);transition:background .15s,border-color .15s}.ds-button-danger:hover:not(:disabled){background:#f0f4e9;border-color:#a8bfa9;}.ds-button-danger:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-danger:disabled{opacity:.52;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button-danger{transition:none}}"
+      "css": ".ds-button-danger{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 14px;border:1px solid;border-radius:6px;cursor:pointer;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:13px;font-weight:550;line-height:1.5;background:var(--danger-soft,#fcf0ec);border-color:#dfbcb3;color:var(--danger,#9d3a33);transition:background .15s,border-color .15s}.ds-button-danger:hover:not(:disabled){background:#f0f4e9;border-color:#a8bfa9;}.ds-button-danger:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-danger:disabled{opacity:.52;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-button-danger{transition:none}}@media(max-width:640px){.ds-button-danger{min-height:44px}}"
     },
     {
       "name": "Shared Field",
@@ -346,7 +390,7 @@
       "refersTo": "field",
       "description": "Warm-paper input with the shared visible keyboard focus.",
       "html": "<label class=\"ds-field-label\">资料名称<input class=\"ds-field\" value=\"项目资料\" /></label>",
-      "css": ".ds-field-label{display:grid;gap:7px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:12px;font-weight:550;line-height:1.5;color:#3f5042}.ds-field{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:12px;font-weight:550;line-height:1.5;width:100%;min-height:37px;padding:9px 11px;border:1px solid #cbd6c9;border-radius:6px;background:var(--paper,#fffefa);color:var(--ink,#20332e);caret-color:var(--accent,#28644e)}.ds-field:focus{border-color:#729b7d}.ds-field:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}"
+      "css": ".ds-field-label{display:grid;gap:7px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:13px;font-weight:550;line-height:1.5;color:#3f5042}.ds-field{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;font-size:13px;font-weight:550;line-height:1.5;width:100%;min-height:40px;padding:9px 11px;border:1px solid #cbd6c9;border-radius:6px;background:var(--paper,#fffefa);color:var(--ink,#20332e);caret-color:var(--accent,#28644e)}.ds-field:focus{border-color:#729b7d}.ds-field:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;} .ds-field{font-size:14px}@media(max-width:640px){.ds-field{min-height:44px;font-size:16px}} .ds-field{font-weight:400}"
     },
     {
       "name": "App Navigation",
@@ -354,14 +398,14 @@
       "refersTo": "nav-active",
       "description": "Deep navigation with pale-leaf active destination.",
       "html": "<nav class=\"ds-nav\"><a href=\"#knowledge\" class=\"ds-nav-active\" aria-current=\"page\">知识库</a><a href=\"#writing\">文档写作</a></nav>",
-      "css": ".ds-nav{display:grid;gap:7px;background:var(--sidebar,#172e28);padding:16px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif}.ds-nav a{display:flex;align-items:center;padding:11px 12px;border-radius:7px;color:#bccdbf;text-decoration:none;font-size:13px;font-weight:500;transition:background .15s,color .15s}.ds-nav a:hover{background:#263f34;color:#f0f4e6}.ds-nav a.ds-nav-active{background:#dce8ca;color:#203d2b}.ds-nav a:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}@media(prefers-reduced-motion:reduce){.ds-nav a{transition:none}}"
+      "css": ".ds-nav{display:grid;gap:7px;background:var(--sidebar,#172e28);padding:16px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif}.ds-nav a{display:flex;align-items:center;padding:11px 12px;border-radius:7px;color:#bccdbf;text-decoration:none;font-size:14px;font-weight:500;transition:background .15s,color .15s}.ds-nav a:hover{background:#263f34;color:#f0f4e6}.ds-nav a.ds-nav-active{background:#dce8ca;color:#203d2b}.ds-nav a:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}@media(prefers-reduced-motion:reduce){.ds-nav a{transition:none}}@media(max-width:640px){.ds-nav a{font-size:11px;min-height:42px;padding:9px 4px}}"
     },
     {
       "name": "Collection Choice",
       "kind": "chip",
       "description": "Selectable collection with label and storage count.",
       "html": "<button class=\"ds-collection\" aria-pressed=\"true\"><strong>项目资料</strong><small>12 份资料</small></button>",
-      "css": ".ds-collection{display:block;text-align:left;padding:12px 10px;border:1px solid #d4dfc9;border-radius:6px;background:#e5eddd;color:#314a30;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;cursor:pointer}.ds-collection strong{display:block;font-size:13px;font-weight:550;line-height:1.7}.ds-collection small{display:block;color:#68765d;font-size:11px;margin-top:3px}.ds-collection:hover{background:#eaf0e4}.ds-collection:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}"
+      "css": ".ds-collection{display:block;text-align:left;padding:12px 10px;border:1px solid #d4dfc9;border-radius:6px;background:#e5eddd;color:var(--ink,#20332e);font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;cursor:pointer}.ds-collection strong{display:block;font-size:14px;font-weight:550;line-height:1.65}.ds-collection small{display:block;color:var(--muted,#66736b);font-size:12px;margin-top:3px}.ds-collection:hover{background:#eaf0e4}.ds-collection:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}@media(max-width:640px){.ds-collection{padding:11px 12px}.ds-collection strong{font-size:13px}.ds-collection small{display:none}}"
     },
     {
       "name": "Reading Panel",
@@ -369,53 +413,61 @@
       "refersTo": "panel",
       "description": "Flat paper container with a rule-separated heading and source prose.",
       "html": "<article class=\"ds-panel\"><header>资料预览</header><p>从资料出发，写出有依据的内容。\n\n原文和取材依据保留在一起。</p></article>",
-      "css": ".ds-panel{background:var(--paper,#fffefa);border:1px solid var(--line,#e0e5dc);border-radius:9px;overflow:hidden;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;color:var(--ink,#20332e)}.ds-panel header{padding:12px 16px;border-bottom:1px solid var(--line,#e0e5dc);font-size:10px;color:#68765d}.ds-panel p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;padding:23px 22px;font-size:13px;line-height:2.15;color:#536b43}"
+      "css": ".ds-panel{background:var(--paper,#fffefa);border:1px solid var(--line,#e0e5dc);border-radius:9px;overflow:hidden;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;color:var(--ink,#20332e)}.ds-panel header{padding:12px 16px;border-bottom:1px solid var(--line,#e0e5dc);font-size:12px;color:var(--muted,#66736b)}.ds-panel p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;padding:24px;font-size:15px;line-height:1.95;color:var(--ink,#20332e)}@media(max-width:640px){.ds-panel p{padding:23px 21px}}"
     },
     {
       "name": "Resource Row",
       "kind": "custom",
       "description": "Source title and provenance with a separate readiness label.",
       "html": "<div class=\"ds-resource\"><button class=\"ds-source\"><strong>项目说明.docx</strong><small>Word · 项目资料</small></button><span class=\"ds-status\">关键词可用</span></div>",
-      "css": ".ds-resource{display:flex;align-items:center;gap:14px;padding:17px 8px;border-bottom:1px solid #edf0e7;background:var(--paper,#fffefa);font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif}.ds-resource:hover{background:#fafbf5}.ds-source{border:0;background:none;text-align:left;padding:0;color:#3d513c;cursor:pointer;min-width:0;flex:1;font-family:inherit}.ds-source strong{display:block;font-size:13px;line-height:1.65;font-weight:550;overflow-wrap:anywhere}.ds-source small{display:block;font-size:11px;color:#68765d;margin-top:4px}.ds-source:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-status{font-size:11px;color:#68765d;white-space:nowrap}"
+      "css": ".ds-resource{display:flex;align-items:center;gap:14px;padding:17px 8px;border-bottom:1px solid #edf0e7;background:var(--paper,#fffefa);font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif}.ds-resource:hover{background:#fafbf5}.ds-source{border:0;background:none;text-align:left;padding:0;color:var(--ink,#20332e);cursor:pointer;min-width:0;flex:1;font-family:inherit}.ds-source strong{display:block;font-size:14px;line-height:1.65;font-weight:550;overflow-wrap:anywhere}.ds-source small{display:block;font-size:12px;color:var(--muted,#66736b);margin-top:4px}.ds-source:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-status{font-size:12px;color:var(--muted,#66736b);white-space:nowrap} .ds-source:hover strong{text-decoration:underline;text-underline-offset:4px}.ds-status{background:var(--surface-subtle,#fafbf6);border:1px solid var(--line,#e0e5dc);border-radius:4px;padding:3px 6px}@media(max-width:640px){.ds-source strong{font-size:13px}.ds-status{font-size:11px;padding:3px 5px}}"
+    },
+    {
+      "name": "Template Catalog Entry",
+      "kind": "card",
+      "description": "Flat rule-separated template entry with a linked title and reusable action.",
+      "html": "<article class=\"ds-template\"><div class=\"ds-sheet\" aria-hidden=\"true\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><path d=\"M14 2v6h6M8 13h8M8 17h6\"/></svg><span>DOCX</span></div><div class=\"ds-template-body\"><small>通用</small><h2><a href=\"#template\">项目汇报模板</a></h2><p>使用结构清晰的模板整理项目进展。</p><footer><span>6 个变量</span><a href=\"#use\">使用模板</a></footer></div></article>",
+      "css": ".ds-template{display:flex;flex-direction:column;gap:24px;padding:26px;border-bottom:1px solid var(--line,#e0e5dc);border-right:1px solid var(--line,#e0e5dc);background:var(--paper,#fffefa);font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif}.ds-sheet{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:58px;height:72px;border:1px solid #cdd7ca;border-radius:4px;background:var(--surface-subtle,#fafbf6);color:#5c775e}.ds-sheet span{font-size:9px;font-weight:600;letter-spacing:.06em}.ds-template-body{width:100%;min-width:0}.ds-template-body>small{display:block;font-size:11px;color:var(--muted,#66736b);margin-bottom:8px}.ds-template h2{margin:0;font-size:16px;line-height:1.6;font-weight:550;color:var(--ink,#20332e);overflow-wrap:anywhere}.ds-template a{color:inherit;text-decoration:none}.ds-template h2 a:hover{color:var(--accent,#28644e);text-decoration:underline;text-underline-offset:4px}.ds-template p{font-size:13px;line-height:1.8;color:var(--muted,#66736b);margin:8px 0 24px}.ds-template footer{display:flex;justify-content:space-between;align-items:center;gap:12px}.ds-template footer span{font-size:12px;color:var(--muted,#66736b)}.ds-template footer a{font-size:13px;color:var(--accent,#28644e)}.ds-template footer a:hover{text-decoration:underline;text-underline-offset:3px}.ds-template a:focus-visible{outline:3px solid #7aab8e;outline-offset:3px;}@media(max-width:640px){.ds-template{padding:23px;border-right:0}.ds-template h2{font-size:17px}}"
     }
   ],
   "narrative": {
     "northStar": "The Reading Workbench",
-    "overview": "Quill places warm working paper beside a deep green navigation rail. The mood is calm, literate and compact: muted olive metadata supports deep ink titles, while green identifies actions and the current working context. The small serif wordmark provides the literary cue; Chinese working text uses the platform sans stack.\n\nThis system records the approved reading-workbench replacement as implemented in the shared shell and knowledge surface. It is extracted from App.vue, workbench.css and knowledge.css, including their final cascade overrides. Knowledge inspection is its first expression; collection widths and preview behavior below describe that expression rather than a mandatory composition for every page. Inherited template/create screens retain scoped treatments and have not all been redesigned.",
+    "overview": "Quill places warm working paper beside deep green navigation. The mood is calm, literate and practical: deep ink carries source text and headings, neutral muted text carries supporting information, and green identifies actions and the current working context. The small serif wordmark provides the literary cue; Chinese working text uses the platform sans stack.\n\nThe confirmed reading-workbench world now spans knowledge management, source inspection, writing, template browsing, template upload and template-based generation. Shared controls, fine rules and restrained surfaces give the whole working path one vocabulary. This record is extracted from App.vue and the workbench, knowledge and documents stylesheets, including their final responsive overrides. The reference-driven refinement changes readability and consistency within that world; it does not import another product’s brand.",
     "keyCharacteristics": [
-      "Warm paper surfaces and a deep ink-green app rail.",
-      "Compact, rule-separated information with restrained rounded containers.",
-      "Chinese sans reading text, a serif wordmark and Lucide line icons.",
-      "Selected-source context and keyboard focus remain visibly distinct."
+      "Warm paper and subtle neutral surfaces beneath a deep green app rail.",
+      "Ink reading text, muted metadata and green action/selection states.",
+      "Shared control sizes, fine rules and restrained rounded containers across all flows.",
+      "Chinese sans working text, a small serif wordmark and Lucide line icons."
     ],
     "rules": [
       {
         "name": "The Quiet Paper Rule",
-        "body": "Use green for action and selection, and warm paper for sustained reading. Metadata uses the final olive-text treatment rather than the older pale olive declarations earlier in the stylesheet.",
+        "body": "Use ink for sustained reading and muted neutral text for metadata. Reserve green for actions, readiness and selection; keep warm paper as the working surface.",
         "section": "colors"
       },
       {
         "name": "The Working Text Rule",
-        "body": "Keep the serif face in the wordmark. Use the platform sans stack for Chinese headings, controls and source text; preserve the reading role when density increases.",
+        "body": "Keep the serif face in the wordmark and use the platform sans stack for Chinese work. Source prose and generated document prose share the 15px reading role with line-height 1.95.",
         "section": "typography"
       },
       {
         "name": "The Flat Workbench Rule",
-        "body": "Keep ordinary library and preview surfaces flat with fine borders. Reserve soft shadows for the connection popover and the intermediate-width floating preview.",
+        "body": "Keep ordinary library, editor, catalog and inline preview surfaces flat with fine borders. Reserve soft shadows for the connection popover and the intermediate-width floating preview.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "Do use the shared paper, ground, ink and green action roles when adding a surface.",
-      "Do preserve visible keyboard focus, the reduced-motion override and the source preview’s focus restoration.",
-      "Do use line icons with visible labels or accessible names; preserve readable Chinese source titles and wrapping.",
-      "Do keep the original text and source metadata available beside or in place of the resource list as space permits."
+      "Do use shared paper, subtle-surface, ink, muted and green action roles across knowledge and document flows.",
+      "Do preserve the 15px reading role and distinguish supporting metadata through hierarchy rather than pale text.",
+      "Do use shared button and field primitives, with the explicit mobile sizing and responsive layout rules.",
+      "Do preserve visible keyboard focus, reduced-motion support and source preview focus restoration.",
+      "Do use Lucide line icons with visible labels or accessible names, wrapping long Chinese titles and source text."
     ],
     "donts": [
-      "Don’t introduce a new display face for working text; the serif wordmark already supplies the typographic contrast.",
-      "Don’t use the inherited template pages’ emoji icons or blue glow shadows as patterns for new workbench components.",
+      "Don’t introduce a new display face for working text; the serif wordmark already supplies typographic contrast.",
+      "Don’t restore emoji iconography, blue glow shadows or decorative gradients from the replaced template interface.",
       "Don’t add shadows to every container; use border and surface tone for resting structure.",
-      "Don’t present reading segments, vector readiness, counts or answers as decoration; their labels and states must follow actual data."
+      "Don’t present reading segments, index readiness, counts or answers as decoration; their labels and states must follow actual data."
     ]
   }
 }

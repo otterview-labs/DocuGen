@@ -79,7 +79,7 @@ test('manage knowledge, import duplicate files, preview sources, and delete sele
   expect(errors).toEqual([]);
 });
 
-for(const width of [1440,390]){
+for(const width of [1440,1024,390]){
  test(`knowledge library and preview at ${width}px`,async({page})=>{
   await page.setViewportSize({width,height:1000});await page.goto('/knowledge');
   await page.getByRole('button',{name:/示例 · 设备运维资料/}).click();
