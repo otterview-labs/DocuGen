@@ -67,12 +67,12 @@ def _apply_document_owner_filter(query, current_user: Optional[User] = None):
 
 
 def _build_document_read_query(db: Session, document_id: str, current_user: Optional[User] = None):
-    query = db.query(RAGContent).filter(RAGContent.id == document_id)
+    query = db.query(RAGContent).filter((RAGContent.id == document_id) | (RAGContent.resource_id == document_id))
     return _apply_document_read_access_filter(query, current_user)
 
 
 def _build_owned_document_query(db: Session, document_id: str, current_user: Optional[User] = None):
-    query = db.query(RAGContent).filter(RAGContent.id == document_id)
+    query = db.query(RAGContent).filter((RAGContent.id == document_id) | (RAGContent.resource_id == document_id))
     return _apply_document_owner_filter(query, current_user)
 
 def _resolve_existing_file_path(file_path: Optional[str]) -> Optional[Path]:
@@ -1036,6 +1036,13 @@ async def _cascade_delete_document(document: RAGContent, db: Session, delete_fil
     }
 
     try:
+        # Remove resource links in either direction before deleting their source content.
+        result["resource_relations_deleted"] = db.query(RAGResourceRelation).filter(
+            (RAGResourceRelation.source_resource_id == document.resource_id) |
+            ((RAGResourceRelation.target_type == "resource") &
+             RAGResourceRelation.target_id.in_([document.resource_id, document.id]))
+        ).delete(synchronize_session=False)
+
         # 0. 删除集合关联记录（必须先删除，避免外键约束）
         try:
             collection_contents = db.query(RAGCollectionContent).filter(RAGCollectionContent.content_id == document.id).all()

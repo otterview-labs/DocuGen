@@ -28,3 +28,5 @@ The knowledge-workbench increment adds private Quill resource-management routes,
 - Legacy static administration pages from the knowledge runtime; its JSON API is the integration surface.
 
 The upstream heavy parsing dependency manifests remain for reference. Only the Quill text engine dependency profile is used by the new Compose service. Additional parser profiles require their own compatibility verification.
+
+The 2026-10-17 capability expansion adapts collection-aware QA import, resource/content-ID handling, collection model records, saved-tag decoding, original-file retention and dependent-record cleanup in the imported engine. It adds a private capability/chunk contract and an authenticated allowlisted Quill bridge; mounted endpoint-to-page mappings are in [KNOWLEDGE_CAPABILITIES.md](KNOWLEDGE_CAPABILITIES.md). Upstream authorship and the license boundary above remain in force.

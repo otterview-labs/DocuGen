@@ -1,8 +1,9 @@
 """Quill's bounded text ingestion API for the private knowledge engine."""
 from datetime import datetime, timezone
+from pathlib import Path
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import case, func, or_
 from sqlalchemy.orm import Session
@@ -45,11 +46,14 @@ def serialize(record):
     kind = name.rsplit(".", 1)[-1].lower() if "." in name else "text"
     metadata = record.content_metadata if isinstance(record.content_metadata, dict) else {}
     return {
-        "resource_id": record.resource_id, "collection_id": record.vector_collection,
+        "resource_id": record.resource_id, "content_id": record.id, "collection_id": record.vector_collection,
+        "has_engine_original": bool(record.file_path and Path(record.file_path).is_file()),
+        "enabled": str(record.status) == "1", "description": record.description or "", "summary": record.content_summary or "",
         "title": record.title, "file_name": record.file_name, "file_size": record.file_size,
         "kind": kind, "characters": len(record.content_text or ""),
         "tags": record.content_tags or [], "indexed": bool(record.vector_id),
-        "status": record.processing_status, "version": metadata.get("version", 1),
+        "bindings": record.bindings or [],
+        "status": record.processing_status, "processing_message": record.processing_message, "version": metadata.get("version", 1),
         "created_at": record.create_time.isoformat() if record.create_time else None,
         "updated_at": record.update_time.isoformat() if record.update_time else None,
     }
@@ -154,7 +158,11 @@ async def get_resource(body: ResourceRequest, db: Session = Depends(get_db), use
     text = record.content_text or ""
     segments = [{"start": start, "end": min(start + 800, len(text)), "content": text[start:start + 800]}
                 for start in range(0, len(text), 700)]
-    return {"success": True, "result": {**serialize(record), "content": text, "segments": segments}}
+    from app.db.models.rag import RAGResourceRelation
+    relations = db.query(RAGResourceRelation).filter(RAGResourceRelation.source_resource_id == record.resource_id).all()
+    return {"success": True, "result": {**serialize(record), "content": text, "segments": segments,
+        "relation": [{"type": r.target_type, "id": r.target_id, "relation": r.relation_desc,
+                      "confidence": r.confidence, "expands": r.expands or {}} for r in relations]}}
 
 
 class UpdateRequest(ResourceRequest):
@@ -192,3 +200,34 @@ async def reindex_resource(body: ResourceRequest, db: Session = Depends(get_db),
         raise HTTPException(502, "向量索引未建立，请检查模型和向量库配置后重试。")
     db.refresh(record)
     return {"success": True, "result": serialize(record)}
+
+
+@router.get("/capabilities")
+async def capabilities(request: Request):
+    """Report registration and configured prerequisites, without calling model providers."""
+    from app.config import settings
+    paths = {route.path: sorted(route.methods or []) for route in request.app.routes if hasattr(route, "methods")}
+    llm = settings.llm
+    llm_configured = bool(llm.LOCAL_LLM_ENDPOINT and llm.LOCAL_LLM_MODEL_NAME) if llm.LLM_PROVIDER == "local" else bool(
+        llm.OPENAI_MODEL_NAME and (llm.OPENAI_API_KEY or llm.OPENAI_API_AUTH_MODE == "none"))
+    embedding = settings.embedding
+    embedding_configured = bool(embedding.LOCAL_EMBEDDING_URL and embedding.LOCAL_EMBEDDING_MODEL) if embedding.PROVIDER == "local" else bool(
+        llm.OPENAI_API_KEY or llm.OPENAI_API_AUTH_MODE == "none")
+    return {"paths": paths, "configured": {"graph": settings.graph_db.GRAPH_DB_ENABLED,
+        "llm": llm_configured, "embedding": embedding_configured},
+        "vector_backend": settings.vector_db.VECTOR_DB_TYPE}
+
+
+@router.post("/resources/chunks")
+async def stored_chunks(body: ResourceRequest, db: Session = Depends(get_db), user=Depends(get_request_user)):
+    from app.db.models.rag import RAGChunk
+    record = resource(db, body.resource_id, user)
+    chunks = db.query(RAGChunk).filter(RAGChunk.content_id == record.id).order_by(RAGChunk.chunk_index).all()
+    return {"success": True, "result": {
+        "resource_id": record.resource_id, "title": record.title, "total": len(chunks),
+        "indexed": bool(record.vector_id),
+        "message": "尚无存储分块。阅读预览分段不代表已建立向量索引。" if not chunks else "实际存储的分块记录",
+        "chunks": [{"index": c.chunk_index, "content": c.chunk_text, "characters": c.chunk_size,
+                    "start": c.start_position, "end": c.end_position, "strategy": c.chunking_strategy,
+                    "indexed": bool(c.vector_id), "embedding_model": c.embedding_model} for c in chunks],
+    }}

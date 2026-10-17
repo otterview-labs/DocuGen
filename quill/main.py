@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 from quill.config import Settings
 from quill.generation import GenerationService
 from quill.knowledge import knowledge_router
+from quill.knowledge_tools import tools_router
 from quill.legacy.template import BaseTemplatesGenerator
 from quill.providers import KnowledgeClient, LLMClient, ProviderError, reference_text
 from quill.store import Store
@@ -88,6 +89,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     secured = [Depends(authorize)]
     app.include_router(knowledge_router(config, store), dependencies=secured)
+    app.include_router(tools_router(config, store), dependencies=secured)
 
     @app.exception_handler(ProviderError)
     async def provider_error(request, exc):

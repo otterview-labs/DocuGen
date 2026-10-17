@@ -1,0 +1,322 @@
+.knowledge-tools {
+  min-width: 0;
+  padding: 20px 24px 28px;
+}
+.tools-context,
+.tools-help {
+  color: var(--muted);
+  margin: 0 0 20px;
+  font-size: var(--font-meta);
+  line-height: 1.7;
+}
+.tools-layout {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.tools-menu {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
+  padding-right: 12px;
+  gap: 4px;
+}
+.tools-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 10px 8px;
+  font: inherit;
+  font-size: var(--font-control);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  min-height: 40px;
+}
+.tools-menu button span {
+  flex: 1;
+}
+.tools-menu button small {
+  color: var(--muted);
+  font-size: var(--font-meta);
+  white-space: nowrap;
+}
+.tools-menu button:hover {
+  background: var(--hover);
+}
+.tools-menu button[aria-current="true"] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  font-weight: 500;
+}
+.tools-menu button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.tools-detail {
+  min-width: 0;
+  max-width: 820px;
+}
+.tools-heading {
+  margin-bottom: 20px;
+}
+.tools-heading h3,
+.tools-result h3 {
+  font-size: var(--font-section);
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.tools-heading p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+  font-size: var(--font-body);
+  max-width: 70ch;
+}
+.tools-fields {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  margin: 20px 0 0;
+  border: 0;
+  min-width: 0;
+}
+.tools-fields .field-label {
+  min-width: 0;
+}
+.tools-fields select[multiple] {
+  min-height: 120px;
+  padding: 8px;
+}
+.tools-fields .tools-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.tools-check input {
+  accent-color: var(--accent);
+  width: 18px;
+  height: 18px;
+}
+.tools-advanced {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.tools-advanced summary,
+.tools-raw summary {
+  color: var(--accent);
+  cursor: pointer;
+  font-size: var(--font-control);
+  min-height: 32px;
+}
+.tools-actions {
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.tools-result {
+  margin-top: 28px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+.tools-result > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+.result-properties {
+  margin: 0;
+}
+.result-property {
+  display: grid;
+  grid-template-columns: minmax(80px, 120px) minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--font-body);
+}
+.result-property dt {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.result-property dd {
+  min-width: 0;
+  margin: 0;
+}
+.result-prose {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.result-records {
+  padding-left: 22px;
+  margin: 0;
+}
+.result-records > li {
+  padding: 6px 0 16px;
+}
+.knowledge-result-tree .muted {
+  color: var(--muted);
+}
+.tools-raw {
+  margin-top: 20px;
+}
+.tools-raw pre {
+  font-size: var(--font-meta);
+  max-height: 420px;
+  overflow: auto;
+  background: var(--surface-subtle);
+  padding: 16px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.tools-followup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 16px 0;
+}
+.tools-followup p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.tools-graph {
+  margin: 20px 0;
+  background: var(--surface-subtle);
+  padding: 12px;
+}
+.tools-graph svg {
+  width: 100%;
+  display: block;
+}
+.tools-graph p {
+  color: var(--muted);
+  font-size: var(--font-meta);
+}
+.tools-loading {
+  color: var(--muted);
+  padding: 24px 0;
+}
+@media (max-width: 1100px) {
+  .tools-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .tools-menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 12px;
+  }
+  .tools-menu button {
+    flex: 0 1 auto;
+  }
+  .tools-menu button > svg {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .knowledge-tools {
+    padding: 16px;
+  }
+  .tools-menu {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .tools-menu button {
+    min-height: 44px;
+    flex-wrap: wrap;
+  }
+  .result-property {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .tools-actions .ui-button {
+    width: 100%;
+  }
+}
+.library-tabs {
+  flex-wrap: wrap;
+  column-gap: 20px;
+  row-gap: 0;
+}
+.tools-task-history {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.tools-task-history h3 {
+  font-size: var(--font-section);
+  font-weight: 600;
+}
+.tools-task-history ul {
+  list-style: none;
+  padding: 0;
+}
+.tools-task-history li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+}
+.tools-task-history time {
+  color: var(--muted);
+  font-size: var(--font-meta);
+}
+
+/* Task navigation keeps long action names intact beside prerequisite status. */
+.tools-menu button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+}
+.tools-menu button > svg {
+  display: none;
+}
+.tools-menu button span {
+  line-height: 1.6;
+}
+.tools-search-count {
+  color: var(--muted);
+  font-size: var(--font-control);
+  margin: 16px 0;
+}
+.tools-search-results {
+  list-style: none;
+  padding: 0;
+}
+.tools-search-results > li {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.tools-search-results h4 {
+  font-size: var(--font-reading);
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+.tools-search-source {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: var(--font-meta);
+}
+.tools-graph svg {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.tools-graph text {
+  font-size: 14px;
+}

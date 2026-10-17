@@ -739,7 +739,7 @@ async def get_content_analysis(
         tags = []
         if content.content_tags:
             try:
-                tags = json.loads(content.content_tags)
+                tags = content.content_tags if isinstance(content.content_tags, list) else json.loads(content.content_tags)
             except:
                 tags = []
 

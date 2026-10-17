@@ -394,6 +394,8 @@ async def store_to_rag_system(
                 # 更新关键字段
                 content.resource_id = resource_info.id
                 content.file_md5 = file_info.get("md5")
+                from app.services.quill_files import retain_original
+                retain_original(content, Path(file_path))
 
                 # 更新权限绑定
                 if resource_info.bindings:

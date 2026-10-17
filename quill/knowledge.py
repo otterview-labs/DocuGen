@@ -1,10 +1,11 @@
 import asyncio
 import hashlib
 from pathlib import Path
+from urllib.parse import quote
 from uuid import uuid4
 
 from fastapi import APIRouter, File, Form, HTTPException, Query, Request, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel, Field
 
 from quill.config import Settings
@@ -64,7 +65,9 @@ def knowledge_router(config: Settings, store: Store) -> APIRouter:
         )
         items = result["result"]
         for item in items["items"]:
-            item["has_original"] = bool(store.knowledge_file(item["resource_id"]))
+            item["has_original"] = bool(store.knowledge_file(item["resource_id"])) or item.get(
+                "has_engine_original", False
+            )
         return items
 
     @router.get("/resources/{resource_id}")
@@ -73,7 +76,9 @@ def knowledge_router(config: Settings, store: Store) -> APIRouter:
             "quill/resources/get", {"resource_id": resource_id}
         )
         body = result["result"]
-        body["has_original"] = bool(store.knowledge_file(resource_id))
+        body["has_original"] = bool(store.knowledge_file(resource_id)) or body.get(
+            "has_engine_original", False
+        )
         return body
 
     @router.patch("/resources/{resource_id}")
@@ -106,8 +111,27 @@ def knowledge_router(config: Settings, store: Store) -> APIRouter:
 
     @router.get("/resources/{resource_id}/download")
     async def download(request: Request, resource_id: str):
-        await request.app.state.knowledge.request("quill/resources/get", {"resource_id": resource_id})
+        detail = (
+            await request.app.state.knowledge.request("quill/resources/get", {"resource_id": resource_id})
+        )["result"]
         metadata = store.knowledge_file(resource_id)
+        if not metadata and detail.get("has_engine_original"):
+            provider = request.app.state.knowledge
+            headers = {"Authorization": f"Bearer {config.knowledge_token}"} if config.knowledge_token else {}
+            response = await provider.client.get(
+                config.knowledge_url.rstrip("/") + "/api/v1/rag/documents/download",
+                params={"document_id": detail["content_id"]},
+                headers=headers,
+                timeout=120,
+            )
+            if response.status_code != 200:
+                raise HTTPException(response.status_code, "引擎原文件下载失败，请检查文件是否仍存在。")
+            name = detail.get("file_name") or detail["title"]
+            return Response(
+                response.content,
+                media_type=response.headers.get("content-type", "application/octet-stream"),
+                headers={"Content-Disposition": "attachment; filename*=UTF-8''" + quote(name)},
+            )
         if not metadata:
             raise HTTPException(404, "此资料没有保存原文件，可在内容预览中复制文字。")
         path = store.root / "knowledge-files" / metadata["stored_name"]

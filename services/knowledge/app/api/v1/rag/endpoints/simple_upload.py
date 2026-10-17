@@ -91,6 +91,14 @@ async def upload_and_process(
             resource_id=resource_id  # 传递resource_id
         )
 
+        if result and result.get("success"):
+            from app.db.models.rag import RAGContent
+            from app.services.quill_files import retain_original
+            record = db.query(RAGContent).filter(RAGContent.id == result.get("content_id")).first()
+            if record:
+                retain_original(record, temp_path, file.filename)
+                db.commit()
+
         # 清理临时文件
         try:
             os.remove(temp_path)

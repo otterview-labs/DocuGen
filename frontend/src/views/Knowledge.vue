@@ -188,8 +188,16 @@
                 count: currentCollection.document_count,
               },
               { value: 'search', label: '检索与问答', icon: Search },
+              { value: 'import', label: '导入与解析' },
+              { value: 'analysis', label: '分块与分析' },
+              { value: 'graph', label: '知识图谱' },
+              { value: 'settings', label: '知识库设置' },
+              { value: 'advanced', label: '高级检索' },
             ]"
           />
+          <div v-if="['import', 'analysis', 'graph', 'settings', 'advanced'].includes(activeTab)" :id="activeTab + '-panel'" role="tabpanel" :aria-labelledby="activeTab + '-tab'">
+            <KnowledgeTools :group="activeTab === 'advanced' ? 'search' : activeTab" :collection="currentCollection" :selected-resources="checked" @changed="refreshAll" @preview="id => { activeTab = 'documents'; openPreview(id); }" />
+          </div>
           <div
             v-show="activeTab === 'documents'"
             id="documents-panel"
@@ -487,7 +495,7 @@
                         class="index-status"
                         :class="{ indexed: item.indexed }"
                         ><span></span
-                        >{{ item.indexed ? "向量已就绪" : "关键词可用" }}</span
+                        >{{ item.status === "failed" ? "解析失败" : item.status === "processing" ? "解析中…" : item.enabled === false ? "已停用" : item.indexed ? "向量已就绪" : "关键词可用" }}</span
                       >
                     </td>
                     <td
@@ -713,6 +721,7 @@
               }}</span>
             </div>
           </div>
+          <UiNotice v-if="detail.status === 'failed'" :message="detail.processing_message || '资料解析失败，请检查解析器配置后重试。'" tone="error" />
           <div class="preview-actions">
             <UiButton @click="copyText(detail.content)" size="compact"
               ><Copy :size="13" />复制正文</UiButton
@@ -848,6 +857,7 @@
   </section>
 </template>
 <script setup>
+import KnowledgeTools from "../components/knowledge/KnowledgeTools.vue";
 import UiTabs from "../components/ui/UiTabs.vue";
 import UiNotice from "../components/ui/UiNotice.vue";
 import UiEmptyState from "../components/ui/UiEmptyState.vue";
@@ -1433,6 +1443,7 @@ function writeWithCollection() {
 function escapePreview(event) {
   if (event.key === "Escape" && previewId.value) closePreview();
 }
+watch(activeTab, value => { if (!["documents", "search"].includes(value)) closePreview(); });
 watch(selected, () => {
   page.value = 0;
   checked.value = [];

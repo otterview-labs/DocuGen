@@ -566,7 +566,7 @@ def _serialize_collection(db: Session, collection: RAGCollection) -> dict:
     }
 
 
-def _delete_collection_by_id(
+async def _delete_collection_by_id(
     collection_id: str,
     db: Session,
     current_user: Optional[User] = None
@@ -581,20 +581,16 @@ def _delete_collection_by_id(
             detail="集合不存在或无权限删除"
         )
 
-    doc_ids = [row[0] for row in db.query(RAGContent.id).filter(
-        RAGContent.vector_collection == collection_id
-    ).all()]
-
+    from app.api.v1.rag.endpoints.document_operations import _cascade_delete_document
+    documents = db.query(RAGContent).filter(RAGContent.vector_collection == collection_id).all()
     deleted_docs = 0
     failed_docs = 0
-    for doc_id in doc_ids:
-        try:
-            db.query(RAGContent).filter(RAGContent.id == doc_id).delete(synchronize_session=False)
-            db.commit()
-            deleted_docs += 1
-        except Exception:
-            db.rollback()
-            failed_docs += 1
+    cleanup_errors = []
+    for document in documents:
+        result = await _cascade_delete_document(document, db, delete_files=True)
+        cleanup_errors.extend(result.get("errors", []))
+        deleted_docs += 1
+    db.flush()
 
     try:
         vector_db = get_vector_db()
@@ -618,7 +614,8 @@ def _delete_collection_by_id(
         result={
             "deleted_collection_id": collection_id,
             "deleted_documents_count": deleted_docs,
-            "failed_documents_count": failed_docs
+            "failed_documents_count": failed_docs,
+            "cleanup_errors": cleanup_errors
         },
         message=f"集合 '{collection_name}' 删除完成，文档成功 {deleted_docs} 个，失败 {failed_docs} 个"
     )
@@ -1251,7 +1248,7 @@ async def delete_collection(
     ```
     """
     try:
-        return _delete_collection_by_id(request.collection_id, db, current_user)
+        return await _delete_collection_by_id(request.collection_id, db, current_user)
     except HTTPException:
         raise
     except Exception as e:
@@ -1269,7 +1266,7 @@ async def delete_collection_by_path(
     current_user: Optional[User] = Depends(get_request_user),
 ):
     try:
-        return _delete_collection_by_id(collection_id, db, current_user)
+        return await _delete_collection_by_id(collection_id, db, current_user)
     except HTTPException:
         raise
     except Exception as e:
@@ -1323,6 +1320,12 @@ async def update_collection(
 
         if "description" in collection_data:
             collection.description = collection_data["description"]
+
+        for field in ("collection_type", "embedding_model", "rerank_model"):
+            if field in collection_data:
+                if field == "collection_type" and collection_data[field] not in {"text", "multimodal"}:
+                    raise HTTPException(422, "集合类型只能是 text 或 multimodal")
+                setattr(collection, field, collection_data[field])
 
         if "is_active" in collection_data:
             collection.status = "1" if collection_data["is_active"] else "0"
