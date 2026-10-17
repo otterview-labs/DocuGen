@@ -7,7 +7,7 @@
       value ? "是" : "否"
     }}</template>
     <template v-else-if="typeof value !== 'object'"
-      ><span class="result-prose">{{ value }}</span></template
+      ><span class="result-prose">{{ displayValue }}</span></template
     >
     <template v-else-if="Array.isArray(value)">
       <p v-if="!value.length" class="muted">暂无记录</p>
@@ -17,21 +17,85 @@
         </li>
       </ol>
     </template>
-    <dl v-else class="result-properties">
-      <template v-for="(item, key) in value" :key="key">
+    <template v-else>
+      <dl class="result-properties">
         <div
-          v-if="!['embedding', 'vector'].includes(key)"
+          v-for="[key, item] in visibleEntries"
+          :key="key"
           class="result-property"
         >
           <dt>{{ labels[key] || key }}</dt>
-          <dd><KnowledgeResult :value="item" /></dd>
+          <dd><KnowledgeResult :value="item" :field-key="key" /></dd>
         </div>
-      </template>
-    </dl>
+      </dl>
+      <details v-if="technicalEntries.length" class="result-technical">
+        <summary>编号与补充信息</summary>
+        <dl class="result-properties">
+          <div
+            v-for="[key, item] in technicalEntries"
+            :key="key"
+            class="result-property"
+          >
+            <dt>{{ labels[key] || key }}</dt>
+            <dd><KnowledgeResult :value="item" :field-key="key" /></dd>
+          </div>
+        </dl>
+      </details>
+    </template>
   </div>
 </template>
 <script setup>
-defineProps({ value: null });
+import { computed } from "vue";
+const props = defineProps({ value: null, fieldKey: String });
+const technicalKeys = new Set([
+  "resource_id",
+  "content_id",
+  "collection_id",
+  "file_sha256",
+  "md5",
+  "sha256",
+  "bindings",
+  "metadata",
+  "debug",
+  "timestamp",
+]);
+const entries = computed(() =>
+  Object.entries(props.value || {}).filter(
+    ([key]) => !["embedding", "vector"].includes(key),
+  ),
+);
+function technical(key, value) {
+  return (
+    technicalKeys.has(key) ||
+    (key === "id" &&
+      typeof value === "string" &&
+      /^[a-f0-9-]{24,}$/.test(value))
+  );
+}
+const visibleEntries = computed(() =>
+  entries.value.filter(([key, value]) => !technical(key, value)),
+);
+const technicalEntries = computed(() =>
+  entries.value.filter(([key, value]) => technical(key, value)),
+);
+const displayValue = computed(() => {
+  if (!["status", "action", "new_status"].includes(props.fieldKey))
+    return props.value;
+  return (
+    {
+      started: "已提交",
+      processing: "处理中",
+      pending: "等待处理",
+      completed: "已完成",
+      failed: "失败",
+      success: "成功",
+      enable: "启用",
+      disable: "停用",
+      0: "停用",
+      1: "启用",
+    }[props.value] ?? props.value
+  );
+});
 const labels = {
   title: "标题",
   name: "名称",

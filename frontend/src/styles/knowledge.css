@@ -1214,6 +1214,9 @@
 .collection-item.selected {
   color: var(--ink);
 }
+.collection-item.selected .collection-label small {
+  color: var(--accent);
+}
 .resource-title:hover strong {
   text-decoration: underline;
   text-underline-offset: 4px;

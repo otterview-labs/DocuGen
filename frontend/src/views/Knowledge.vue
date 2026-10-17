@@ -188,11 +188,11 @@
                 count: currentCollection.document_count,
               },
               { value: 'search', label: '检索与问答', icon: Search },
-              { value: 'import', label: '导入与解析' },
-              { value: 'analysis', label: '分块与分析' },
-              { value: 'graph', label: '知识图谱' },
-              { value: 'settings', label: '知识库设置' },
-              { value: 'advanced', label: '高级检索' },
+              { value: 'import', label: '导入与解析', icon: FileUp },
+              { value: 'analysis', label: '分块与分析', icon: Layers3 },
+              { value: 'graph', label: '知识图谱', icon: Network },
+              { value: 'settings', label: '知识库设置', icon: Settings2 },
+              { value: 'advanced', label: '高级检索', icon: SlidersHorizontal },
             ]"
           />
           <div v-if="['import', 'analysis', 'graph', 'settings', 'advanced'].includes(activeTab)" :id="activeTab + '-panel'" role="tabpanel" :aria-labelledby="activeTab + '-tab'">
@@ -881,6 +881,10 @@ import {
   Folder,
   FolderOpen,
   Library,
+  Layers3,
+  Network,
+  Settings2,
+  SlidersHorizontal,
   LoaderCircle,
   PanelRightClose,
   Pencil,

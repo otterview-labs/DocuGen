@@ -157,30 +157,62 @@ test("real QA imports, actual chunks, analysis results, status and collection se
 
 test("advanced keyword search and explicit unavailable model/graph states", async ({
   page,
+  request,
 }) => {
-  await page.goto("/knowledge");
-  await tool(page, "高级检索", "高级检索");
-  await page.getByLabel("查询内容", { exact: true }).fill("验收");
-  await page
-    .getByRole("button", { name: "高级检索", exact: true })
-    .last()
-    .click();
-  await expect(page.getByRole("region", { name: "操作结果" })).toContainText(
-    "验收",
-  );
-  await page.getByRole('button',{name:'预览来源',exact:true}).first().click();
-  await expect(page.getByRole('tabpanel',{name:/资料管理/})).toBeVisible();
-  await expect(page.getByRole('complementary', {name:'资料预览'})).toBeVisible();
-  await tool(page, "知识图谱", "查询实体与关系");
-  await expect(page.getByText(/尚未启用图数据库。/)).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "查询实体与关系", exact: true }).last(),
-  ).toBeDisabled();
-  await tool(page, "分块与分析", "生成摘要与标签");
-  await expect(page.getByText(/尚未配置知识引擎生成模型。/)).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "生成摘要与标签", exact: true }).last(),
-  ).toBeDisabled();
+  const name = "示例 · 检索验收 " + Date.now();
+  const created = await request.post(root + "/collections", {
+    headers,
+    data: { name },
+  });
+  const cid = (await created.json()).result.id;
+  await request.post(root + "/text", {
+    headers,
+    data: {
+      collection_id: cid,
+      title: "示例验收资料",
+      content: "项目验收周期为 30 天。",
+    },
+  });
+  try {
+    await page.goto("/knowledge");
+    await page.getByRole("button", { name: new RegExp(name) }).click();
+    await tool(page, "高级检索", "高级检索");
+    await page.getByLabel("查询内容", { exact: true }).fill("验收");
+    await page
+      .getByRole("button", { name: "高级检索", exact: true })
+      .last()
+      .click();
+    await expect(page.getByRole("region", { name: "操作结果" })).toContainText(
+      "验收",
+    );
+    await page
+      .getByRole("button", { name: "预览来源", exact: true })
+      .first()
+      .click();
+    await expect(
+      page.getByRole("tabpanel", { name: /资料管理/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("complementary", { name: "资料预览" }),
+    ).toBeVisible();
+    await tool(page, "知识图谱", "查询实体与关系");
+    await expect(page.getByText(/尚未启用图数据库。/)).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "查询实体与关系", exact: true }).last(),
+    ).toBeDisabled();
+    await tool(page, "分块与分析", "生成摘要与标签");
+    await expect(page.getByText(/尚未配置知识引擎生成模型。/)).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "生成摘要与标签", exact: true }).last(),
+    ).toBeDisabled();
+  } finally {
+    await request
+      .post(root + "/operations/collection-delete", {
+        headers,
+        data: { collection_id: cid, confirmed: true },
+      })
+      .catch(() => {});
+  }
 });
 
 test("staged upload, parse task history and actual task response", async ({

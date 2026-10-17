@@ -15,29 +15,54 @@
         >
       </p>
       <div class="tools-layout">
-        <nav class="tools-menu" :aria-label="groupTitle + '操作'">
-          <button
-            v-for="item in operations"
-            :key="item.id"
-            :aria-label="item.title"
-            :aria-current="operationId === item.id ? 'true' : undefined"
-            @click="operationId = item.id"
-          >
-            <span>{{ item.title }}</span
-            ><small v-if="!item.available">需配置</small
-            ><ChevronRight :size="14" />
-          </button>
+        <nav
+          class="tools-menu"
+          :class="{ 'tools-menu--expanded': menuExpanded }"
+          :aria-label="groupTitle + '操作'"
+        >
+          <UiButton
+            class="tools-menu-trigger"
+            :aria-label="'选择' + groupTitle + '操作'"
+            :aria-expanded="menuExpanded"
+            :aria-controls="'tasks-' + group"
+            @click="menuExpanded = !menuExpanded"
+            ><component :is="operationIcon(operationId)" :size="16" /><span>{{
+              operation?.title || "选择操作"
+            }}</span
+            ><ChevronDown :size="16"
+          /></UiButton>
+          <div class="tools-menu-options" :id="'tasks-' + group">
+            <button
+              v-for="item in operations"
+              :key="item.id"
+              :aria-label="item.title"
+              :aria-current="operationId === item.id ? 'true' : undefined"
+              @click="selectOperation(item.id)"
+            >
+              <component
+                :is="operationIcon(item.id)"
+                :size="16"
+                aria-hidden="true"
+              /><span class="tools-menu-copy"
+                ><span>{{ item.title }}</span
+                ><small v-if="!item.available">需配置</small></span
+              ><ChevronRight
+                v-if="operationId === item.id"
+                :size="14"
+                class="tools-menu-current"
+                aria-hidden="true"
+              />
+            </button>
+          </div>
         </nav>
         <div v-if="operation" class="tools-detail">
           <header class="tools-heading">
-            <h3>{{ operation.title }}</h3>
+            <h3 ref="operationHeading" tabindex="-1">{{ operation.title }}</h3>
             <p>{{ operation.description }}</p>
           </header>
           <UiNotice
             v-if="operation.reason"
-            :message="
-              operation.reason + ' 此功能入口已保留，配置完成后可重新检查。'
-            "
+            :message="operation.reason + ' 配置完成后，请重新检查配置。'"
             tone="warning"
           />
           <UiNotice v-if="choicesError" :message="choicesError" tone="error" />
@@ -71,22 +96,37 @@
           </p>
           <form :key="operationId" @submit.prevent="execute">
             <fieldset :disabled="busy || settingsLoading" class="tools-fields">
-              <label v-if="operation.encoding === 'file'" class="field-label"
-                >选择文件<input
+              <div
+                v-if="operation.encoding === 'file'"
+                class="field-label tools-field-wide"
+              >
+                选择文件<UiFilePicker
                   :key="operationId"
-                  type="file"
-                  class="field-input"
+                  v-model="file"
+                  label="选择文件"
                   required
                   :accept="
                     operationId === 'qa-batch' ? '.json,.csv' : undefined
                   "
-                  @change="file = $event.target.files[0]"
-              /></label>
+                  :hint="
+                    operationId === 'qa-batch'
+                      ? '支持 JSON 或 CSV 问答文件。'
+                      : '支持格式可在“解析格式与限制”中查看。'
+                  "
+                />
+              </div>
               <template v-for="field in operation.fields" :key="field.key">
                 <label
                   v-if="!field.advanced && field.kind !== 'collection'"
                   class="field-label"
-                  :class="{ 'tools-check': field.kind === 'boolean' }"
+                  :class="{
+                    'tools-check': field.kind === 'boolean',
+                    'tools-field-wide': ![
+                      'number',
+                      'select',
+                      'boolean',
+                    ].includes(field.kind),
+                  }"
                 >
                   <span
                     >{{ field.label
@@ -142,16 +182,14 @@
                       }}{{ item.enabled === false ? "（已停用）" : "" }}
                     </option>
                   </select>
-                  <template v-else-if="field.kind === 'image'"
-                    ><input
-                      type="file"
-                      class="field-input"
-                      accept="image/*"
-                      @change="imageChosen($event, field.key)"
-                    /><small v-if="values[field.key]"
-                      >已选图片，可开始检索。</small
-                    ></template
-                  >
+                  <UiFilePicker
+                    v-else-if="field.kind === 'image'"
+                    :model-value="imageFiles[field.key]"
+                    :label="field.label"
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    hint="PNG、JPEG、WebP 或 GIF，最大 2 MB。"
+                    @update:model-value="imageChosen($event, field.key)"
+                  />
                   <textarea
                     v-else-if="
                       ['textarea', 'lines', 'json', 'json-string'].includes(
@@ -181,7 +219,7 @@
               </template>
               <details
                 v-if="operation.fields.some((f) => f.advanced)"
-                class="tools-advanced"
+                class="tools-advanced tools-field-wide"
               >
                 <summary>更多选项</summary>
                 <div class="tools-fields">
@@ -189,7 +227,14 @@
                     v-for="field in operation.fields.filter((f) => f.advanced)"
                     :key="field.key"
                     class="field-label"
-                    :class="{ 'tools-check': field.kind === 'boolean' }"
+                    :class="{
+                      'tools-check': field.kind === 'boolean',
+                      'tools-field-wide': ![
+                        'number',
+                        'select',
+                        'boolean',
+                      ].includes(field.kind),
+                    }"
                     ><span>{{ field.label }}</span>
                     <input
                       v-if="field.kind === 'boolean'"
@@ -216,7 +261,9 @@
                   </label>
                 </div>
               </details>
-              <label v-if="operation.destructive" class="field-label"
+              <label
+                v-if="operation.destructive"
+                class="field-label tools-field-wide"
                 >输入“{{ collection.name }}”确认删除<input
                   v-model="confirmation"
                   class="field-input"
@@ -229,14 +276,14 @@
                     ['resource', 'content', 'resources'].includes(f.kind),
                   )
                 "
-                class="tools-help"
+                class="tools-help tools-field-wide"
               >
                 资料选择器支持按名称键入定位；多选可使用 ⌘ / Ctrl 或 Shift。{{
                   choices.length
                 }}
                 份资料可选。
               </p>
-              <div class="inline-actions tools-actions">
+              <div class="inline-actions tools-actions tools-field-wide">
                 <UiButton
                   type="submit"
                   :variant="operation.destructive ? 'danger' : 'primary'"
@@ -306,16 +353,39 @@
               >
             </div>
             <div v-if="graph.nodes.length" class="tools-graph">
+              <p class="tools-graph-summary">
+                {{ graph.nodes.length }} 个实体 ·
+                {{ graph.edges.length }} 条关系
+              </p>
               <svg viewBox="0 0 360 260" role="img" aria-label="实体关系网络">
-                <line
-                  v-for="(edge, i) in graph.edges"
-                  :key="'e' + i"
-                  :x1="nodePosition(edge.source).x"
-                  :y1="nodePosition(edge.source).y"
-                  :x2="nodePosition(edge.target).x"
-                  :y2="nodePosition(edge.target).y"
-                  stroke="var(--line-strong)"
-                />
+                <g v-for="(edge, i) in graph.edges" :key="'e' + i">
+                  <line
+                    :x1="nodePosition(edge.source).x"
+                    :y1="nodePosition(edge.source).y"
+                    :x2="nodePosition(edge.target).x"
+                    :y2="nodePosition(edge.target).y"
+                    stroke="var(--muted)"
+                    stroke-width="1.25"
+                  />
+                  <text
+                    v-if="edge.relation || edge.label || edge.type"
+                    :x="
+                      (nodePosition(edge.source).x +
+                        nodePosition(edge.target).x) /
+                      2
+                    "
+                    :y="
+                      (nodePosition(edge.source).y +
+                        nodePosition(edge.target).y) /
+                        2 -
+                      7
+                    "
+                    text-anchor="middle"
+                    class="tools-graph-relation"
+                  >
+                    {{ edge.relation || edge.label || edge.type }}
+                  </text>
+                </g>
                 <g
                   v-for="(node, i) in graph.nodes"
                   :key="'n' + i"
@@ -397,9 +467,34 @@
   </section>
 </template>
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
-import { ChevronRight, Download, LoaderCircle } from "@lucide/vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import {
+  BarChart3,
+  BookOpen,
+  ChevronDown,
+  ChevronRight,
+  CircleHelp,
+  ClipboardList,
+  Download,
+  FileText,
+  FileUp,
+  FolderOpen,
+  GitBranch,
+  Layers3,
+  LoaderCircle,
+  MessageSquare,
+  Network,
+  Pencil,
+  RefreshCw,
+  ScanText,
+  Search,
+  Settings2,
+  Sparkles,
+  ToggleLeft,
+  Trash2,
+} from "@lucide/vue";
 import UiButton from "../ui/UiButton.vue";
+import UiFilePicker from "../ui/UiFilePicker.vue";
 import UiNotice from "../ui/UiNotice.vue";
 import UiEmptyState from "../ui/UiEmptyState.vue";
 import KnowledgeResult from "./KnowledgeResult.vue";
@@ -411,6 +506,48 @@ const props = defineProps({
   selectedResources: { type: Array, default: () => [] },
 });
 const emit = defineEmits(["changed", "preview"]);
+const menuExpanded = ref(false),
+  operationHeading = ref(null),
+  imageFiles = ref({});
+const taskIcons = {
+  upload: FileUp,
+  process: FileText,
+  "process-upload": BookOpen,
+  "batch-parse": FolderOpen,
+  "batch-status": ClipboardList,
+  markdown: FileText,
+  "qa-single": MessageSquare,
+  "qa-batch": MessageSquare,
+  formats: CircleHelp,
+  strategies: Layers3,
+  chunks: Layers3,
+  analyze: Sparkles,
+  "analysis-result": ClipboardList,
+  reindex: RefreshCw,
+  status: ToggleLeft,
+  metadata: Pencil,
+  "collection-detail": Settings2,
+  "collection-update": Settings2,
+  "collection-delete": Trash2,
+  "advanced-search": Search,
+  "search-methods": CircleHelp,
+  "graph-query": Search,
+  "graph-view": Network,
+  "graph-extract": ScanText,
+  "graph-build": Network,
+  "graph-entities": Layers3,
+  "graph-association": GitBranch,
+  "graph-statistics": BarChart3,
+};
+function operationIcon(id) {
+  return taskIcons[id] || FileText;
+}
+function selectOperation(id) {
+  operationId.value = id;
+  menuExpanded.value = false;
+  if (window.innerWidth <= 600) nextTick(() => operationHeading.value?.focus());
+}
+
 const catalog = ref(null),
   loading = ref(false),
   error = ref(""),
@@ -576,6 +713,8 @@ function reset() {
   result.value = null;
   error.value = "";
   file.value = null;
+  imageFiles.value = {};
+  menuExpanded.value = false;
   confirmation.value = "";
   const v = {};
   for (const f of operation.value?.fields || []) {
@@ -596,16 +735,20 @@ function reset() {
   }
   values.value = v;
 }
-async function imageChosen(event, key) {
-  const image = event.target.files[0];
+async function imageChosen(image, key) {
+  values.value[key] = "";
+  imageFiles.value[key] = null;
   if (!image) return;
   if (image.size > 2 * 1024 * 1024) {
     error.value = "查询图片不能超过 2 MB。";
     return;
   }
-  const reader = new FileReader();
+  imageFiles.value[key] = image;
+  const seq = sequence,
+    reader = new FileReader();
   reader.onload = () => {
-    values.value[key] = reader.result;
+    if (sequence === seq && imageFiles.value[key] === image)
+      values.value[key] = reader.result;
   };
   reader.readAsDataURL(image);
 }

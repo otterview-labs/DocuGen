@@ -11,51 +11,73 @@
 }
 .tools-layout {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
-  gap: 28px;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 24px;
   align-items: start;
 }
 .tools-menu {
-  display: flex;
-  flex-direction: column;
+  min-width: 0;
   border-right: 1px solid var(--line);
-  padding-right: 12px;
+  padding-right: 16px;
+}
+.tools-menu-options {
+  display: grid;
   gap: 4px;
 }
-.tools-menu button {
+.tools-menu-trigger {
+  display: none;
+}
+.tools-menu-options > button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  text-align: left;
+  gap: 10px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px;
   border: 0;
+  border-radius: var(--radius-control);
+  text-align: left;
   background: transparent;
   color: var(--ink);
-  padding: 10px 8px;
   font: inherit;
   font-size: var(--font-control);
-  border-radius: var(--radius-control);
   cursor: pointer;
-  min-height: 40px;
 }
-.tools-menu button span {
-  flex: 1;
-}
-.tools-menu button small {
+.tools-menu-options > button > svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.75;
   color: var(--muted);
-  font-size: var(--font-meta);
-  white-space: nowrap;
+  flex-shrink: 0;
 }
-.tools-menu button:hover {
+.tools-menu-copy {
+  display: grid;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.6;
+}
+.tools-menu-copy small {
+  font-size: var(--font-meta);
+  color: var(--muted);
+}
+.tools-menu-options > button:hover {
   background: var(--hover);
 }
-.tools-menu button[aria-current="true"] {
+.tools-menu-options > button[aria-current="true"] {
   color: var(--accent);
   background: var(--accent-soft);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
-.tools-menu button:focus-visible {
+.tools-menu-options > button[aria-current="true"] > svg {
+  color: var(--accent);
+}
+.tools-menu-options > button:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+.tools-menu-current {
+  margin-left: auto;
 }
 .tools-detail {
   min-width: 0;
@@ -79,7 +101,8 @@
 }
 .tools-fields {
   display: grid;
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 16px;
   padding: 0;
   margin: 20px 0 0;
   border: 0;
@@ -87,7 +110,20 @@
 }
 .tools-fields .field-label {
   min-width: 0;
+  align-self: start;
 }
+.tools-fields .field-label small {
+  color: var(--muted);
+  font-size: var(--font-meta);
+  font-weight: var(--weight-regular);
+}
+.tools-field-wide {
+  grid-column: 1 / -1;
+}
+.tools-heading h3:focus {
+  outline: none;
+}
+
 .tools-fields select[multiple] {
   min-height: 120px;
   padding: 8px;
@@ -117,6 +153,8 @@
 }
 .tools-actions {
   margin-top: 4px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
   flex-wrap: wrap;
 }
 .tools-result {
@@ -208,34 +246,59 @@
 @media (max-width: 1100px) {
   .tools-layout {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 24px;
   }
   .tools-menu {
-    flex-direction: row;
-    flex-wrap: wrap;
     border-right: 0;
     border-bottom: 1px solid var(--line);
-    padding: 0 0 12px;
+    padding: 0 0 16px;
   }
-  .tools-menu button {
+  .tools-menu-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .tools-menu-options > button {
     flex: 0 1 auto;
   }
-  .tools-menu button > svg {
+  .tools-menu-current {
     display: none;
   }
 }
 @media (max-width: 600px) {
   .knowledge-tools {
-    padding: 16px;
+    padding: 20px 16px 24px;
   }
   .tools-menu {
+    padding-bottom: 16px;
+  }
+  .tools-menu-trigger {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .tools-menu-trigger span {
+    flex: 1;
+    text-align: left;
+  }
+  .tools-menu-options {
+    display: none;
+  }
+  .tools-menu--expanded .tools-menu-options {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 4px;
+    margin-top: 12px;
   }
-  .tools-menu button {
-    min-height: 44px;
-    flex-wrap: wrap;
+  .tools-menu-options > button {
+    align-items: flex-start;
+  }
+  .tools-menu-options > button > svg {
+    margin-top: 3px;
+  }
+  .tools-fields {
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
   .result-property {
     grid-template-columns: 1fr;
@@ -275,18 +338,6 @@
   font-size: var(--font-meta);
 }
 
-/* Task navigation keeps long action names intact beside prerequisite status. */
-.tools-menu button {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 2px;
-}
-.tools-menu button > svg {
-  display: none;
-}
-.tools-menu button span {
-  line-height: 1.6;
-}
 .tools-search-count {
   color: var(--muted);
   font-size: var(--font-control);
@@ -319,4 +370,39 @@
 }
 .tools-graph text {
   font-size: 14px;
+}
+
+.result-technical {
+  margin-top: 14px;
+}
+.result-technical > summary {
+  color: var(--muted);
+  font-size: var(--font-meta);
+  cursor: pointer;
+  padding: 6px 0;
+}
+.result-technical .result-property {
+  font-size: var(--font-meta);
+}
+.result-records > li::marker {
+  color: var(--muted);
+  font-size: var(--font-meta);
+}
+
+.tools-menu-options > button[aria-current="true"] small {
+  color: var(--accent);
+}
+.tools-fields .tools-check {
+  align-self: end;
+  min-height: var(--control-height);
+}
+.tools-graph .tools-graph-relation {
+  fill: var(--muted);
+  paint-order: stroke;
+  stroke: var(--surface-subtle);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.tools-graph-summary {
+  margin-bottom: 12px;
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-16T17:18:53+08:00",
+  "generatedAt": "2026-10-17T18:21:09+08:00",
   "title": "Design System: Quill",
   "extensions": {
     "colorMeta": {
@@ -490,16 +490,24 @@
       "description": "Flat source container preserving the intentional content-title and reading roles.",
       "html": "<article class=\"ds-panel\"><header><span>资料预览</span><h2>项目说明</h2></header><p>从资料出发，写出有依据的内容。\n\n原文与取材依据保留在一起。</p></article>",
       "css": ".ds-panel{border:1px solid var(--line,#e0e5dc);border-radius:var(--radius-panel,9px);background:var(--paper,#fffefa);overflow:hidden;color:var(--ink,#20332e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);}.ds-panel header{padding:24px 24px 18px;border-bottom:1px solid var(--line,#e0e5dc)}.ds-panel header>span{font-size:12px;color:var(--muted,#66736b)}.ds-panel h2{margin:5px 0 0;font-size:20px;font-weight:500;line-height:1.6;letter-spacing:-.025em;overflow-wrap:anywhere}.ds-panel p{margin:0;padding:24px;max-width:75ch;font-size:15px;line-height:1.95;white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:640px){.ds-panel p{padding:23px 21px}.ds-panel header{padding:23px 21px 18px}}"
+    },
+    {
+      "name": "Shared File Picker",
+      "kind": "input",
+      "refersTo": "file-picker",
+      "description": "Canonical UiFilePicker appearance and native single-file input. Vue owns model updates, drag/drop, selected filename/size and reset behavior; callers supply accept and validation.",
+      "html": "<div class=\"ds-file-picker\"><input type=\"file\" aria-label=\"选择文件\" required /><svg aria-hidden=\"true\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12\"/></svg><div class=\"ds-file-picker-copy\"><strong>选择文件，或拖放到这里</strong><span>保留原文件，按所选方式处理。</span></div></div>",
+      "css": ".ds-file-picker{position:relative;display:flex;align-items:center;gap:16px;min-width:0;min-height:104px;padding:20px;background:var(--surface-subtle,#fafbf6);color:var(--accent,#28644e);border:1px dashed var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);font-family:var(--font-family-working,-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif)}.ds-file-picker>input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.ds-file-picker>svg{flex-shrink:0;stroke-width:1.75}.ds-file-picker-copy{min-width:0;flex:1;display:grid;gap:6px}.ds-file-picker-copy strong{color:var(--ink,#20332e);font-size:var(--font-body,14px);font-weight:var(--weight-medium,500);line-height:1.5;overflow-wrap:anywhere}.ds-file-picker-copy span{color:var(--muted,#66736b);font-size:var(--font-meta,12px);font-weight:var(--weight-regular,400);line-height:1.6}.ds-file-picker:hover,.ds-file-picker--dragging{background:var(--accent-soft,#e6eee6);border-color:var(--accent,#28644e)}.ds-file-picker:hover .ds-file-picker-copy span,.ds-file-picker--dragging .ds-file-picker-copy span{color:var(--accent,#28644e)}.ds-file-picker--selected{border-style:solid}.ds-file-picker:focus-within{outline:3px solid var(--focus,#7aab8e);outline-offset:3px}.ds-file-picker:has(input:disabled){opacity:.52}.ds-file-picker>input:disabled{cursor:not-allowed}@media(max-width:640px){.ds-file-picker{padding:16px;min-height:100px;gap:12px}}"
     }
   ],
   "narrative": {
     "northStar": "The Reading Workbench",
-    "overview": "Quill places warm working paper beside deep green navigation. The mood is calm, literate and practical: deep ink carries source text and headings, neutral muted text carries supporting information, and green identifies actions and the current working context. The small serif wordmark provides the literary cue; Chinese working text uses one platform sans family.\n\nThe reading-workbench world spans knowledge management, source inspection, writing, template browsing, upload and template-based generation. Its visual primitives now have one canonical owner: ui.css and the shared UiButton, UiPageHeader, UiNotice, UiEmptyState and UiTabs components. Workbench, knowledge and document styles arrange these primitives and define deliberate reading or content-title roles. This record follows the actual component rules and computed-style reports at 1440px, 1024px and 390px; the confirmed visual identity is preserved.",
+    "overview": "Quill places warm working paper beside deep green navigation. The mood is calm, literate and practical: deep ink carries source text and headings, neutral muted text carries supporting information, and green identifies actions and the current working context. The small serif wordmark provides the literary cue; Chinese working text uses one platform sans family.\n\nThe reading-workbench world spans knowledge management, source inspection, writing, template browsing, upload and template-based generation. Its visual primitives now have one canonical owner: ui.css and the shared UiButton, UiPageHeader, UiNotice, UiEmptyState, UiTabs and UiFilePicker components. Workbench, knowledge and document styles arrange these primitives and define deliberate reading or content-title roles. This record follows the actual component rules and computed-style reports at 1440px, 1024px and 390px; the confirmed visual identity is preserved.",
     "keyCharacteristics": [
       "Warm paper and subtle neutral surfaces beneath deep green navigation.",
       "One working font family, semantic type roles and consistent action geometry.",
       "Ink reading text, muted metadata and green action/selection states.",
-      "Shared buttons, page headers, notices, empty states and keyboard tabs across all flows."
+      "Shared buttons, page headers, notices, empty states, keyboard tabs and native file selection across all flows."
     ],
     "rules": [
       {

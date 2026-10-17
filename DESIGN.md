@@ -136,6 +136,11 @@ components:
     rounded: '{rounded.control}'
     padding: 9px 11px
     height: 40px
+  file-picker:
+    backgroundColor: '{colors.surface-subtle}'
+    textColor: '{colors.accent}'
+    rounded: '{rounded.control}'
+    padding: 20px
   nav-active:
     backgroundColor: '{colors.nav-selected}'
     textColor: '#203d2b'
@@ -163,14 +168,14 @@ components:
 
 Quill places warm working paper beside deep green navigation. The mood is calm, literate and practical: deep ink carries source text and headings, neutral muted text carries supporting information, and green identifies actions and the current working context. The small serif wordmark provides the literary cue; Chinese working text uses one platform sans family.
 
-The reading-workbench world spans knowledge management, source inspection, writing, template browsing, upload and template-based generation. Its visual primitives now have one canonical owner: ui.css and the shared UiButton, UiPageHeader, UiNotice, UiEmptyState and UiTabs components. Workbench, knowledge and document styles arrange these primitives and define deliberate reading or content-title roles. This record follows the actual component rules and computed-style reports at 1440px, 1024px and 390px; the confirmed visual identity is preserved.
+The reading-workbench world spans knowledge management, source inspection, writing, template browsing, upload and template-based generation. Its visual primitives now have one canonical owner: ui.css and the shared UiButton, UiPageHeader, UiNotice, UiEmptyState, UiTabs and UiFilePicker components. Workbench, knowledge and document styles arrange these primitives and define deliberate reading or content-title roles. This record follows the actual component rules and computed-style reports at 1440px, 1024px and 390px; the confirmed visual identity is preserved.
 
 **Key Characteristics:**
 
 - Warm paper and subtle neutral surfaces beneath deep green navigation.
 - One working font family, semantic type roles and consistent action geometry.
 - Ink reading text, muted metadata and green action/selection states.
-- Shared buttons, page headers, notices, empty states and keyboard tabs across all flows.
+- Shared buttons, page headers, notices, empty states, keyboard tabs and native file selection across all flows.
 
 ## Colors
 
@@ -242,7 +247,7 @@ Lucide outline icons replace the old template emoji and support all working flow
 
 ### Shared Ownership
 
-Use `UiButton`, `UiPageHeader`, `UiNotice`, `UiEmptyState` and `UiTabs` from `frontend/src/components/ui`. Their visual rules live in `frontend/src/styles/ui.css`. Page styles arrange shared controls without redefining their typography, colors, shape or geometry. App navigation, source titles, document prose and collection choices retain their intentional content roles. Shared form rows use a 12px gap; the retrieval search group that contains an action uses 8px padding and gap.
+Use `UiButton`, `UiPageHeader`, `UiNotice`, `UiEmptyState`, `UiTabs` and `UiFilePicker` from `frontend/src/components/ui`. Their visual rules live in `frontend/src/styles/ui.css`. Page styles arrange shared controls without redefining their typography, colors, shape or geometry. App navigation, source titles, document prose and collection choices retain their intentional content roles. Shared form rows use a 12px gap; the retrieval search group that contains an action uses 8px padding and gap.
 
 ### Buttons
 
@@ -256,7 +261,13 @@ Native `UiButton` defaults to `type="button"`; real form submissions declare `ty
 
 Shared fields use paper, ink, a strong one-pixel border, 6px corners and 9px 11px padding. Inputs and selects have the standard control height; textareas have that minimum height and resize vertically. Field text is 14px/400, 16px on mobile; labels are 13px/600. Focus changes the border to green and uses a 3px ring with a 2px offset. Placeholder text uses muted neutral at regular weight.
 
-Grouped search uses the same paper/border geometry, 16px/1.75 icon and an inherited working-family input. Focus surrounds the whole group. Search with an embedded action adds 8px padding and gap. Upload regions share a dashed strong border, subtle surface, 156px minimum height and centered copy. Hover or dragging uses soft green and a green border; whole-region focus stays visible.
+Grouped search uses the same paper/border geometry, 16px/1.75 icon and an inherited working-family input. Focus surrounds the whole group. Search with an embedded action adds 8px padding and gap. Full upload regions share a dashed strong border, subtle surface, 156px minimum height and centered copy. Hover or dragging uses soft green and a green border; whole-region focus stays visible.
+
+### File Picker
+
+`UiFilePicker` owns compact single-file selection in `frontend/src/components/ui/UiFilePicker.vue`; its visual states belong to `ui.css`. It uses the existing subtle surface, strong dashed border and control radius, with a 104px minimum height, 20px padding and 16px icon-to-copy gap. At 640px and below, these become 100px, 16px and 12px. The leading upload/file icon is 24px with 1.75 stroke width; a selected file adds an 18px check. File names use body-size medium ink text and wrap; hints and formatted sizes use regular metadata text. Hover or drag uses soft green with a green border and green hint text; selection changes the border to solid. Focus within uses the shared 3px ring and 3px offset; disabled selection uses 0.52 opacity and a not-allowed pointer.
+
+The transparent native file input covers the selection region and retains its accessible label, `accept`, `required`, disabled and keyboard behavior. The component exposes a single File or null through `v-model`, shows Chinese selection/replacement copy and formats B/KB/MB sizes. Dragging a file updates the native input as well as the model; disabled fields reject drops, and resetting the model clears the native selection. Callers supply contextual hints and validation, such as QA formats or image limits. The sidecar specimen represents this reusable control; its Vue behavior remains owned by the source component.
 
 ### Page Headers / Tabs
 
@@ -300,4 +311,4 @@ Source and generated prose use the reading role, preserve whitespace and wrap lo
 - **Don’t** add shadows to every container; use border and surface tone for resting structure.
 - **Don’t** present reading segments, index readiness, counts or answers as decoration; their labels and states must follow actual data.
 
-Not canonized: no page-local control exceptions remain in this recorded implementation. Earlier compact-size, font and color discrepancies have been removed; the deliberate content hierarchy remains. No shipped raster assets belong to this system.
+Not canonized: the knowledge task menu, grouped form layout and graph/result composition are surface-specific behavior, documented in the knowledge surface contract and capability record rather than added as global design rules. No page-local control exceptions remain in this recorded implementation. Earlier compact-size, font and color discrepancies have been removed; the deliberate content hierarchy remains. No shipped raster assets belong to this system.
