@@ -6,10 +6,11 @@ services:
     environment:
       QUILL_DATA_DIR: /data
       QUILL_KNOWLEDGE_URL: http://knowledge:8006
-      QUILL_API_KEY: ${QUILL_API_KEY:?Set QUILL_API_KEY in .env}
+      QUILL_API_KEY: ${QUILL_API_KEY:-}
       QUILL_LLM_BASE_URL: ${QUILL_LLM_BASE_URL:-https://api.openai.com/v1}
       QUILL_LLM_API_KEY: ${QUILL_LLM_API_KEY:-}
       QUILL_LLM_MODEL: ${QUILL_LLM_MODEL:-}
+      QUILL_LLM_REASONING_EFFORT: ${QUILL_LLM_REASONING_EFFORT:-}
       QUILL_LLM_TIMEOUT: ${QUILL_LLM_TIMEOUT:-120}
       QUILL_LLM_MAX_TOKENS: ${QUILL_LLM_MAX_TOKENS:-4096}
     volumes:

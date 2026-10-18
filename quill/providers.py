@@ -99,15 +99,18 @@ class LLMClient:
         headers = {}
         if self.settings.llm_api_key:
             headers["Authorization"] = f"Bearer {self.settings.llm_api_key}"
+        payload = {
+            "model": self.settings.llm_model,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}],
+            "temperature": 0.2,
+            "max_tokens": self.settings.llm_max_tokens,
+        }
+        if self.settings.llm_reasoning_effort:
+            payload["reasoning_effort"] = self.settings.llm_reasoning_effort
         try:
             response = await self.client.post(
                 self.settings.llm_base_url.rstrip("/") + "/chat/completions",
-                json={
-                    "model": self.settings.llm_model,
-                    "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}],
-                    "temperature": 0.2,
-                    "max_tokens": self.settings.llm_max_tokens,
-                },
+                json=payload,
                 headers=headers,
                 timeout=self.settings.llm_timeout,
             )

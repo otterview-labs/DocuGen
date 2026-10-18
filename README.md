@@ -4,7 +4,7 @@
 
 Quill 将 JetLinks 知识引擎与 DocuGen 的 Word 模板处理能力整理在一个独立仓库中。你可以建立知识集合、导入和管理文件资料、查看原文与检索依据，使用 Word 模板填充业务内容，也可以按章节检索资料、调用模型生成文档并下载 DOCX。
 
-当前为 **0.1.0 本地整合版**。采用一个共享工作区和一个访问密钥，适合个人或可信团队自部署。没有多租户、独立用户权限或协同编辑。来源记录表示模型取材依据，不等同于逐句事实核验。
+当前为 **0.1.0 本地整合版**。采用一个共享工作区，本机使用默认无需访问密钥，也可按需启用共享访问密钥，适合个人或可信团队自部署。没有多租户、独立用户权限或协同编辑。来源记录表示模型取材依据，不等同于逐句事实核验。
 
 [English](README.en.md) · [架构与边界](docs/ARCHITECTURE.md) · [界面设计参考](docs/UI_REFERENCES.md) · [源码来源与发布条件](docs/PROVENANCE.md)
 
@@ -31,9 +31,11 @@ npm --prefix frontend run build
 .venv/bin/uvicorn quill.main:app --host 127.0.0.1 --port 8080 --workers 1
 ```
 
-打开 [工作台](http://127.0.0.1:8080) 或 [API 文档](http://127.0.0.1:8080/docs)。设置了 `QUILL_API_KEY` 后，在导航中的“连接设置”填入访问密钥。密钥仅保存在当前浏览器标签页的 sessionStorage 中；所有用户共用该密钥和工作区。不要将它当作独立用户登录系统。
+打开 [工作台](http://127.0.0.1:8080) 或 [API 文档](http://127.0.0.1:8080/docs)。本机使用时保持 `QUILL_API_KEY` 为空即可直接使用，页面不会显示密钥设置。按需设置 `QUILL_API_KEY` 后，在导航中的“连接设置”填入访问密钥。密钥仅保存在当前浏览器标签页的 sessionStorage 中；所有用户共用该密钥和工作区。不要将它当作独立用户登录系统。工作区访问密钥与 AI 模型服务凭据分别配置。
 
 没有模型时仍可上传模板、手动填写并导出 Word。没有知识引擎时可用手动参考资料调用模型写作；知识库页面会说明连接问题。模型接口使用 OpenAI-compatible `/chat/completions` 协议，`QUILL_LLM_BASE_URL` 填基础 URL（通常以 `/v1` 结尾）。
+
+已有本地模型服务时，工作区访问与模型调用都可以无需密钥。例如，本机运行已安装模型的 Ollama，Docker 工作台可配置 `QUILL_LLM_BASE_URL=http://host.docker.internal:11434/v1`、`QUILL_LLM_MODEL=实际已安装模型名`，保持 `QUILL_API_KEY` 和 `QUILL_LLM_API_KEY` 为空。原生启动时将地址改为 `http://127.0.0.1:11434/v1`。模型支持 `reasoning_effort` 时，可设置 `QUILL_LLM_REASONING_EFFORT=none` 让短任务直接生成正文；留空时不会向模型发送这个参数。AI 填模板、大纲和问答均保留较长请求超时以容纳模型冷启动。这些配置用于工作台生成调用，不表示知识引擎的摘要、向量和图谱已完成配置。
 
 开发前端可运行 `npm --prefix frontend run dev`，Vite 会代理 `/api` 和 `/download` 到本机 8080。
 
@@ -49,7 +51,7 @@ uv pip install --python .venv/bin/python -r services/knowledge/requirements.quil
 ## 启动完整知识引擎
 
 ```bash
-# 编辑 .env：设置 QUILL_API_KEY 和 POSTGRES_PASSWORD，推荐分别使用随机值。
+# 编辑 .env：设置随机 POSTGRES_PASSWORD；本机使用可保持 QUILL_API_KEY 为空。
 docker compose -p quill up -d --build
 ```
 
@@ -83,6 +85,8 @@ npm --prefix frontend run build
 ```
 
 测试从本地 `.env` 读取工作区访问密钥，也可设置 `QUILL_TEST_KEY`。运行前需要 Playwright Chromium 浏览器和根目录 `.venv`。
+
+`local-access.spec.js` 验证免密本机模式。真实模型浏览器测试默认跳过；在独立测试工作区配置好本机模型并准备名为“示例 · 独立验收模板”的 DOCX（包含项目名称、负责人变量）后，可执行 `QUILL_REAL_LOCAL_MODEL=1 QUILL_TEST_URL=http://127.0.0.1:18080 npx playwright test e2e/local-model.spec.js`（在 `frontend` 目录中）。该测试会实际调用模型并保存合成文档，请使用隔离数据环境。
 
 ## 目录
 

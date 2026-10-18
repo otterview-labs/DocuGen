@@ -34,7 +34,7 @@
             ><strong>Otterview Labs</strong><small>本地共享工作区</small></span
           >
         </div>
-        <details class="connection-settings">
+        <details v-if="authenticationRequired" class="connection-settings">
           <summary>
             <Settings :size="17" /><span>连接设置</span
             ><ChevronDown :size="14" />
@@ -105,6 +105,7 @@ import "./styles/ui.css";
 const route = useRoute();
 const accessKey = ref(sessionStorage.getItem("quill-key") || "");
 const modelConfigured = ref(null);
+const authenticationRequired = ref(false);
 const navigation = [
   { path: "/knowledge", label: "知识库", icon: Library },
   { path: "/writing", label: "文档写作", icon: PenLine },
@@ -118,10 +119,11 @@ function saveKey() {
 }
 onMounted(async () => {
   try {
-    modelConfigured.value = (
-      await api.get("/api/v1/status")
-    ).data.model_configured;
-  } catch {
+    const { data } = await api.get("/api/v1/status");
+    modelConfigured.value = data.model_configured;
+    authenticationRequired.value = data.authentication;
+  } catch (error) {
+    authenticationRequired.value = error.response?.status === 401;
     /* Each workspace screen shows its own actionable connection error. */
   }
 });

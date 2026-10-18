@@ -1,6 +1,6 @@
 # Knowledge capability coverage — 2026-10-17
 
-The inventory is based on the running knowledge engine's OpenAPI document, checked against source registration. Distinct HTTP aliases and legacy transport helpers share one product task; they are not duplicated as separate buttons. All gateway operations require the workspace access key and use a closed allowlist.
+The inventory is based on the running knowledge engine's OpenAPI document, checked against source registration. Distinct HTTP aliases and legacy transport helpers share one product task; they are not duplicated as separate buttons. All gateway operations follow the configured workspace access policy and use a closed allowlist. Local loopback use may leave the optional key empty; a key-enabled deployment protects every operation and download.
 
 The knowledge page retains document management and basic retrieval/answers, and adds 28 named operations under import/parse, chunking/analysis, graph, settings and advanced retrieval. A prerequisite is marked configured only from deployment configuration; this does not establish provider health or output quality. No paid model was called during acceptance.
 
@@ -69,7 +69,7 @@ The knowledge page retains document management and basic retrieval/answers, and 
 - Default collection model names are persisted metadata. Changing them does not reconfigure the global model provider or install parsers. Parser format declarations describe support, not proof that every optional parser is installed.
 - Batch parsing task IDs are kept in the current browser session (last 20). Actual statuses live in the engine process and are lost on engine restart. There is no invented persistent task queue or cancellation capability.
 - `document_progress.py` and `resource_chunks.py` are source modules that are not mounted in the current RAG router. Their standalone task cancellation/SSE and Milvus diagnostics are not usable backend APIs and are not advertised as working page actions. Batch task progress and stored chunks cover the mounted product capabilities. LLM administration/chat and health internals are outside the knowledge-content API scope.
-- The workspace is still shared by one access key; metadata bindings are stored labels, not a new multi-user permission guarantee.
+- The workspace remains shared, with an optional shared access key; metadata bindings are stored labels, not a new multi-user permission guarantee.
 
 ## UI integration and acceptance
 

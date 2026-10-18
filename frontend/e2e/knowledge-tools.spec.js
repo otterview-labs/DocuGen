@@ -195,6 +195,11 @@ test("advanced keyword search and explicit unavailable model/graph states", asyn
     await expect(
       page.getByRole("complementary", { name: "资料预览" }),
     ).toBeVisible();
+    // At tablet widths the preview is a drawer covering the task tabs.
+    await page.getByRole("button", { name: "关闭资料预览", exact: true }).click();
+    await expect(
+      page.getByRole("complementary", { name: "资料预览" }),
+    ).toHaveCount(0);
     await tool(page, "知识图谱", "查询实体与关系");
     await expect(page.getByText(/尚未启用图数据库。/)).toBeVisible();
     await expect(

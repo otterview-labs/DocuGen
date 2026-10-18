@@ -2,7 +2,7 @@
 
 A self-hosted knowledge and document workspace. Organize source material, retrieve evidence, fill Word templates, and generate documents section by section.
 
-This repository integrates the JetLinks knowledge runtime with selected DocuGen template and Word rendering methods. It is an early local integration, version 0.1.0, for a **single shared workspace**. One access key protects its API and generated files; it does not provide per-user isolation or multi-tenancy.
+This repository integrates the JetLinks knowledge runtime with selected DocuGen template and Word rendering methods. It is an early local integration, version 0.1.0, for a **single shared workspace**. Local use requires no workspace key by default. An optional shared access key protects its API and generated files when enabled; it does not provide per-user isolation or multi-tenancy.
 
 See the [Chinese guide](README.md) for configuration and deployment details, and [provenance](docs/PROVENANCE.md) for upstream revisions and publication requirements.
 
@@ -18,13 +18,15 @@ npm --prefix frontend run build
 .venv/bin/uvicorn quill.main:app --host 127.0.0.1 --port 8080 --workers 1
 ```
 
-Open http://127.0.0.1:8080. Enter the shared access key in the navigation's connection settings if `QUILL_API_KEY` is set. The UI currently uses Chinese. Manual template filling works without a model. Manual reference text works without the knowledge service when a model is configured.
+Open http://127.0.0.1:8080. Leave `QUILL_API_KEY` empty for direct local access; connection settings stay hidden in that mode. Enter the shared access key in the navigation's connection settings if `QUILL_API_KEY` is set. Workspace access and model-provider credentials are separate settings. The UI currently uses Chinese. Manual template filling works without a model. Manual reference text works without the knowledge service when a model is configured.
 
-For the full local stack, set `QUILL_API_KEY` and `POSTGRES_PASSWORD`, then run `docker compose -p quill up -d --build`. Only the workspace binds to loopback. Keep the private knowledge engine and PostgreSQL off public networks. Semantic retrieval requires an embedding model with a matching configured dimension.
+For the full local stack, set a strong `POSTGRES_PASSWORD`, leave `QUILL_API_KEY` empty for local use, then run `docker compose -p quill up -d --build`. Only the workspace binds to loopback. Enable the shared key for network sharing. Keep the private knowledge engine and PostgreSQL off public networks. Semantic retrieval requires an embedding model with a matching configured dimension.
+
+An existing local OpenAI-compatible model can also work without a model API key. For Ollama on the host, the Docker workspace can use `QUILL_LLM_BASE_URL=http://host.docker.internal:11434/v1` and an installed `QUILL_LLM_MODEL`, with both keys empty; native startup uses `http://127.0.0.1:11434/v1`. Set optional `QUILL_LLM_REASONING_EFFORT=none` only when the provider supports direct answers through that parameter. An empty value omits the parameter. This workspace generation configuration does not establish knowledge-engine analysis, embedding or graph readiness.
 
 ## Current boundaries
 
-- DOCX templates, variable extraction, manual/AI filling, and authenticated Word downloads.
+- DOCX templates, variable extraction, manual/AI filling, and Word downloads under the configured access mode.
 - Collection creation/editing, PDF/DOCX/Markdown/TXT/CSV/JSON import, per-collection file deduplication, original downloads, title/tag editing, filtering, pagination and bulk removal.
 - A source table and reading pane, content preview, reading segments, highlighted retrieval results and source navigation. Reading segments are not vector chunks.
 - Text extraction is limited to 20 MB per file, 200 PDF pages and 200,000 extracted characters; scanned PDFs require prior OCR. Keyword retrieval works without a model; vector indexing and semantic retrieval require a configured embedding provider.

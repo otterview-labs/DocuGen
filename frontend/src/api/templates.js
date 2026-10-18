@@ -33,7 +33,9 @@ export async function fetchTemplateVariables(templateName) {
 
 export async function aiFillVariables(payload) {
   try {
-    const res = await api.post("/api/ai-fill-template-variables", payload);
+    const res = await api.post("/api/ai-fill-template-variables", payload, {
+      timeout: 180000,
+    });
 
     if (res.data?.success === false && res.data?.error) {
       return { error: res.data.error };

@@ -41,6 +41,40 @@ def test_auth_and_unknown_api(client):
     assert client.get("/api/missing").status_code == 404
 
 
+@pytest.mark.parametrize("access_key", ["", "test-key"])
+def test_optional_workspace_access_covers_upload_render_and_download(tmp_path, access_key):
+    settings = Settings(data_dir=tmp_path, api_key=access_key, _env_file=None)
+    with TestClient(create_app(settings)) as local:
+        if access_key:
+            assert local.get("/api/v1/status").status_code == 401
+            assert local.get("/api/templates").status_code == 401
+            local.headers["Authorization"] = f"Bearer {access_key}"
+        status = local.get("/api/v1/status")
+        assert status.status_code == 200
+        assert status.json()["authentication"] is bool(access_key)
+        assert upload(local, "示例 · 访问模式验收").status_code == 200
+        rendered = local.post(
+            "/api/generate-from-template",
+            data={
+                "template_name": "示例 · 访问模式验收",
+                "data": json.dumps({"项目名称": "本地验收", "负责人": "示例人员"}),
+            },
+        )
+        assert rendered.status_code == 200
+        url = "/download/" + rendered.json()["filename"]
+        download = local.get(url)
+        assert download.status_code == 200
+        document = Document(io.BytesIO(download.content))
+        assert "本地验收" in document.paragraphs[0].text
+        assert "示例人员" in document.paragraphs[0].text
+        if access_key:
+            assert local.get(url, headers={"Authorization": ""}).status_code == 401
+            assert local.get(url, headers={"Authorization": "Bearer wrong-key"}).status_code == 401
+        else:
+            # An old tab's saved token must not prevent key-free local use.
+            assert local.get(url, headers={"Authorization": "Bearer old-key"}).status_code == 200
+
+
 def test_template_render_roundtrip_and_persistence(client):
     response = upload(client)
     assert response.status_code == 200, response.text
@@ -139,6 +173,29 @@ async def test_provider_failure_never_becomes_empty_success():
         llm = LLMClient(Settings(llm_model="model", _env_file=None), client)
         with pytest.raises(ProviderError):
             await llm.chat("system", "prompt")
+
+
+@pytest.mark.parametrize("effort", ["", "none"])
+async def test_keyless_model_contract_and_optional_reasoning(effort):
+    def respond(request):
+        assert "Authorization" not in request.headers
+        body = json.loads(request.content)
+        if effort:
+            assert body["reasoning_effort"] == effort
+        else:
+            assert "reasoning_effort" not in body
+        return httpx.Response(200, json={"choices": [{"message": {"content": "本机模型验收成功"}}]})
+
+    settings = Settings(llm_model="local-model", llm_reasoning_effort=effort, _env_file=None)
+    async with httpx.AsyncClient(transport=httpx.MockTransport(respond)) as client:
+        assert await LLMClient(settings, client).chat("验收", "测试") == "本机模型验收成功"
+
+
+async def test_model_reasoning_without_a_final_answer_is_not_success():
+    response = {"choices": [{"message": {"content": "", "reasoning": "尚未完成的推理"}}]}
+    async with httpx.AsyncClient(transport=httpx.MockTransport(lambda r: httpx.Response(200, json=response))) as c:
+        with pytest.raises(ProviderError):
+            await LLMClient(Settings(llm_model="local-model", _env_file=None), c).chat("验收", "测试")
 
 
 async def test_generation_sections_sources_and_failure(tmp_path):

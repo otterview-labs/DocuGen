@@ -32,7 +32,7 @@ For writing, each section retrieves its own evidence. No-hit retrieval fails cle
 
 ## Deployment boundary
 
-The shared access key gates all workspace data and downloads. It is not a user identity. All authorized users see all templates and jobs. The private knowledge service runs with its compatibility development authentication settings behind the gateway; Compose publishes no engine or database ports. A deployment with separate user permissions needs a new identity and authorization contract before using it as a multi-user service.
+An optional shared access key gates all workspace data and downloads when configured. Loopback-only local use leaves `QUILL_API_KEY` empty and opens directly; the UI hides connection settings after the status endpoint confirms that authentication is disabled. A 401 or authenticated protected status preserves the connection form for key-enabled deployments. The key is not a user identity. All users of the shared workspace see all templates and jobs. The private knowledge service runs with its compatibility development authentication settings behind the gateway; Compose publishes no engine or database ports. Network sharing should enable access protection. A deployment with separate user permissions needs a new identity and authorization contract before using it as a multi-user service.
 
 Keep one Quill API worker. Multi-process startup recovery would otherwise interrupt another worker's jobs. For scale, replace the in-process queue and recovery logic with a durable task lease, queue, and dedicated workers.
 
