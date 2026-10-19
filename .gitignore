@@ -1,46 +1,19 @@
-# 忽略 .env 文件
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
 .env
 .env.*
 !.env.example
-
-# 字节码和编译文件
-__pycache__/
-*.py[cod]
-*$py.class
-
-# 虚拟环境
-venv/
-env/
-.venv/
-
-# 操作系统生成的文件
-.DS_Store
-Thumbs.db
-
-# 测试和覆盖率报告
-.pytest_cache/
-.coverage
-htmlcov/
-
-# 构建和分发
-build/
-dist/
-*.egg-info/
 node_modules/
-frontend/dist/
-
-# 运行时数据 / 用户内容
-downloads/
+dist/
 data/
-templates.db
-templates/*.docx
-templates/*.doc
-
-# 日志文件
+storage/
+*.db
+*.db-shm
+*.db-wal
 *.log
-
-# 编辑器配置
-.idea/
-.vscode/
-*.swp
-*~ 
+.DS_Store
+artifacts/

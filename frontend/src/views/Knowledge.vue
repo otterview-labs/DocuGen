@@ -1,0 +1,1490 @@
+<template>
+  <section class="knowledge-workbench" :class="{ 'preview-open': previewId }">
+    <UiPageHeader
+      title="知识库"
+      description="把零散资料整理成可检索、可引用的知识。"
+      ><template #actions
+        ><UiButton @click="startCollection()"
+          ><Plus :size="15" />新建知识库</UiButton
+        ><UiButton
+          :disabled="!selected || uploading"
+          @click="
+            showImport = true;
+            activeTab = 'documents';
+          "
+          variant="primary"
+          ><Upload :size="15" />导入资料</UiButton
+        ></template
+      ></UiPageHeader
+    >
+    <UiNotice
+      v-if="notice"
+      :message="notice"
+      :tone="noticeType"
+      dismissible
+      @dismiss="notice = ''"
+    />
+    <div class="knowledge-layout">
+      <aside class="collection-rail" aria-label="知识库列表">
+        <div class="rail-heading">
+          <h2>
+            我的知识库 <span>{{ collections.length }}</span>
+          </h2>
+          <UiButton
+            aria-label="新建知识库"
+            @click="startCollection()"
+            variant="ghost"
+            icon-only
+            ><Plus :size="16"
+          /></UiButton>
+        </div>
+        <form
+          v-if="collectionForm"
+          class="collection-form"
+          @submit.prevent="saveCollection"
+        >
+          <label class="field-label"
+            >{{ editingCollection ? "修改名称" : "知识库名称"
+            }}<input
+              ref="collectionNameInput"
+              v-model="collectionName"
+              class="field-input"
+              required
+              maxlength="100"
+              placeholder="例如：产品与项目资料"
+          /></label>
+          <label class="field-label"
+            >说明<textarea
+              v-model="collectionDescription"
+              class="field-input"
+              rows="3"
+              maxlength="1000"
+              placeholder="记录资料的用途与范围"
+            />
+          </label>
+          <div class="inline-actions">
+            <UiButton
+              type="submit"
+              :disabled="collectionSaving"
+              variant="primary"
+              size="compact"
+              >{{
+                collectionSaving
+                  ? "保存中…"
+                  : editingCollection
+                    ? "保存修改"
+                    : "创建"
+              }}</UiButton
+            ><UiButton
+              type="button"
+              @click="collectionForm = false"
+              variant="ghost"
+              size="compact"
+              >取消</UiButton
+            >
+          </div>
+        </form>
+        <div v-if="overviewLoading" class="collection-loading">
+          正在读取知识库…
+        </div>
+        <div v-else class="collection-list">
+          <button
+            v-for="collection in collections"
+            :key="collection.id"
+            class="collection-item"
+            :class="{ selected: selected === collection.id }"
+            :disabled="uploading"
+            @click="selected = collection.id"
+            :aria-pressed="selected === collection.id"
+          >
+            <Folder :size="17" :stroke-width="1.7" /><span
+              class="collection-label"
+              ><strong>{{ collection.name }}</strong
+              ><small>{{ collection.document_count }} 份资料</small></span
+            ><ChevronRight
+              v-if="selected === collection.id"
+              :size="13"
+              class="collection-arrow"
+            />
+          </button>
+        </div>
+        <div class="rail-summary">
+          <BookOpen :size="16" /><span
+            >共 {{ overview.document_count || 0 }} 份资料<br /><small
+              >{{ formatNumber(overview.characters) }} 字已整理</small
+            ></span
+          >
+        </div>
+        <p class="rail-help">知识库中的资料可用于问答、模板填充和文档写作。</p>
+      </aside>
+      <section class="library-pane">
+        <UiEmptyState
+          v-if="!currentCollection && !overviewLoading"
+          :icon="Library"
+          :title="overviewFailed ? '暂时无法读取知识库' : '给你的资料一个归处'"
+          :description="
+            overviewFailed
+              ? '请检查连接设置与知识引擎，再尝试刷新。'
+              : '创建一个知识库，把项目资料、技术说明和业务文档放在一起。'
+          "
+          :state="overviewFailed ? 'error' : 'empty'"
+          heading="h2"
+          ><UiButton v-if="overviewFailed" @click="loadOverview"
+            ><RefreshCw :size="14" />重新连接</UiButton
+          ><UiButton v-else @click="startCollection()" variant="primary"
+            ><Plus :size="14" />新建知识库</UiButton
+          ></UiEmptyState
+        >
+        <template v-else-if="currentCollection">
+          <header class="library-heading">
+            <div class="library-heading-copy">
+              <div class="library-title">
+                <h2>{{ currentCollection.name }}</h2>
+                <UiButton
+                  aria-label="编辑知识库"
+                  @click="startCollection(currentCollection)"
+                  variant="ghost"
+                  icon-only
+                  ><Pencil :size="14"
+                /></UiButton>
+              </div>
+              <p>
+                {{
+                  currentCollection.description ||
+                  "添加一段说明，帮助你和同伴了解这些资料的用途。"
+                }}
+              </p>
+            </div>
+            <UiButton
+              @click="writeWithCollection"
+              class="write-link"
+              variant="text"
+              ><PenLine :size="14" />用于写作<ArrowUpRight :size="13"
+            /></UiButton>
+          </header>
+          <div class="collection-facts">
+            <span
+              ><strong>{{ currentCollection.document_count }}</strong
+              >份资料</span
+            ><span
+              ><strong>{{ formatNumber(currentCollection.characters) }}</strong
+              >字正文</span
+            ><span
+              ><strong>{{ currentCollection.indexed_count }}</strong
+              >份已建向量索引</span
+            ><span class="retrieval-ready"
+              ><span class="small-dot"></span>关键词检索可用</span
+            >
+          </div>
+          <UiTabs
+            class="library-tabs"
+            v-model="activeTab"
+            label="知识库功能"
+            :items="[
+              {
+                value: 'documents',
+                label: '资料管理',
+                icon: FileText,
+                count: currentCollection.document_count,
+              },
+              { value: 'search', label: '检索与问答', icon: Search },
+              { value: 'import', label: '导入与解析', icon: FileUp },
+              { value: 'analysis', label: '分块与分析', icon: Layers3 },
+              { value: 'graph', label: '知识图谱', icon: Network },
+              { value: 'settings', label: '知识库设置', icon: Settings2 },
+              { value: 'advanced', label: '高级检索', icon: SlidersHorizontal },
+            ]"
+          />
+          <div v-if="['import', 'analysis', 'graph', 'settings', 'advanced'].includes(activeTab)" :id="activeTab + '-panel'" role="tabpanel" :aria-labelledby="activeTab + '-tab'">
+            <KnowledgeTools :group="activeTab === 'advanced' ? 'search' : activeTab" :collection="currentCollection" :selected-resources="checked" @changed="refreshAll" @preview="id => { activeTab = 'documents'; openPreview(id); }" />
+          </div>
+          <div
+            v-show="activeTab === 'documents'"
+            id="documents-panel"
+            role="tabpanel"
+            aria-labelledby="documents-tab"
+            class="documents-panel"
+          >
+            <section
+              v-if="showImport"
+              class="import-panel"
+              aria-label="导入资料"
+            >
+              <header>
+                <div>
+                  <h3>导入资料</h3>
+                  <p>解析文字并保留原文件，导入后即可进行关键词检索。</p>
+                </div>
+                <UiButton
+                  aria-label="关闭导入"
+                  :disabled="uploading"
+                  @click="showImport = false"
+                  variant="ghost"
+                  icon-only
+                  ><X :size="17"
+                /></UiButton>
+              </header>
+              <div class="import-methods">
+                <UiButton
+                  variant="ghost"
+                  size="compact"
+                  :aria-pressed="importMethod === 'file'"
+                  @click="importMethod = 'file'"
+                  >上传文件</UiButton
+                ><UiButton
+                  variant="ghost"
+                  size="compact"
+                  :aria-pressed="importMethod === 'text'"
+                  @click="importMethod = 'text'"
+                  >粘贴文本</UiButton
+                >
+              </div>
+              <div v-if="importMethod === 'file'">
+                <input
+                  ref="fileInput"
+                  type="file"
+                  multiple
+                  accept=".pdf,.docx,.md,.txt,.csv,.json"
+                  class="sr-only"
+                  aria-label="选择知识库文件"
+                  @change="filesChosen"
+                />
+                <div
+                  class="file-drop ui-upload"
+                  :class="{ dragging }"
+                  role="button"
+                  :tabindex="uploading ? -1 : 0"
+                  aria-label="选择或拖入知识库文件"
+                  @click="!uploading && fileInput.click()"
+                  @keydown.enter.prevent="!uploading && fileInput.click()"
+                  @keydown.space.prevent="!uploading && fileInput.click()"
+                  @dragover.prevent="dragging = true"
+                  @dragleave.prevent="dragging = false"
+                  @drop.prevent="filesDropped"
+                >
+                  <FileUp :size="25" :stroke-width="1.4" /><strong>{{
+                    uploading
+                      ? "正在解析资料，请稍候…"
+                      : "将文件拖到这里，或点击选择"
+                  }}</strong>
+                  <p>PDF、Word、Markdown、TXT、CSV、JSON</p>
+                  <small
+                    >单个文件不超过 20 MB，每次最多 10 个；扫描件需先进行
+                    OCR。</small
+                  >
+                </div>
+                <ul v-if="uploadQueue.length" class="upload-queue">
+                  <li v-for="(file, i) in uploadQueue" :key="i">
+                    <LoaderCircle
+                      v-if="file.state === 'loading'"
+                      :size="14"
+                      class="spin"
+                    /><CheckCircle2
+                      v-else-if="file.state === 'done'"
+                      :size="14"
+                    /><AlertCircle
+                      v-else-if="file.state === 'error'"
+                      :size="14"
+                    /><FileText v-else :size="14" /><span>{{ file.name }}</span
+                    ><small :class="file.state">{{ file.message }}</small>
+                  </li>
+                </ul>
+              </div>
+              <form v-else class="text-import-form" @submit.prevent="saveText">
+                <label class="field-label"
+                  >资料标题<input
+                    v-model="textTitle"
+                    class="field-input"
+                    required
+                    maxlength="255"
+                    placeholder="为这份资料起一个容易查找的名字" /></label
+                ><label class="field-label"
+                  >正文<textarea
+                    v-model="textContent"
+                    class="field-input"
+                    required
+                    rows="7"
+                    maxlength="200000"
+                    placeholder="粘贴项目背景、产品说明、会议记录或其他参考资料…"
+                  /><small class="character-count"
+                    >{{ formatNumber(textContent.length) }} / 200,000 字</small
+                  ></label
+                ><label class="field-label"
+                  >标签（可选）<input
+                    v-model="textTags"
+                    class="field-input"
+                    maxlength="800"
+                    placeholder="用逗号分隔，例如：产品、技术方案"
+                /></label>
+                <div class="inline-actions">
+                  <UiButton
+                    type="submit"
+                    :disabled="textSaving"
+                    variant="primary"
+                    ><LoaderCircle
+                      v-if="textSaving"
+                      :size="14"
+                      class="spin"
+                    />{{ textSaving ? "保存中…" : "保存资料" }}</UiButton
+                  ><small class="muted"
+                    >保存到「{{ currentCollection.name }}」</small
+                  >
+                </div>
+              </form>
+            </section>
+            <div class="resource-toolbar">
+              <div class="resource-filter ui-search-field">
+                <Search :size="15" /><input
+                  v-model="listQuery"
+                  aria-label="筛选资料"
+                  placeholder="按资料名称查找…"
+                />
+              </div>
+              <select class="field-input" v-model="kind" aria-label="资料类型">
+                <option value="all">全部类型</option>
+                <option value="pdf">PDF</option>
+                <option value="docx">Word</option>
+                <option value="md">Markdown</option>
+                <option value="text">文本</option>
+                <option value="csv">CSV</option>
+                <option value="json">JSON</option></select
+              ><UiButton
+                aria-label="刷新资料"
+                :disabled="listLoading"
+                @click="refreshAll"
+                variant="ghost"
+                icon-only
+                ><RefreshCw :size="16" :class="{ spin: listLoading }"
+              /></UiButton>
+            </div>
+            <div v-if="checked.length" class="selection-bar">
+              <span>已选择 {{ checked.length }} 份资料</span
+              ><template v-if="confirmBulk"
+                ><span>确认移除这些资料？</span
+                ><UiButton
+                  :disabled="deleting"
+                  @click="removeSelected"
+                  variant="danger"
+                  size="compact"
+                  >确认删除所选资料</UiButton
+                ><UiButton
+                  @click="confirmBulk = false"
+                  variant="ghost"
+                  size="compact"
+                  >取消</UiButton
+                ></template
+              ><template v-else
+                ><UiButton
+                  @click="confirmBulk = true"
+                  class="delete-action"
+                  variant="text"
+                  ><Trash2 :size="13" />批量删除</UiButton
+                ><UiButton @click="checked = []" variant="text"
+                  >取消选择</UiButton
+                ></template
+              >
+            </div>
+            <div v-if="listLoading" class="list-skeleton" aria-live="polite">
+              正在读取资料…
+              <div v-for="i in 4" :key="i"></div>
+            </div>
+            <UiEmptyState
+              v-else-if="!resources.length"
+              :icon="FolderOpen"
+              :title="
+                listQuery || kind !== 'all'
+                  ? '没有符合条件的资料'
+                  : '你的资料，将从这里开始'
+              "
+              :description="
+                listQuery || kind !== 'all'
+                  ? '试试其他名称，或清除类型筛选。'
+                  : '导入一份文档，或直接粘贴文字，建立自己的知识来源。'
+              "
+              ><UiButton
+                v-if="listQuery || kind !== 'all'"
+                @click="
+                  listQuery = '';
+                  kind = 'all';
+                "
+                >清除筛选</UiButton
+              ><UiButton v-else @click="showImport = true"
+                ><Plus :size="14" />添加第一份资料</UiButton
+              ></UiEmptyState
+            >
+            <div v-else class="resource-table-wrap">
+              <table class="resource-table">
+                <caption class="sr-only">
+                  {{
+                    currentCollection.name
+                  }}的资料列表
+                </caption>
+                <thead>
+                  <tr>
+                    <th class="check-column">
+                      <input
+                        type="checkbox"
+                        aria-label="选择当前页全部资料"
+                        :checked="
+                          checked.length === resources.length &&
+                          resources.length > 0
+                        "
+                        :indeterminate="
+                          checked.length > 0 &&
+                          checked.length < resources.length
+                        "
+                        @change="toggleAll"
+                      />
+                    </th>
+                    <th>资料名称</th>
+                    <th class="optional-column">正文</th>
+                    <th class="status-column">检索状态</th>
+                    <th class="optional-column date-column">更新于</th>
+                    <th class="row-action-column">
+                      <span class="sr-only">操作</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item in resources"
+                    :key="item.resource_id"
+                    :class="{ active: previewId === item.resource_id }"
+                  >
+                    <td class="check-column">
+                      <input
+                        type="checkbox"
+                        :aria-label="'选择 ' + item.title"
+                        :checked="checked.includes(item.resource_id)"
+                        @change="toggleChecked(item.resource_id)"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        class="resource-title"
+                        :data-source-resource="item.resource_id"
+                        @click="openPreview(item.resource_id)"
+                      >
+                        <span
+                          class="file-type-icon"
+                          :class="typeClass(item.kind)"
+                          ><FileText :size="19" :stroke-width="1.5" /></span
+                        ><span
+                          ><strong>{{ item.title }}</strong
+                          ><small
+                            >{{ typeName(item.kind)
+                            }}<template v-if="item.tags?.length">
+                              · {{ item.tags.join(" / ") }}</template
+                            ><template v-else>
+                              ·
+                              {{
+                                item.file_size
+                                  ? formatBytes(item.file_size)
+                                  : "手动整理"
+                              }}</template
+                            ></small
+                          ></span
+                        >
+                      </button>
+                    </td>
+                    <td class="optional-column content-count">
+                      {{ formatNumber(item.characters) }}<small>字</small>
+                    </td>
+                    <td class="status-column">
+                      <span
+                        class="index-status"
+                        :class="{ indexed: item.indexed }"
+                        ><span></span
+                        >{{ item.status === "failed" ? "解析失败" : item.status === "processing" ? "解析中…" : item.enabled === false ? "已停用" : item.indexed ? "向量已就绪" : "关键词可用" }}</span
+                      >
+                    </td>
+                    <td
+                      class="optional-column date-column"
+                      :title="fullDate(item.updated_at)"
+                    >
+                      {{ relativeDate(item.updated_at) }}
+                    </td>
+                    <td>
+                      <UiButton
+                        :aria-label="'预览 ' + item.title"
+                        @click="openPreview(item.resource_id)"
+                        variant="ghost"
+                        icon-only
+                        ><ChevronRight :size="16"
+                      /></UiButton>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <footer class="list-footer">
+              <span
+                >{{ total }} 份资料<span v-if="checked.length">
+                  · 已选择 {{ checked.length }} 份</span
+                ></span
+              >
+              <div v-if="total > pageSize" class="pagination-controls">
+                <UiButton
+                  aria-label="上一页资料"
+                  :disabled="page === 0"
+                  @click="page--"
+                  variant="ghost"
+                  icon-only
+                  ><ChevronLeft :size="15" /></UiButton
+                ><span>{{ page + 1 }} / {{ Math.ceil(total / pageSize) }}</span
+                ><UiButton
+                  aria-label="下一页资料"
+                  :disabled="(page + 1) * pageSize >= total"
+                  @click="page++"
+                  variant="ghost"
+                  icon-only
+                  ><ChevronRight :size="15"
+                /></UiButton>
+              </div>
+              <span v-else class="list-footnote"
+                >原文与取材依据，保留在一起。</span
+              >
+            </footer>
+          </div>
+          <section
+            v-show="activeTab === 'search'"
+            id="search-panel"
+            role="tabpanel"
+            aria-labelledby="search-tab"
+            class="search-panel"
+          >
+            <div class="search-intro">
+              <h3>先找到依据，再组织答案。</h3>
+              <p>查看检索命中的原文，确认知识库是否能回答你的问题。</p>
+            </div>
+            <form @submit.prevent="search" class="retrieval-form">
+              <label class="sr-only" for="knowledge-query">检索问题</label>
+              <div class="retrieval-input ui-search-field">
+                <Search :size="18" /><input
+                  id="knowledge-query"
+                  v-model="query"
+                  required
+                  maxlength="2000"
+                  placeholder="输入一个问题或关键词，例如：项目的验收范围是什么？"
+                /><UiButton
+                  type="submit"
+                  :disabled="searching || !query.trim()"
+                  variant="primary"
+                  ><LoaderCircle v-if="searching" :size="14" class="spin" />{{
+                    searching ? "检索中…" : "检索资料"
+                  }}<ArrowRight v-if="!searching" :size="14"
+                /></UiButton>
+              </div>
+              <div class="retrieval-options">
+                <label
+                  >检索方式<select class="field-input" v-model="mode">
+                    <option value="keyword">关键词</option>
+                    <option value="intelligent">智能检索</option>
+                    <option value="semantic">语义检索</option>
+                    <option value="file">文件级</option>
+                  </select></label
+                ><label
+                  >返回结果<select class="field-input" v-model.number="topK">
+                    <option :value="5">5 条</option>
+                    <option :value="10">10 条</option>
+                    <option :value="20">20 条</option>
+                  </select></label
+                ><label class="all-collections"
+                  ><input
+                    v-model="searchAll"
+                    type="checkbox"
+                  />搜索全部知识库</label
+                >
+              </div>
+            </form>
+            <div class="answer-toolbar">
+              <span v-if="!modelConfigured"
+                ><CircleHelp
+                  :size="14"
+                />配置生成模型后，可基于检索资料问答。</span
+              ><span v-else class="muted"
+                >仅使用命中的资料组织回答，仍需人工核对。</span
+              ><UiButton
+                :disabled="
+                  searching || answering || !modelConfigured || !query.trim()
+                "
+                @click="answerQuestion"
+                size="compact"
+                ><LoaderCircle
+                  v-if="answering"
+                  :size="14"
+                  class="spin"
+                /><Sparkles v-else :size="14" />{{
+                  answering ? "正在组织答案…" : "基于资料回答"
+                }}</UiButton
+              >
+            </div>
+            <article v-if="answer" class="answer-result">
+              <header>
+                <Sparkles :size="17" />
+                <h3>基于资料的回答</h3>
+                <UiButton
+                  aria-label="复制回答"
+                  @click="copyText(answer)"
+                  variant="ghost"
+                  icon-only
+                  ><Copy :size="14"
+                /></UiButton>
+              </header>
+              <p>{{ answer }}</p>
+            </article>
+            <div v-if="searched" class="search-results-heading">
+              <h3>命中 {{ results.length }} 条资料</h3>
+              <small>点击来源可查看原文</small>
+            </div>
+            <UiEmptyState
+              v-if="searched && !results.length"
+              :icon="Search"
+              title="暂时没有找到相关内容"
+              description="尝试更具体的关键词，或为知识库补充资料。"
+              compact
+            ></UiEmptyState>
+            <article
+              v-for="(result, i) in results"
+              :key="i"
+              class="search-result"
+            >
+              <header>
+                <span class="source-number">{{ i + 1 }}</span
+                ><button
+                  @click="result.resource_id && openPreview(result.resource_id)"
+                >
+                  {{ result.title }}<ArrowUpRight :size="13" /></button
+                ><small v-if="typeof result.score === 'number'"
+                  >匹配分 {{ result.score.toFixed(2) }}</small
+                >
+              </header>
+              <p>
+                <template
+                  v-for="(part, j) in highlighted(result.content)"
+                  :key="j"
+                  ><mark v-if="part.match">{{ part.text }}</mark
+                  ><span v-else>{{ part.text }}</span></template
+                >
+              </p>
+              <footer>
+                <span>{{ collectionNameFor(result.collection_id) }}</span
+                ><span v-if="result.version">版本 {{ result.version }}</span
+                ><UiButton
+                  v-if="result.resource_id"
+                  @click="openPreview(result.resource_id)"
+                  variant="text"
+                  >查看来源<ChevronRight :size="12"
+                /></UiButton>
+              </footer>
+            </article>
+            <div v-if="!searched && !searching" class="search-hint">
+              <BookOpen :size="26" :stroke-width="1.3" />
+              <p>
+                从一个具体的问题开始。<br /><span
+                  >检索结果会显示原文、来源和匹配分。</span
+                >
+              </p>
+            </div>
+          </section>
+        </template>
+      </section>
+      <aside v-if="previewId" class="preview-panel" aria-label="资料预览">
+        <header class="preview-top">
+          <span><BookOpen :size="15" />资料预览</span
+          ><UiButton
+            ref="previewCloseButton"
+            aria-label="关闭资料预览"
+            @click="closePreview"
+            variant="ghost"
+            icon-only
+            ><PanelRightClose :size="17"
+          /></UiButton>
+        </header>
+        <UiEmptyState
+          v-if="detailLoading"
+          :icon="LoaderCircle"
+          description="正在读取原文…"
+          state="loading"
+          compact
+        ></UiEmptyState>
+        <template v-else-if="detail"
+          ><div class="preview-document-heading">
+            <span class="document-kind">{{ typeName(detail.kind) }}</span>
+            <h2>{{ detail.title }}</h2>
+            <p>{{ collectionNameFor(detail.collection_id) }}</p>
+            <div class="preview-facts">
+              <span>{{ formatNumber(detail.characters) }} 字</span
+              ><span>版本 {{ detail.version }}</span
+              ><span>{{
+                detail.indexed ? "已建立向量索引" : "关键词可用"
+              }}</span>
+            </div>
+          </div>
+          <UiNotice v-if="detail.status === 'failed'" :message="detail.processing_message || '资料解析失败，请检查解析器配置后重试。'" tone="error" />
+          <div class="preview-actions">
+            <UiButton @click="copyText(detail.content)" size="compact"
+              ><Copy :size="13" />复制正文</UiButton
+            ><UiButton @click="downloadOriginal" size="compact"
+              ><Download :size="13" />{{
+                detail.has_original ? "下载原文件" : "导出文本"
+              }}</UiButton
+            >
+          </div>
+          <UiTabs
+            class="preview-tabs"
+            v-model="previewTab"
+            label="资料预览内容"
+            id-prefix="preview-"
+            :items="[
+              { value: 'content', label: '原文' },
+              {
+                value: 'segments',
+                label: '内容分段',
+                count: detail.segments.length,
+              },
+              { value: 'info', label: '资料信息' },
+            ]"
+          />
+          <div
+            v-if="previewTab === 'content'"
+            id="preview-content-panel"
+            role="tabpanel"
+            aria-labelledby="preview-content-tab"
+            class="preview-prose"
+          >
+            {{ detail.content }}
+          </div>
+          <div
+            v-else-if="previewTab === 'segments'"
+            id="preview-segments-panel"
+            role="tabpanel"
+            aria-labelledby="preview-segments-tab"
+            class="preview-segments"
+          >
+            <p class="segment-explanation">
+              用于阅读的内容分段，不代表已完成向量索引。
+            </p>
+            <article v-for="(segment, i) in detail.segments" :key="i">
+              <header>
+                <span>片段 {{ i + 1 }}</span
+                ><small>{{ segment.start }}–{{ segment.end }} 字符</small>
+              </header>
+              <p>{{ segment.content }}</p>
+            </article>
+          </div>
+          <div
+            v-else
+            id="preview-info-panel"
+            role="tabpanel"
+            aria-labelledby="preview-info-tab"
+            class="preview-information"
+          >
+            <form @submit.prevent="saveMetadata">
+              <label class="field-label"
+                >资料名称<input
+                  v-model="metadataTitle"
+                  required
+                  maxlength="255"
+                  class="field-input" /></label
+              ><label class="field-label"
+                >标签<input
+                  v-model="metadataTags"
+                  class="field-input"
+                  maxlength="800"
+                  placeholder="用逗号分隔" /></label
+              ><UiButton
+                type="submit"
+                :disabled="metadataSaving"
+                size="compact"
+                >{{ metadataSaving ? "保存中…" : "保存信息" }}</UiButton
+              >
+            </form>
+            <dl>
+              <dt>来源文件</dt>
+              <dd>{{ detail.file_name || "粘贴文本" }}</dd>
+              <dt>更新时间</dt>
+              <dd>{{ fullDate(detail.updated_at) }}</dd>
+              <dt>检索状态</dt>
+              <dd>
+                {{
+                  detail.indexed
+                    ? "向量索引已建立"
+                    : "已保存正文，可使用关键词检索"
+                }}
+              </dd>
+            </dl>
+            <UiButton
+              :disabled="reindexing"
+              @click="reindexResource"
+              size="compact"
+              ><RefreshCw :size="13" :class="{ spin: reindexing }" />{{
+                reindexing ? "正在建立索引…" : "重建向量索引"
+              }}</UiButton
+            >
+            <div class="delete-zone">
+              <template v-if="confirmDelete"
+                ><p>将从知识库和检索中移除这份资料，已生成的文档不受影响。</p>
+                <UiButton
+                  :disabled="deleting"
+                  @click="removeResource"
+                  variant="danger"
+                  size="compact"
+                  >确认移除资料</UiButton
+                ><UiButton
+                  @click="confirmDelete = false"
+                  variant="ghost"
+                  size="compact"
+                  >取消</UiButton
+                ></template
+              ><UiButton
+                v-else
+                @click="confirmDelete = true"
+                class="delete-action"
+                variant="text"
+                ><Trash2 :size="13" />移除资料</UiButton
+              >
+            </div>
+          </div>
+          <footer class="preview-bottom">
+            <UiButton @click="writeWithCollection" variant="text"
+              ><PenLine :size="14" />使用这些资料写作<ArrowUpRight :size="13"
+            /></UiButton>
+          </footer>
+        </template>
+      </aside>
+    </div>
+  </section>
+</template>
+<script setup>
+import KnowledgeTools from "../components/knowledge/KnowledgeTools.vue";
+import UiTabs from "../components/ui/UiTabs.vue";
+import UiNotice from "../components/ui/UiNotice.vue";
+import UiEmptyState from "../components/ui/UiEmptyState.vue";
+import UiPageHeader from "../components/ui/UiPageHeader.vue";
+import UiButton from "../components/ui/UiButton.vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import {
+  AlertCircle,
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  CircleHelp,
+  Copy,
+  Download,
+  FileText,
+  FileUp,
+  Folder,
+  FolderOpen,
+  Library,
+  Layers3,
+  Network,
+  Settings2,
+  SlidersHorizontal,
+  LoaderCircle,
+  PanelRightClose,
+  Pencil,
+  PenLine,
+  Plus,
+  RefreshCw,
+  Search,
+  Sparkles,
+  Trash2,
+  Upload,
+  X,
+} from "@lucide/vue";
+import { api, downloadFile, handleError } from "../api/client";
+import "../styles/knowledge.css";
+const router = useRouter();
+const overview = ref({
+    collections: [],
+    document_count: 0,
+    characters: 0,
+    indexed_count: 0,
+  }),
+  collections = computed(() => overview.value.collections),
+  selected = ref(""),
+  currentCollection = computed(() =>
+    collections.value.find((c) => c.id === selected.value),
+  );
+const overviewLoading = ref(true),
+  overviewFailed = ref(false),
+  notice = ref(""),
+  noticeType = ref("info"),
+  activeTab = ref("documents"),
+  modelConfigured = ref(false);
+const collectionForm = ref(false),
+  collectionName = ref(""),
+  collectionDescription = ref(""),
+  editingCollection = ref(""),
+  collectionSaving = ref(false),
+  collectionNameInput = ref(null);
+const resources = ref([]),
+  total = ref(0),
+  listQuery = ref(""),
+  kind = ref("all"),
+  page = ref(0),
+  pageSize = 20,
+  listLoading = ref(false),
+  checked = ref([]),
+  confirmBulk = ref(false),
+  deleting = ref(false);
+const showImport = ref(false),
+  importMethod = ref("file"),
+  fileInput = ref(null),
+  uploading = ref(false),
+  dragging = ref(false),
+  uploadQueue = ref([]),
+  textTitle = ref(""),
+  textContent = ref(""),
+  textTags = ref(""),
+  textSaving = ref(false);
+const previewCloseButton = ref(null),
+  previewId = ref(""),
+  detail = ref(null),
+  detailLoading = ref(false),
+  previewTab = ref("content"),
+  metadataTitle = ref(""),
+  metadataTags = ref(""),
+  metadataSaving = ref(false),
+  confirmDelete = ref(false),
+  reindexing = ref(false);
+const query = ref(""),
+  mode = ref("keyword"),
+  topK = ref(5),
+  searchAll = ref(false),
+  searching = ref(false),
+  searched = ref(false),
+  results = ref([]),
+  answer = ref(""),
+  answering = ref(false);
+let listSequence = 0,
+  previewSequence = 0,
+  filterTimer,
+  lastPreviewTrigger,
+  lastPreviewResource;
+function notify(message, type = "info") {
+  notice.value = message;
+  noticeType.value = type;
+}
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString("zh-CN");
+}
+function formatBytes(bytes) {
+  return bytes < 1024
+    ? bytes + " B"
+    : bytes < 1048576
+      ? (bytes / 1024).toFixed(1) + " KB"
+      : (bytes / 1048576).toFixed(1) + " MB";
+}
+function typeName(kind) {
+  return (
+    {
+      pdf: "PDF",
+      docx: "Word",
+      md: "Markdown",
+      txt: "文本",
+      text: "文本",
+      csv: "CSV",
+      json: "JSON",
+    }[kind] || "文档"
+  );
+}
+function typeClass(kind) {
+  return kind === "pdf" ? "pdf" : kind === "docx" ? "word" : "text";
+}
+function parsedDate(value) {
+  return value
+    ? new Date(/(?:Z|[+-]\d\d:\d\d)$/.test(value) ? value : value + "Z")
+    : null;
+}
+function fullDate(value) {
+  const date = parsedDate(value);
+  return date && !Number.isNaN(date.getTime())
+    ? date.toLocaleString("zh-CN", { hour12: false })
+    : "—";
+}
+function relativeDate(value) {
+  const date = parsedDate(value);
+  if (!date || Number.isNaN(date.getTime())) return "—";
+  const minutes = Math.max(
+    0,
+    Math.floor((Date.now() - date.getTime()) / 60000),
+  );
+  return minutes < 1
+    ? "刚刚"
+    : minutes < 60
+      ? minutes + " 分钟前"
+      : minutes < 1440
+        ? Math.floor(minutes / 60) + " 小时前"
+        : date.toLocaleDateString("zh-CN", {
+            month: "2-digit",
+            day: "2-digit",
+          });
+}
+function collectionNameFor(id) {
+  return collections.value.find((c) => c.id === id)?.name || "知识库资料";
+}
+async function loadOverview(preferred) {
+  overviewLoading.value = true;
+  overviewFailed.value = false;
+  try {
+    overview.value = (await api.get("/api/v1/knowledge/overview")).data;
+    if (preferred) selected.value = preferred;
+    else if (!collections.value.some((c) => c.id === selected.value))
+      selected.value = collections.value[0]?.id || "";
+  } catch (error) {
+    overviewFailed.value = true;
+    notify(handleError(error), "error");
+  } finally {
+    overviewLoading.value = false;
+  }
+}
+async function loadResources() {
+  if (!selected.value) return;
+  const sequence = ++listSequence;
+  listLoading.value = true;
+  try {
+    const r = await api.get("/api/v1/knowledge/resources", {
+      params: {
+        collection_id: selected.value,
+        query: listQuery.value,
+        kind: kind.value,
+        page: page.value,
+        size: pageSize,
+      },
+    });
+    if (sequence !== listSequence) return;
+    resources.value = r.data.items;
+    total.value = r.data.total;
+    checked.value = checked.value.filter((id) =>
+      resources.value.some((item) => item.resource_id === id),
+    );
+    if (!resources.value.length && page.value > 0)
+      page.value = Math.max(0, Math.ceil(total.value / pageSize) - 1);
+  } catch (error) {
+    if (sequence === listSequence) notify(handleError(error), "error");
+  } finally {
+    if (sequence === listSequence) listLoading.value = false;
+  }
+}
+async function refreshAll() {
+  await Promise.all([loadOverview(), loadResources()]);
+}
+function changeTab(tab) {
+  activeTab.value = tab;
+  nextTick(() =>
+    document
+      .getElementById(tab === "search" ? "search-tab" : "documents-tab")
+      ?.focus(),
+  );
+}
+function startCollection(collection) {
+  collectionForm.value = true;
+  editingCollection.value = collection?.id || "";
+  collectionName.value = collection?.name || "";
+  collectionDescription.value = collection?.description || "";
+  nextTick(() => collectionNameInput.value?.focus());
+}
+async function saveCollection() {
+  if (!collectionName.value.trim()) return;
+  collectionSaving.value = true;
+  try {
+    const body = {
+      name: collectionName.value.trim(),
+      description: collectionDescription.value.trim(),
+    };
+    const r = editingCollection.value
+      ? await api.patch(
+          "/api/v1/knowledge/collections/" + editingCollection.value,
+          body,
+        )
+      : await api.post("/api/v1/knowledge/collections", body);
+    const id = editingCollection.value || r.data.result.id;
+    await loadOverview(id);
+    collectionForm.value = false;
+    notify(
+      editingCollection.value
+        ? "知识库信息已更新。"
+        : "知识库已创建，可以开始导入资料。",
+    );
+  } catch (error) {
+    notify(handleError(error), "error");
+  } finally {
+    collectionSaving.value = false;
+  }
+}
+function tagsFrom(value) {
+  return [
+    ...new Set(
+      value
+        .split(/[,，]/)
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
+  ].slice(0, 20);
+}
+async function saveText() {
+  if (!selected.value) return;
+  textSaving.value = true;
+  try {
+    await api.post(
+      "/api/v1/knowledge/text",
+      {
+        collection_id: selected.value,
+        title: textTitle.value,
+        content: textContent.value,
+        tags: tagsFrom(textTags.value),
+      },
+      { timeout: 180000 },
+    );
+    textTitle.value = "";
+    textContent.value = "";
+    textTags.value = "";
+    await refreshAll();
+    notify("资料已保存，现在可以用关键词检索。");
+  } catch (error) {
+    notify(handleError(error), "error");
+  } finally {
+    textSaving.value = false;
+  }
+}
+function filesChosen(event) {
+  importFiles(Array.from(event.target.files || []));
+  event.target.value = "";
+}
+function filesDropped(event) {
+  dragging.value = false;
+  if (!uploading.value) importFiles(Array.from(event.dataTransfer.files || []));
+}
+async function importFiles(files) {
+  if (!files.length || uploading.value || !selected.value) return;
+  if (files.length > 10) {
+    notify("每次最多导入 10 个文件，请分批导入。", "error");
+    return;
+  }
+  const collectionId = selected.value;
+  uploading.value = true;
+  uploadQueue.value = files.map((file) => ({
+    name: file.name,
+    state: "queued",
+    message: "等待导入",
+  }));
+  let imported = 0;
+  for (let i = 0; i < files.length; i++) {
+    const entry = uploadQueue.value[i];
+    entry.state = "loading";
+    entry.message = "正在解析";
+    try {
+      const form = new FormData();
+      form.append("collection_id", collectionId);
+      form.append("file", files[i]);
+      const r = await api.post("/api/v1/knowledge/import", form, {
+        timeout: 180000,
+      });
+      entry.state = "done";
+      entry.message = r.data.duplicate
+        ? "已存在，跳过重复导入"
+        : r.data.vector_indexed
+          ? "已导入并建立索引"
+          : "已导入 · 关键词可用";
+      imported++;
+    } catch (error) {
+      entry.state = "error";
+      entry.message = handleError(error);
+    }
+  }
+  uploading.value = false;
+  await refreshAll();
+  notify(
+    `已完成 ${imported}/${files.length} 个文件的导入。`,
+    imported === files.length ? "info" : "error",
+  );
+}
+function toggleChecked(id) {
+  checked.value = checked.value.includes(id)
+    ? checked.value.filter((v) => v !== id)
+    : [...checked.value, id];
+  confirmBulk.value = false;
+}
+function toggleAll() {
+  checked.value =
+    checked.value.length === resources.value.length
+      ? []
+      : resources.value.map((r) => r.resource_id);
+  confirmBulk.value = false;
+}
+async function openPreview(id, { refresh = false } = {}) {
+  if (!refresh) {
+    lastPreviewTrigger = document.activeElement;
+    lastPreviewResource = id;
+  }
+  const sequence = ++previewSequence;
+  previewId.value = id;
+  detail.value = null;
+  detailLoading.value = true;
+  previewTab.value = "content";
+  confirmDelete.value = false;
+  await nextTick();
+  if (!refresh && sequence === previewSequence)
+    previewCloseButton.value?.focus();
+  try {
+    const r = await api.get("/api/v1/knowledge/resources/" + id);
+    if (sequence !== previewSequence) return;
+    detail.value = r.data;
+    metadataTitle.value = r.data.title;
+    metadataTags.value = (r.data.tags || []).join("，");
+  } catch (error) {
+    if (sequence === previewSequence) {
+      notify(handleError(error), "error");
+      closePreview();
+    }
+  } finally {
+    if (sequence === previewSequence) detailLoading.value = false;
+  }
+}
+function closePreview() {
+  previewSequence++;
+  previewId.value = "";
+  detail.value = null;
+  confirmDelete.value = false;
+  nextTick(() => {
+    if (
+      lastPreviewTrigger?.isConnected &&
+      lastPreviewTrigger.offsetParent !== null
+    )
+      lastPreviewTrigger.focus();
+    else {
+      const replacement = [
+        ...document.querySelectorAll("[data-source-resource]"),
+      ].find(
+        (element) =>
+          element.dataset.sourceResource === lastPreviewResource &&
+          element.offsetParent !== null,
+      );
+      if (replacement) replacement.focus();
+      else
+        document
+          .getElementById(
+            activeTab.value === "search" ? "search-tab" : "documents-tab",
+          )
+          ?.focus();
+    }
+  });
+}
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    notify("已复制。");
+  } catch {
+    notify("浏览器未允许复制，请在原文中选择文字后复制。", "error");
+  }
+}
+function downloadOriginal() {
+  if (detail.value.has_original) {
+    downloadFile(
+      "/api/v1/knowledge/resources/" + previewId.value + "/download",
+      detail.value.file_name || detail.value.title,
+    );
+    return;
+  }
+  const url = URL.createObjectURL(
+    new Blob([detail.value.content], { type: "text/plain;charset=utf-8" }),
+  );
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = detail.value.title + ".txt";
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+async function saveMetadata() {
+  metadataSaving.value = true;
+  try {
+    await api.patch("/api/v1/knowledge/resources/" + previewId.value, {
+      title: metadataTitle.value,
+      tags: tagsFrom(metadataTags.value),
+    });
+    detail.value.title = metadataTitle.value;
+    detail.value.tags = tagsFrom(metadataTags.value);
+    await loadResources();
+    notify("资料信息已更新。");
+  } catch (error) {
+    notify(handleError(error), "error");
+  } finally {
+    metadataSaving.value = false;
+  }
+}
+async function reindexResource() {
+  reindexing.value = true;
+  try {
+    await api.post(
+      "/api/v1/knowledge/resources/" + previewId.value + "/reindex",
+      {},
+      { timeout: 180000 },
+    );
+    await openPreview(previewId.value, { refresh: true });
+    await refreshAll();
+    notify("向量索引已更新。");
+  } catch (error) {
+    notify(handleError(error), "error");
+  } finally {
+    reindexing.value = false;
+  }
+}
+async function removeResource() {
+  deleting.value = true;
+  try {
+    const removedId = previewId.value;
+    const r = await api.delete("/api/v1/knowledge/resources/" + removedId);
+    results.value = results.value.filter(
+      (item) => item.resource_id !== removedId,
+    );
+    answer.value = "";
+    closePreview();
+    await refreshAll();
+    notify(
+      r.data.cleanup_pending
+        ? "资料已移除，部分索引清理尚未完成。"
+        : "资料已移除。",
+    );
+  } catch (error) {
+    notify(handleError(error), "error");
+  } finally {
+    deleting.value = false;
+  }
+}
+async function removeSelected() {
+  deleting.value = true;
+  let removed = 0;
+  const failures = [];
+  for (const id of [...checked.value]) {
+    try {
+      await api.delete("/api/v1/knowledge/resources/" + id);
+      removed++;
+      results.value = results.value.filter((item) => item.resource_id !== id);
+      answer.value = "";
+      if (previewId.value === id) closePreview();
+    } catch {
+      failures.push(id);
+    }
+  }
+  checked.value = failures;
+  confirmBulk.value = false;
+  await refreshAll();
+  notify(
+    failures.length
+      ? `已移除 ${removed} 份，${failures.length} 份未完成，请重试。`
+      : `已移除 ${removed} 份资料。`,
+    failures.length ? "error" : "info",
+  );
+  deleting.value = false;
+}
+function retrievalPayload() {
+  return {
+    query: query.value,
+    collection_ids: searchAll.value
+      ? collections.value.map((c) => c.id)
+      : [selected.value],
+    mode: mode.value,
+    top_k: topK.value,
+  };
+}
+async function search() {
+  searching.value = true;
+  answer.value = "";
+  try {
+    const r = await api.post("/api/v1/knowledge/search", retrievalPayload(), {
+      timeout: 180000,
+    });
+    results.value = r.data.sources;
+    searched.value = true;
+  } catch (error) {
+    notify(handleError(error), "error");
+  } finally {
+    searching.value = false;
+  }
+}
+async function answerQuestion() {
+  answering.value = true;
+  answer.value = "";
+  try {
+    const r = await api.post("/api/v1/knowledge/answer", retrievalPayload(), {
+      timeout: 180000,
+    });
+    answer.value = r.data.answer;
+    results.value = r.data.sources;
+    searched.value = true;
+  } catch (error) {
+    notify(handleError(error), "error");
+  } finally {
+    answering.value = false;
+  }
+}
+function highlighted(text) {
+  const snippet = (text || "").slice(0, 650);
+  const tokens = query.value
+    .trim()
+    .split(/\s+/)
+    .filter((t) => t.length > 1);
+  if (!tokens.length) return [{ text: snippet, match: false }];
+  const escaped = tokens.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const regex = new RegExp("(" + escaped.join("|") + ")", "gi");
+  return snippet
+    .split(regex)
+    .map((part, i) => ({ text: part, match: i % 2 === 1 }))
+    .filter((part) => part.text);
+}
+function writeWithCollection() {
+  router.push({
+    path: "/writing",
+    query: { collection: detail.value?.collection_id || selected.value },
+  });
+}
+function escapePreview(event) {
+  if (event.key === "Escape" && previewId.value) closePreview();
+}
+watch(activeTab, value => { if (!["documents", "search"].includes(value)) closePreview(); });
+watch(selected, () => {
+  page.value = 0;
+  checked.value = [];
+  listQuery.value = "";
+  results.value = [];
+  answer.value = "";
+  searched.value = false;
+  closePreview();
+  loadResources();
+});
+watch(kind, () => {
+  page.value = 0;
+  loadResources();
+});
+watch(page, loadResources);
+watch(listQuery, () => {
+  clearTimeout(filterTimer);
+  filterTimer = setTimeout(() => {
+    page.value = 0;
+    loadResources();
+  }, 250);
+});
+onMounted(async () => {
+  document.addEventListener("keydown", escapePreview);
+  await loadOverview();
+  try {
+    modelConfigured.value = (
+      await api.get("/api/v1/status")
+    ).data.model_configured;
+  } catch {
+    /* Overview shows authentication errors. */
+  }
+});
+onUnmounted(() => {
+  clearTimeout(filterTimer);
+  document.removeEventListener("keydown", escapePreview);
+  listSequence++;
+  previewSequence++;
+});
+</script>

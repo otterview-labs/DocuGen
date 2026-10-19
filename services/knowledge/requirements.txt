@@ -1,0 +1,7 @@
+# 兼容入口：
+# - 默认运行时镜像 / 生产轻量部署：`requirements.minimal.txt`
+# - OCR / 本地视觉增强：`requirements-vision.txt`
+# - 完整增强能力：`requirements-full.txt`
+#
+# 保留 `requirements.txt` 作为兼容入口，默认等价于 minimal。
+-r requirements.minimal.txt

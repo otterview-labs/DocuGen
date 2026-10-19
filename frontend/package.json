@@ -1,5 +1,5 @@
 {
-  "name": "docugen-vue",
+  "name": "quill-workspace",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,12 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lucide/vue": "^1.58.0",
     "axios": "^1.7.7",
     "vue": "^3.4.38",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.1.4",
-    "vite": "^5.4.10"
+    "@playwright/test": "^1.64.1",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "vite": "^8.3.4"
   }
 }
