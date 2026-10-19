@@ -195,19 +195,10 @@
             "
             class="template-entry"
           >
-            <div
+            <TemplateCover
               v-if="template.origin === 'builtin'"
-              class="template-sheet-outline"
-              aria-hidden="true"
-            >
-              <strong>{{ template.name }}</strong>
-              <span>{{ template.fields.slice(0, 3).join(" · ") }}</span>
-              <span
-                v-for="section in template.sections.slice(0, 3)"
-                :key="section.title"
-                >{{ section.title }}</span
-              >
-            </div>
+              :template="template"
+            />
             <div v-else class="template-sheet" aria-hidden="true">
               <FileText :size="27" :stroke-width="1.3" /><span>DOCX</span>
             </div>
@@ -301,6 +292,7 @@
   </section>
 </template>
 <script setup>
+import TemplateCover from "../components/TemplateCover.vue";
 import UiEmptyState from "../components/ui/UiEmptyState.vue";
 import UiPageHeader from "../components/ui/UiPageHeader.vue";
 import UiButton from "../components/ui/UiButton.vue";

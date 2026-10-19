@@ -1,0 +1,996 @@
+[
+  {
+    "id": "project-plan",
+    "name": "项目实施方案",
+    "origin": "First page rendered from the original Otterview DocuGen starter template project-plan (项目实施方案); source definition: quill/template_library.py; download route: /api/template-library/project-plan/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "e755a1e5f2895be51673d970cfbb1feea46143da90e7d957f33847961d32fd19",
+    "definition": {
+      "id": "project-plan",
+      "name": "项目实施方案",
+      "category": "方案",
+      "description": "从项目目标到交付验收，组织完整的实施计划。",
+      "fields": [
+        "项目名称",
+        "编制单位",
+        "负责人",
+        "编制日期"
+      ],
+      "sections": [
+        {
+          "title": "项目背景与目标",
+          "field": "项目背景与目标"
+        },
+        {
+          "title": "实施范围",
+          "field": "实施范围"
+        },
+        {
+          "title": "实施步骤与里程碑",
+          "field": "实施步骤与里程碑"
+        },
+        {
+          "title": "人员与资源",
+          "field": "人员与资源"
+        },
+        {
+          "title": "风险与应对",
+          "field": "风险与应对"
+        },
+        {
+          "title": "交付与验收",
+          "field": "交付与验收"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "项目名称",
+          "default_value": ""
+        },
+        {
+          "name": "编制单位",
+          "default_value": ""
+        },
+        {
+          "name": "负责人",
+          "default_value": ""
+        },
+        {
+          "name": "编制日期",
+          "default_value": ""
+        },
+        {
+          "name": "项目背景与目标",
+          "default_value": ""
+        },
+        {
+          "name": "实施范围",
+          "default_value": ""
+        },
+        {
+          "name": "实施步骤与里程碑",
+          "default_value": ""
+        },
+        {
+          "name": "人员与资源",
+          "default_value": ""
+        },
+        {
+          "name": "风险与应对",
+          "default_value": ""
+        },
+        {
+          "name": "交付与验收",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "technical-plan",
+    "name": "技术方案",
+    "origin": "First page rendered from the original Otterview DocuGen starter template technical-plan (技术方案); source definition: quill/template_library.py; download route: /api/template-library/technical-plan/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "00287b2952781cbdbf4111da53d1b3e76027b1d95673bbc910a93279d53fbee8",
+    "definition": {
+      "id": "technical-plan",
+      "name": "技术方案",
+      "category": "方案",
+      "description": "围绕需求、架构、接口与部署说明技术设计。",
+      "fields": [
+        "方案名称",
+        "编制单位",
+        "技术负责人",
+        "版本日期"
+      ],
+      "sections": [
+        {
+          "title": "需求与约束",
+          "field": "需求与约束"
+        },
+        {
+          "title": "总体架构",
+          "field": "总体架构"
+        },
+        {
+          "title": "功能设计",
+          "field": "功能设计"
+        },
+        {
+          "title": "数据与接口",
+          "field": "数据与接口"
+        },
+        {
+          "title": "部署与安全",
+          "field": "部署与安全"
+        },
+        {
+          "title": "测试与验证",
+          "field": "测试与验证"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "方案名称",
+          "default_value": ""
+        },
+        {
+          "name": "编制单位",
+          "default_value": ""
+        },
+        {
+          "name": "技术负责人",
+          "default_value": ""
+        },
+        {
+          "name": "版本日期",
+          "default_value": ""
+        },
+        {
+          "name": "需求与约束",
+          "default_value": ""
+        },
+        {
+          "name": "总体架构",
+          "default_value": ""
+        },
+        {
+          "name": "功能设计",
+          "default_value": ""
+        },
+        {
+          "name": "数据与接口",
+          "default_value": ""
+        },
+        {
+          "name": "部署与安全",
+          "default_value": ""
+        },
+        {
+          "name": "测试与验证",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "operations-plan",
+    "name": "运维服务方案",
+    "origin": "First page rendered from the original Otterview DocuGen starter template operations-plan (运维服务方案); source definition: quill/template_library.py; download route: /api/template-library/operations-plan/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "7b37c05b6e87095149c6555d9697de1317e4c1deb2aec2ff2ffb28ae53ae4a1c",
+    "definition": {
+      "id": "operations-plan",
+      "name": "运维服务方案",
+      "category": "方案",
+      "description": "明确巡检、监控、故障处理与服务交付安排。",
+      "fields": [
+        "项目名称",
+        "服务单位",
+        "服务负责人",
+        "服务周期"
+      ],
+      "sections": [
+        {
+          "title": "服务范围",
+          "field": "服务范围"
+        },
+        {
+          "title": "巡检与监控",
+          "field": "巡检与监控"
+        },
+        {
+          "title": "故障响应流程",
+          "field": "故障响应流程"
+        },
+        {
+          "title": "备份与恢复",
+          "field": "备份与恢复"
+        },
+        {
+          "title": "服务报告与交付",
+          "field": "服务报告与交付"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "项目名称",
+          "default_value": ""
+        },
+        {
+          "name": "服务单位",
+          "default_value": ""
+        },
+        {
+          "name": "服务负责人",
+          "default_value": ""
+        },
+        {
+          "name": "服务周期",
+          "default_value": ""
+        },
+        {
+          "name": "服务范围",
+          "default_value": ""
+        },
+        {
+          "name": "巡检与监控",
+          "default_value": ""
+        },
+        {
+          "name": "故障响应流程",
+          "default_value": ""
+        },
+        {
+          "name": "备份与恢复",
+          "default_value": ""
+        },
+        {
+          "name": "服务报告与交付",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "acceptance-report",
+    "name": "项目验收报告",
+    "origin": "First page rendered from the original Otterview DocuGen starter template acceptance-report (项目验收报告); source definition: quill/template_library.py; download route: /api/template-library/acceptance-report/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "94822649d5ac6268971f654ac9e50a07e7dc504303e317e4b34d117a04466f30",
+    "definition": {
+      "id": "acceptance-report",
+      "name": "项目验收报告",
+      "category": "报告",
+      "description": "核对交付清单、测试结果与验收意见，留存签字记录。",
+      "fields": [
+        "项目名称",
+        "建设单位",
+        "交付单位",
+        "验收日期"
+      ],
+      "sections": [
+        {
+          "title": "项目概况",
+          "field": "项目概况"
+        },
+        {
+          "title": "交付清单",
+          "field": "交付清单"
+        },
+        {
+          "title": "测试与核查结果",
+          "field": "测试与核查结果"
+        },
+        {
+          "title": "遗留问题与整改",
+          "field": "遗留问题与整改"
+        },
+        {
+          "title": "验收意见",
+          "field": "验收意见"
+        },
+        {
+          "title": "签字确认",
+          "field": "签字确认"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "项目名称",
+          "default_value": ""
+        },
+        {
+          "name": "建设单位",
+          "default_value": ""
+        },
+        {
+          "name": "交付单位",
+          "default_value": ""
+        },
+        {
+          "name": "验收日期",
+          "default_value": ""
+        },
+        {
+          "name": "项目概况",
+          "default_value": ""
+        },
+        {
+          "name": "交付清单",
+          "default_value": ""
+        },
+        {
+          "name": "测试与核查结果",
+          "default_value": ""
+        },
+        {
+          "name": "遗留问题与整改",
+          "default_value": ""
+        },
+        {
+          "name": "验收意见",
+          "default_value": ""
+        },
+        {
+          "name": "签字确认",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "weekly-report",
+    "name": "工作周报",
+    "origin": "First page rendered from the original Otterview DocuGen starter template weekly-report (工作周报); source definition: quill/template_library.py; download route: /api/template-library/weekly-report/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "ae3912d0d6c15ad8a693861b2ee12bbced4342df99f17d00a16d60d8520aa635",
+    "definition": {
+      "id": "weekly-report",
+      "name": "工作周报",
+      "category": "报告",
+      "description": "记录本周成果、问题和下周计划，适合个人与团队复用。",
+      "fields": [
+        "团队或项目",
+        "汇报人",
+        "报告周期",
+        "提交日期"
+      ],
+      "sections": [
+        {
+          "title": "本周完成",
+          "field": "本周完成"
+        },
+        {
+          "title": "进度与成果",
+          "field": "进度与成果"
+        },
+        {
+          "title": "问题与需协助事项",
+          "field": "问题与需协助事项"
+        },
+        {
+          "title": "下周计划",
+          "field": "下周计划"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "团队或项目",
+          "default_value": ""
+        },
+        {
+          "name": "汇报人",
+          "default_value": ""
+        },
+        {
+          "name": "报告周期",
+          "default_value": ""
+        },
+        {
+          "name": "提交日期",
+          "default_value": ""
+        },
+        {
+          "name": "本周完成",
+          "default_value": ""
+        },
+        {
+          "name": "进度与成果",
+          "default_value": ""
+        },
+        {
+          "name": "问题与需协助事项",
+          "default_value": ""
+        },
+        {
+          "name": "下周计划",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "meeting-minutes",
+    "name": "会议纪要",
+    "origin": "First page rendered from the original Otterview DocuGen starter template meeting-minutes (会议纪要); source definition: quill/template_library.py; download route: /api/template-library/meeting-minutes/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "31e6fa9aee081964ed489df11058744e0300e84635bd73bac7d897aa84982c07",
+    "definition": {
+      "id": "meeting-minutes",
+      "name": "会议纪要",
+      "category": "报告",
+      "description": "整理议题、讨论结论与行动项，便于会后跟进。",
+      "fields": [
+        "会议主题",
+        "会议时间",
+        "会议地点",
+        "参会人员",
+        "主持人",
+        "记录人"
+      ],
+      "sections": [
+        {
+          "title": "会议议题",
+          "field": "会议议题"
+        },
+        {
+          "title": "讨论与结论",
+          "field": "讨论与结论"
+        },
+        {
+          "title": "行动项与负责人",
+          "field": "行动项与负责人"
+        },
+        {
+          "title": "完成时限与跟进",
+          "field": "完成时限与跟进"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "会议主题",
+          "default_value": ""
+        },
+        {
+          "name": "会议时间",
+          "default_value": ""
+        },
+        {
+          "name": "会议地点",
+          "default_value": ""
+        },
+        {
+          "name": "参会人员",
+          "default_value": ""
+        },
+        {
+          "name": "主持人",
+          "default_value": ""
+        },
+        {
+          "name": "记录人",
+          "default_value": ""
+        },
+        {
+          "name": "会议议题",
+          "default_value": ""
+        },
+        {
+          "name": "讨论与结论",
+          "default_value": ""
+        },
+        {
+          "name": "行动项与负责人",
+          "default_value": ""
+        },
+        {
+          "name": "完成时限与跟进",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "progress-report",
+    "name": "项目进展报告",
+    "origin": "First page rendered from the original Otterview DocuGen starter template progress-report (项目进展报告); source definition: quill/template_library.py; download route: /api/template-library/progress-report/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "d7654869717debca0b18c376c80c4e54c9bbb626156120d8a73eadbba6a7bf61",
+    "definition": {
+      "id": "progress-report",
+      "name": "项目进展报告",
+      "category": "报告",
+      "description": "同步里程碑、资源投入、风险和下一阶段安排。",
+      "fields": [
+        "项目名称",
+        "报告人",
+        "报告周期",
+        "报告日期"
+      ],
+      "sections": [
+        {
+          "title": "总体进展",
+          "field": "总体进展"
+        },
+        {
+          "title": "里程碑完成情况",
+          "field": "里程碑完成情况"
+        },
+        {
+          "title": "资源投入",
+          "field": "资源投入"
+        },
+        {
+          "title": "风险与问题",
+          "field": "风险与问题"
+        },
+        {
+          "title": "下一阶段计划",
+          "field": "下一阶段计划"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "项目名称",
+          "default_value": ""
+        },
+        {
+          "name": "报告人",
+          "default_value": ""
+        },
+        {
+          "name": "报告周期",
+          "default_value": ""
+        },
+        {
+          "name": "报告日期",
+          "default_value": ""
+        },
+        {
+          "name": "总体进展",
+          "default_value": ""
+        },
+        {
+          "name": "里程碑完成情况",
+          "default_value": ""
+        },
+        {
+          "name": "资源投入",
+          "default_value": ""
+        },
+        {
+          "name": "风险与问题",
+          "default_value": ""
+        },
+        {
+          "name": "下一阶段计划",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "quotation",
+    "name": "商务报价单",
+    "origin": "First page rendered from the original Otterview DocuGen starter template quotation (商务报价单); source definition: quill/template_library.py; download route: /api/template-library/quotation/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "f91b92c4edbe1e735126190286e5166f4e143960e69435f36014da5a57f6fe98",
+    "definition": {
+      "id": "quotation",
+      "name": "商务报价单",
+      "category": "其他",
+      "description": "汇总报价明细、交付范围、有效期与商务说明。",
+      "fields": [
+        "报价名称",
+        "报价单位",
+        "联系人",
+        "报价日期",
+        "客户名称",
+        "报价有效期"
+      ],
+      "sections": [
+        {
+          "title": "需求与报价范围",
+          "field": "需求与报价范围"
+        },
+        {
+          "title": "报价明细",
+          "field": "报价明细"
+        },
+        {
+          "title": "合计与税费说明",
+          "field": "合计与税费说明"
+        },
+        {
+          "title": "交付与付款安排",
+          "field": "交付与付款安排"
+        },
+        {
+          "title": "备注",
+          "field": "备注"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "报价名称",
+          "default_value": ""
+        },
+        {
+          "name": "报价单位",
+          "default_value": ""
+        },
+        {
+          "name": "联系人",
+          "default_value": ""
+        },
+        {
+          "name": "报价日期",
+          "default_value": ""
+        },
+        {
+          "name": "客户名称",
+          "default_value": ""
+        },
+        {
+          "name": "报价有效期",
+          "default_value": ""
+        },
+        {
+          "name": "需求与报价范围",
+          "default_value": ""
+        },
+        {
+          "name": "报价明细",
+          "default_value": ""
+        },
+        {
+          "name": "合计与税费说明",
+          "default_value": ""
+        },
+        {
+          "name": "交付与付款安排",
+          "default_value": ""
+        },
+        {
+          "name": "备注",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "bid-response",
+    "name": "投标响应文件",
+    "origin": "First page rendered from the original Otterview DocuGen starter template bid-response (投标响应文件); source definition: quill/template_library.py; download route: /api/template-library/bid-response/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "9a5ad45ef50bd0dcbf22c4b3eabfec603b5b63c0cce12f0ebfa8bd41840e7451",
+    "definition": {
+      "id": "bid-response",
+      "name": "投标响应文件",
+      "category": "招投标",
+      "description": "提供投标文件组织框架，具体条款按招标要求核对补齐。",
+      "fields": [
+        "项目名称",
+        "项目编号",
+        "投标单位",
+        "授权代表",
+        "编制日期"
+      ],
+      "sections": [
+        {
+          "title": "投标说明",
+          "field": "投标说明"
+        },
+        {
+          "title": "单位与资质介绍",
+          "field": "单位与资质介绍"
+        },
+        {
+          "title": "商务响应",
+          "field": "商务响应"
+        },
+        {
+          "title": "技术响应",
+          "field": "技术响应"
+        },
+        {
+          "title": "实施与服务承诺",
+          "field": "实施与服务承诺"
+        },
+        {
+          "title": "附件清单",
+          "field": "附件清单"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "项目名称",
+          "default_value": ""
+        },
+        {
+          "name": "项目编号",
+          "default_value": ""
+        },
+        {
+          "name": "投标单位",
+          "default_value": ""
+        },
+        {
+          "name": "授权代表",
+          "default_value": ""
+        },
+        {
+          "name": "编制日期",
+          "default_value": ""
+        },
+        {
+          "name": "投标说明",
+          "default_value": ""
+        },
+        {
+          "name": "单位与资质介绍",
+          "default_value": ""
+        },
+        {
+          "name": "商务响应",
+          "default_value": ""
+        },
+        {
+          "name": "技术响应",
+          "default_value": ""
+        },
+        {
+          "name": "实施与服务承诺",
+          "default_value": ""
+        },
+        {
+          "name": "附件清单",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "resume",
+    "name": "个人简历",
+    "origin": "First page rendered from the original Otterview DocuGen starter template resume (个人简历); source definition: quill/template_library.py; download route: /api/template-library/resume/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "bc9138e2efe85fadd246c902ae69b75347fc96eabb3a9bb96abcdfb99954a117",
+    "definition": {
+      "id": "resume",
+      "name": "个人简历",
+      "category": "简历",
+      "description": "按个人简介、工作经历与项目经验组织求职资料。",
+      "fields": [
+        "姓名",
+        "意向岗位",
+        "联系电话",
+        "电子邮箱"
+      ],
+      "sections": [
+        {
+          "title": "个人简介",
+          "field": "个人简介"
+        },
+        {
+          "title": "教育背景",
+          "field": "教育背景"
+        },
+        {
+          "title": "工作经历",
+          "field": "工作经历"
+        },
+        {
+          "title": "项目经验",
+          "field": "项目经验"
+        },
+        {
+          "title": "技能与证书",
+          "field": "技能与证书"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "姓名",
+          "default_value": ""
+        },
+        {
+          "name": "意向岗位",
+          "default_value": ""
+        },
+        {
+          "name": "联系电话",
+          "default_value": ""
+        },
+        {
+          "name": "电子邮箱",
+          "default_value": ""
+        },
+        {
+          "name": "个人简介",
+          "default_value": ""
+        },
+        {
+          "name": "教育背景",
+          "default_value": ""
+        },
+        {
+          "name": "工作经历",
+          "default_value": ""
+        },
+        {
+          "name": "项目经验",
+          "default_value": ""
+        },
+        {
+          "name": "技能与证书",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "business-letter",
+    "name": "商务函件",
+    "origin": "First page rendered from the original Otterview DocuGen starter template business-letter (商务函件); source definition: quill/template_library.py; download route: /api/template-library/business-letter/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "2de9947597991808674b517d99ef45bd7c8c238fa565e2659f47467b5edefcde",
+    "definition": {
+      "id": "business-letter",
+      "name": "商务函件",
+      "category": "函件",
+      "description": "适用于沟通、情况说明与事项确认，保留正式函件结构。",
+      "fields": [
+        "函件主题",
+        "收件单位",
+        "发件单位",
+        "联系人",
+        "发函日期"
+      ],
+      "sections": [
+        {
+          "title": "事由与背景",
+          "field": "事由与背景"
+        },
+        {
+          "title": "正文",
+          "field": "正文"
+        },
+        {
+          "title": "需确认或办理事项",
+          "field": "需确认或办理事项"
+        },
+        {
+          "title": "附件与落款",
+          "field": "附件与落款"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "函件主题",
+          "default_value": ""
+        },
+        {
+          "name": "收件单位",
+          "default_value": ""
+        },
+        {
+          "name": "发件单位",
+          "default_value": ""
+        },
+        {
+          "name": "联系人",
+          "default_value": ""
+        },
+        {
+          "name": "发函日期",
+          "default_value": ""
+        },
+        {
+          "name": "事由与背景",
+          "default_value": ""
+        },
+        {
+          "name": "正文",
+          "default_value": ""
+        },
+        {
+          "name": "需确认或办理事项",
+          "default_value": ""
+        },
+        {
+          "name": "附件与落款",
+          "default_value": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "requirements",
+    "name": "需求说明书",
+    "origin": "First page rendered from the original Otterview DocuGen starter template requirements (需求说明书); source definition: quill/template_library.py; download route: /api/template-library/requirements/download; rendered with LibreOffice. No customer data or AI imagery.",
+    "docx_sha256": "cf9007726739e97d0b76139f3ea297c549b022b33b41626e7ad7ecb05ba8e64a",
+    "definition": {
+      "id": "requirements",
+      "name": "需求说明书",
+      "category": "方案",
+      "description": "梳理业务流程、功能需求、边界与验收标准。",
+      "fields": [
+        "产品或项目",
+        "需求负责人",
+        "版本号",
+        "更新日期"
+      ],
+      "sections": [
+        {
+          "title": "背景与目标",
+          "field": "背景与目标"
+        },
+        {
+          "title": "使用者与业务流程",
+          "field": "使用者与业务流程"
+        },
+        {
+          "title": "功能需求",
+          "field": "功能需求"
+        },
+        {
+          "title": "非功能需求",
+          "field": "非功能需求"
+        },
+        {
+          "title": "范围与边界",
+          "field": "范围与边界"
+        },
+        {
+          "title": "验收标准",
+          "field": "验收标准"
+        }
+      ],
+      "origin": "builtin",
+      "variables": [
+        {
+          "name": "产品或项目",
+          "default_value": ""
+        },
+        {
+          "name": "需求负责人",
+          "default_value": ""
+        },
+        {
+          "name": "版本号",
+          "default_value": ""
+        },
+        {
+          "name": "更新日期",
+          "default_value": ""
+        },
+        {
+          "name": "背景与目标",
+          "default_value": ""
+        },
+        {
+          "name": "使用者与业务流程",
+          "default_value": ""
+        },
+        {
+          "name": "功能需求",
+          "default_value": ""
+        },
+        {
+          "name": "非功能需求",
+          "default_value": ""
+        },
+        {
+          "name": "范围与边界",
+          "default_value": ""
+        },
+        {
+          "name": "验收标准",
+          "default_value": ""
+        }
+      ]
+    }
+  }
+]

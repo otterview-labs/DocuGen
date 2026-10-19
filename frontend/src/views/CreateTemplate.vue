@@ -2,40 +2,121 @@
   <section class="document-workspace create-page">
     <UiPageHeader
       title="上传模板"
-      description="保留熟悉的 Word 版式，让下一份文档从模板开始。"
+      description="从常用模板开始，或导入自己的 Word，保留版式生成新文档。"
     >
       <template #actions
+        ><UiButton href="#create-upload-heading" @click.prevent="focusUpload"
+          ><Upload />导入 Word</UiButton
         ><UiButton to="/templates"><ArrowLeft />返回模板库</UiButton></template
       >
     </UiPageHeader>
 
-    <ol class="create-workflow" aria-label="模板生成流程">
-      <li
-        :class="{
-          complete: selectedTemplateName,
-          current: !selectedTemplateName,
-        }"
-      >
-        <span class="workflow-marker"
-          ><Check v-if="selectedTemplateName" /><span v-else>1</span></span
-        >
-        <div><strong>准备模板</strong><span>上传文件或选择已有模板</span></div>
-        <ChevronRight aria-hidden="true" />
-      </li>
-      <li :class="{ current: selectedTemplateName, complete: downloadUrl }">
-        <span class="workflow-marker"
-          ><Check v-if="downloadUrl" /><span v-else>2</span></span
-        >
-        <div><strong>填写内容</strong><span>填写变量，核对文档信息</span></div>
-        <ChevronRight aria-hidden="true" />
-      </li>
-      <li :class="{ current: downloadUrl }">
-        <span class="workflow-marker">3</span>
-        <div><strong>导出文档</strong><span>沿用原版式，下载 Word</span></div>
-      </li>
-    </ol>
-
     <div class="create-intake">
+      <section
+        class="create-template-options"
+        aria-labelledby="create-existing-heading"
+      >
+        <div class="create-gallery-heading">
+          <div>
+            <h2 id="create-existing-heading">使用已有模板</h2>
+            <p>选择适合的文档，查看版式，再填入你的内容。</p>
+          </div>
+          <UiButton
+            :to="{ path: '/templates', query: { source: 'builtin' } }"
+            variant="text"
+            >浏览内置模板<span v-if="library.length"
+              >（{{ library.length }}）</span
+            ><ArrowRight
+          /></UiButton>
+        </div>
+        <UiNotice v-if="libraryError" tone="error"
+          >{{ libraryError }}
+          <UiButton variant="text" @click="loadLibrary"
+            >重新加载</UiButton
+          ></UiNotice
+        >
+        <UiNotice
+          v-if="libraryActionError"
+          tone="error"
+          :message="libraryActionError"
+        />
+        <ul
+          v-if="!libraryError"
+          class="create-starter-list"
+          :aria-busy="loadingLibrary"
+        >
+          <li v-for="template in suggestedTemplates" :key="template.id">
+            <RouterLink
+              class="create-starter-preview"
+              :aria-label="'预览' + template.name"
+              :to="{
+                path: '/templates',
+                query: { source: 'builtin', q: template.name },
+              }"
+              ><TemplateCover :template="template" decorative /><strong>{{
+                template.name
+              }}</strong></RouterLink
+            >
+            <div class="create-starter-meta">
+              <span
+                >{{ template.category }} ·
+                {{ template.variables.length }} 个变量</span
+              ><UiButton
+                variant="text"
+                size="compact"
+                :aria-label="'使用' + template.name"
+                :disabled="!!usingStarter"
+                @click="prepareStarter(template)"
+                >{{ usingStarter === template.id ? "准备中…" : "使用模板"
+                }}<ArrowRight
+              /></UiButton>
+            </div>
+          </li>
+          <li v-if="loadingLibrary" class="create-starter-loading">
+            正在读取模板…
+          </li>
+          <li
+            v-else-if="!suggestedTemplates.length"
+            class="create-starter-loading"
+          >
+            当前没有内置模板，可导入 Word 文件继续。
+          </li>
+        </ul>
+        <div class="create-workspace-templates">
+          <label class="field-label" for="selected-template">选择模板</label>
+          <div class="template-select-row">
+            <select
+              id="selected-template"
+              v-model="selectedTemplateName"
+              class="field-input"
+              @change="handleTemplateChange"
+            >
+              <option disabled value="">继续使用工作区中的模板…</option>
+              <option
+                v-for="template in templates"
+                :key="template.name"
+                :value="template.name"
+              >
+                {{ template.name }}
+              </option></select
+            ><UiButton
+              aria-label="重新加载模板"
+              :disabled="loadingTemplates"
+              @click="loadTemplates"
+              variant="ghost"
+              icon-only
+              ><RefreshCw :class="{ spin: loadingTemplates }" /></UiButton
+            ><UiButton
+              :disabled="!selectedTemplateName || loadingVars"
+              @click="loadVariables({ refresh: true })"
+              aria-label="提取变量"
+              icon-only
+              ><ScanText
+            /></UiButton>
+          </div>
+          <span>已有模板可直接继续填写</span>
+        </div>
+      </section>
       <section
         class="create-upload-panel"
         aria-labelledby="create-upload-heading"
@@ -120,88 +201,6 @@
           >
         </div>
       </section>
-
-      <aside
-        class="create-template-options"
-        aria-labelledby="create-existing-heading"
-      >
-        <div class="create-section-title">
-          <div>
-            <h2 id="create-existing-heading">使用已有模板</h2>
-            <p>从工作区继续，或选一份常用文档。</p>
-          </div>
-          <UiButton
-            aria-label="重新加载模板"
-            :disabled="loadingTemplates"
-            @click="loadTemplates"
-            variant="ghost"
-            size="compact"
-            icon-only
-            ><RefreshCw :class="{ spin: loadingTemplates }"
-          /></UiButton>
-        </div>
-        <label class="field-label" for="selected-template">选择模板</label>
-        <div class="template-select-row">
-          <select
-            id="selected-template"
-            v-model="selectedTemplateName"
-            class="field-input"
-            @change="handleTemplateChange"
-          >
-            <option disabled value="">请选择工作区模板</option>
-            <option
-              v-for="template in templates"
-              :key="template.name"
-              :value="template.name"
-            >
-              {{ template.name }}
-            </option></select
-          ><UiButton
-            :disabled="!selectedTemplateName || loadingVars"
-            @click="loadVariables({ refresh: true })"
-            aria-label="提取变量"
-            icon-only
-            ><ScanText
-          /></UiButton>
-        </div>
-        <div class="create-starter-heading">
-          <h3>常用内置模板</h3>
-          <span v-if="library.length">{{ library.length }} 个可用</span>
-        </div>
-        <UiNotice v-if="libraryError" tone="error" :message="libraryError"
-          >{{ libraryError }}
-          <UiButton variant="text" @click="loadLibrary"
-            >重新加载</UiButton
-          ></UiNotice
-        >
-        <ul v-else class="create-starter-list" :aria-busy="loadingLibrary">
-          <li v-for="template in suggestedTemplates" :key="template.id">
-            <RouterLink
-              :to="{
-                path: '/templates',
-                query: { source: 'builtin', q: template.name },
-              }"
-              ><FileText aria-hidden="true" />
-              <div>
-                <strong>{{ template.name }}</strong
-                ><span
-                  >{{ template.category }} ·
-                  {{ template.variables.length }} 个可填写内容</span
-                >
-              </div>
-              <ArrowUpRight aria-hidden="true"
-            /></RouterLink>
-          </li>
-          <li v-if="loadingLibrary" class="create-starter-loading">
-            正在读取内置模板…
-          </li>
-        </ul>
-        <UiButton
-          :to="{ path: '/templates', query: { source: 'builtin' } }"
-          variant="text"
-          ><Files />浏览内置模板<ArrowRight
-        /></UiButton>
-      </aside>
     </div>
 
     <UiNotice v-if="status" :message="status" class="create-status" />
@@ -331,17 +330,14 @@
 </template>
 <script setup>
 import "../styles/create.css";
+import TemplateCover from "../components/TemplateCover.vue";
 import UiNotice from "../components/ui/UiNotice.vue";
 import UiEmptyState from "../components/ui/UiEmptyState.vue";
 import UiPageHeader from "../components/ui/UiPageHeader.vue";
 import UiButton from "../components/ui/UiButton.vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import {
   ArrowRight,
-  Files,
-  Check,
-  ChevronRight,
-  ArrowUpRight,
   ShieldCheck,
   FileText,
   Info,
@@ -365,12 +361,33 @@ import { computed, onMounted, reactive, ref } from "vue";
 import {
   fetchTemplates,
   fetchTemplateLibrary,
+  useLibraryTemplate,
   fetchTemplateVariables,
   aiFillVariables,
   generateFromTemplate,
   uploadTemplate,
 } from "../api/templates";
 
+const router = useRouter();
+function focusUpload() {
+  document
+    .getElementById("create-upload-heading")
+    ?.scrollIntoView({ block: "center", behavior: "instant" });
+  uploadInput.value?.focus({ preventScroll: true });
+}
+const usingStarter = ref(""),
+  libraryActionError = ref("");
+async function prepareStarter(template) {
+  usingStarter.value = template.id;
+  libraryActionError.value = "";
+  const { data, error } = await useLibraryTemplate(template.id);
+  usingStarter.value = "";
+  if (error) {
+    libraryActionError.value = error;
+    return;
+  }
+  await router.push({ name: "generate", params: { templateId: data.name } });
+}
 const library = ref([]),
   loadingLibrary = ref(true),
   libraryError = ref("");

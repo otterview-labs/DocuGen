@@ -100,3 +100,23 @@ def test_library_authorization_unknown_and_upload_validation(tmp_path):
                 ).status_code
                 == 400
             )
+
+
+def test_public_preview_assets_do_not_fall_through_to_spa_html(tmp_path):
+    frontend = tmp_path / "frontend"
+    previews = frontend / "template-previews"
+    previews.mkdir(parents=True)
+    (frontend / "index.html").write_text("<!doctype html><title>DocuGen</title>")
+    png = b"\x89PNG\r\n\x1a\npreview-routing-fixture"
+    (previews / "example.png").write_bytes(png)
+    (previews / "provenance.json").write_text("[]")
+    settings = Settings(data_dir=tmp_path / "data", frontend_dir=frontend, api_key="key", _env_file=None)
+    with TestClient(create_app(settings)) as local:
+        image = local.get("/template-previews/example.png")
+        assert image.status_code == 200
+        assert image.headers["content-type"] == "image/png"
+        assert image.content == png
+        assert local.get("/template-previews/provenance.json").json() == []
+        assert local.get("/template-previews/missing.png").status_code == 404
+        assert local.get("/api/template-library").status_code == 401
+        assert "<!doctype html>" in local.get("/create").text

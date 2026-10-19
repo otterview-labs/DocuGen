@@ -369,6 +369,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     if (config.frontend_dir / "assets").is_dir():
         app.mount("/assets", StaticFiles(directory=config.frontend_dir / "assets"), name="assets")
+    if (config.frontend_dir / "template-previews").is_dir():
+        app.mount(
+            "/template-previews",
+            StaticFiles(directory=config.frontend_dir / "template-previews"),
+            name="template-previews",
+        )
 
     @app.get("/{path:path}", include_in_schema=False)
     async def frontend(path: str):
