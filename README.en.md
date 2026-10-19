@@ -4,7 +4,13 @@ A self-hosted knowledge and document workspace. Organize source material, retrie
 
 This repository integrates the JetLinks knowledge runtime with selected DocuGen template and Word rendering methods. It is an early local integration, version 0.1.0, for a **single shared workspace**. Local use requires no workspace key by default. An optional shared access key protects its API and generated files when enabled; it does not provide per-user isolation or multi-tenancy.
 
-See the [Chinese guide](README.md) for configuration and deployment details, and [provenance](docs/PROVENANCE.md) for upstream revisions and publication requirements.
+Released under [Apache-2.0](LICENSE). The project owner has authorized public release of the imported knowledge-runtime and DocuGen adaptations. See the [Chinese guide](README.md) for configuration and deployment details, and [provenance](docs/PROVENANCE.md) and [NOTICE](NOTICE) for upstream revisions and attribution.
+
+![Knowledge workspace and source preview](docs/images/knowledge-workspace.png)
+
+The Chinese interface is shown with explicitly labeled synthetic acceptance material.
+
+![Word template variables](docs/images/word-template.png)
 
 ## Run locally
 

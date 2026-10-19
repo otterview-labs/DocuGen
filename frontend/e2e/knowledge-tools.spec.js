@@ -224,7 +224,12 @@ test("staged upload, parse task history and actual task response", async ({
   page,
   request,
 }) => {
+  const name = "示例 · 解析任务回归 " + Date.now();
+  const created = await request.post(root + "/collections", { headers, data: { name } });
+  expect(created.ok()).toBeTruthy();
+  const cid = (await created.json()).result.id;
   await page.goto("/knowledge");
+  await page.getByRole("button", { name: new RegExp(name) }).click();
   await tool(page, "导入与解析", "上传待解析文件");
   await page.getByLabel("选择文件", { exact: true }).setInputFiles({
     name: "示例解析.txt",
@@ -294,6 +299,10 @@ test("staged upload, parse task history and actual task response", async ({
     "示例资料：项目验收周期为交付后 30 天。",
   );
   await request.delete(root + "/resources/" + rid, { headers });
+  await request.post(root + "/operations/collection-delete", {
+    headers,
+    data: { collection_id: cid, confirmed: true },
+  });
 });
 
 test("metadata loads existing values and controlled graph renders entities and links", async ({

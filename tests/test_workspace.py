@@ -41,6 +41,16 @@ def test_auth_and_unknown_api(client):
     assert client.get("/api/missing").status_code == 404
 
 
+def test_startup_with_environment_socks_proxy(tmp_path, monkeypatch):
+    # Initializing HTTPX must work with a configured proxy even before any
+    # external request. This previously crashed without the SOCKS dependency.
+    monkeypatch.setenv("ALL_PROXY", "socks5://127.0.0.1:9")
+    settings = Settings(data_dir=tmp_path, api_key="", _env_file=None)
+    with TestClient(create_app(settings)) as local:
+        assert local.get("/health").status_code == 200
+        assert local.get("/api/templates").json()["templates"] == []
+
+
 @pytest.mark.parametrize("access_key", ["", "test-key"])
 def test_optional_workspace_access_covers_upload_render_and_download(tmp_path, access_key):
     settings = Settings(data_dir=tmp_path, api_key=access_key, _env_file=None)
@@ -312,7 +322,12 @@ def test_word_export_contains_a_real_toc_field(tmp_path):
 
     path = DocumentGenerator(tmp_path).export_to_doc("# 报告\n\n## 背景\n\n正文", "fulltext")
     document = Document(path)
-    assert document._element.xpath(".//w:fldSimple")
+    fields = document._element.xpath(".//w:fldSimple")
+    assert fields
+    assert "背景" in "".join(document._element.xpath(".//w:fldSimple//w:t/text()"))
+    assert document.core_properties.title == "报告"
+    assert not document.styles['Title']._element.xpath('./w:pPr/w:pBdr')
+    assert document.styles['Normal']._element.xpath("./w:rPr/w:rFonts/@w:eastAsia") == ["宋体"]
     assert "TOC" not in "\n".join(p.text for p in document.paragraphs)
 
 

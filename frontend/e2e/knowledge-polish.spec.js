@@ -13,6 +13,24 @@ const groups = {
   settings: "知识库设置",
   search: "高级检索",
 };
+let formCollection;
+test.beforeAll(async ({ request }) => {
+  // These forms belong to a collection. Seed this spec's own fixture so the
+  // suite also works on an empty workspace, regardless of test-file ordering.
+  const created = await request.post(root + "/collections", {
+    headers,
+    data: { name: "示例 · 表单回归 " + Date.now() },
+  });
+  expect(created.ok()).toBeTruthy();
+  formCollection = (await created.json()).result;
+});
+test.afterAll(async ({ request }) => {
+  if (formCollection)
+    await request.post(root + "/operations/collection-delete", {
+      headers,
+      data: { collection_id: formCollection.id, confirmed: true },
+    });
+});
 test.beforeEach(async ({ page }) =>
   page.addInitScript((key) => sessionStorage.setItem("quill-key", key), key),
 );
@@ -28,6 +46,7 @@ for (const width of [1440, 390])
       await (await request.get(root + "/capabilities", { headers })).json()
     ).operations;
     await page.goto("/knowledge");
+    await page.getByRole("button", { name: new RegExp(formCollection.name) }).click();
     for (const [group, title] of Object.entries(groups)) {
       await page.getByRole("tab", { name: title, exact: true }).click();
       const nav = page.getByRole("navigation", { name: title + "操作" });

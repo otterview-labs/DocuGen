@@ -119,6 +119,10 @@ class DocumentGenerator:
 
             # 创建Word文档
             doc = Document()
+            title_style = doc.styles['Title']
+            title_style.font.color.rgb = RGBColor(0, 0, 0)
+            for border in title_style._element.xpath('./w:pPr/w:pBdr'):
+                border.getparent().remove(border)
 
             # 设置文档基本属性
             core_properties = doc.core_properties
@@ -141,6 +145,7 @@ class DocumentGenerator:
                 first_line = content.split('\n')[0].strip()
                 if first_line.startswith("# "):
                     main_title = self.clean_markdown_text(first_line[2:].strip())
+            core_properties.title = main_title
 
             # 添加封面
             doc.add_paragraph()  # Start the cover without a leading blank page.
@@ -149,12 +154,14 @@ class DocumentGenerator:
             run = p.add_run("\n\n\n\n\n")  # 添加空行
 
             # 封面使用从内容提取的标题，而不是固定文本
-            p = doc.add_paragraph()
+            p = doc.add_paragraph(style='Title')
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             run = p.add_run(main_title)
             run.font.size = Pt(26)
             run.font.name = '黑体'
+            run._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '黑体')
             run.font.bold = True
+            run.font.color.rgb = RGBColor(0, 0, 0)
 
             # 日期
             p = doc.add_paragraph()
@@ -162,6 +169,7 @@ class DocumentGenerator:
             run = p.add_run(f"\n\n{time.strftime('%Y年%m月%d日')}")
             run.font.size = Pt(12)
             run.font.name = '宋体'
+            run._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '宋体')
 
             # 添加分页符开始正文
             doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
@@ -173,13 +181,33 @@ class DocumentGenerator:
                 run = p.add_run("目 录")
                 run.font.size = Pt(16)
                 run.font.name = '黑体'
+                run._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '黑体')
                 run.font.bold = True
 
                 doc.add_paragraph("\n")
 
-                # 使用字段代码添加目录（这是一个占位符，Word会自动填充）
+                # Keep a real TOC field, with a readable cached result for
+                # viewers that do not calculate Word fields automatically.
                 field = OxmlElement("w:fldSimple")
                 field.set(qn("w:instr"), 'TOC \\o "1-3" \\h \\z \\u')
+                entries = []
+                skipped_title = False
+                for line in content.splitlines():
+                    match = re.match(r'^(#{1,3})\s+(.+)$', line.strip())
+                    if not match:
+                        continue
+                    if len(match.group(1)) == 1 and not skipped_title:
+                        skipped_title = True
+                        continue
+                    entries.append(self.clean_markdown_text(match.group(2)))
+                for index, entry in enumerate(entries):
+                    cached_run = OxmlElement('w:r')
+                    if index:
+                        cached_run.append(OxmlElement('w:br'))
+                    cached_text = OxmlElement('w:t')
+                    cached_text.text = entry
+                    cached_run.append(cached_text)
+                    field.append(cached_run)
                 doc.add_paragraph()._p.append(field)
 
                 # 添加分页符开始正文
@@ -190,12 +218,14 @@ class DocumentGenerator:
             style = doc.styles['Normal']
             font = style.font
             font.name = '宋体'
+            style._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '宋体')
             font.size = Pt(12)
 
             # 为不同级别标题设置样式
             for i in range(1, 5):
                 heading_style = doc.styles[f'Heading {i}']
                 heading_style.font.name = '黑体'
+                heading_style._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'), '黑体')
                 heading_style.font.bold = True
                 heading_style.font.size = Pt(18 - (i*2))  # 标题1-4级字体大小递减
                 heading_style.paragraph_format.space_before = Pt(12)
