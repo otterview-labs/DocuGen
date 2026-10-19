@@ -44,7 +44,7 @@
               </option></select
             ><UiButton
               :disabled="!selectedTemplateName || loadingVars"
-              @click="loadVariables"
+              @click="loadVariables({ refresh: true })"
               ><ScanText :size="15" />提取变量
             </UiButton>
           </div>
@@ -296,33 +296,35 @@ function handleTemplateChange() {
   loadVariables();
 }
 
-function resetValues(varList) {
+function resetValues(varList, preserve = false) {
+  const previous = preserve ? { ...values } : {};
   Object.keys(values).forEach((k) => delete values[k]);
   (varList || []).forEach((v) => {
-    values[v.name] = v.default_value || "";
+    values[v.name] = Object.hasOwn(previous, v.name) ? previous[v.name] : v.default_value || "";
   });
 }
 
-async function loadVariables() {
+async function loadVariables({ refresh = false } = {}) {
   if (!selectedTemplateName.value) return;
   loadingVars.value = true;
   status.value = "";
-  variables.value = [];
   try {
     // 优先使用元数据附带变量
-    if (currentTemplate.value?.variables?.length) {
+    if (!refresh && currentTemplate.value?.variables?.length) {
       variables.value = currentTemplate.value.variables;
       resetValues(variables.value);
     } else {
       const { data, error } = await fetchTemplateVariables(
         selectedTemplateName.value,
+        { refresh },
       );
       if (error) {
         status.value = `提取变量失败：${error}`;
-        variables.value = [];
+        if (!refresh) variables.value = [];
       } else {
         variables.value = data || [];
-        resetValues(variables.value);
+        resetValues(variables.value, refresh);
+        if (currentTemplate.value) currentTemplate.value.variables = variables.value;
       }
     }
   } finally {

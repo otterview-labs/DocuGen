@@ -89,53 +89,53 @@ class BaseTemplatesGenerator:
         在段落中替换占位符，支持占位符被拆分到多个run中的情况。
         这是一个复杂的操作，因为占位符可能横跨多个具有不同格式的run。
         """
-        for key, value in data.items():
-            # 同时兼容【】和{{}}两种格式
-            placeholders = [f"【{key}】", f"{{{{{key}}}}}"]
-            for p_text in placeholders:
-                # Replace original occurrences from the end; inserted values are never re-expanded.
-                full_text = "".join(r.text for r in paragraph.runs)
-                positions = [match.start() for match in re.finditer(re.escape(p_text), full_text)]
-                for start_char_index in reversed(positions):
-                    runs = paragraph.runs
-                    # --- 定位占位符所在的 runs ---
-                    end_char_index = start_char_index + len(p_text)
+        full_text = "".join(run.text for run in paragraph.runs)
+        pattern = re.compile(r"【([^】]+?)】|\{\{([^}]+?)\}\}")
+        matches = []
+        for match in pattern.finditer(full_text):
+            key = next((value for value in match.groups() if value), "").strip()
+            if key in data:
+                matches.append((match.start(), match.end(), data[key]))
+        # Match the original text once, so inserted values never become new variables.
+        for start_char_index, end_char_index, value in reversed(matches):
+            runs = paragraph.runs
+            # --- 定位占位符所在的 runs ---
 
-                    run_cursor = 0
-                    start_run, end_run = None, None
-                    start_run_idx, end_run_idx = -1, -1
-                    start_offset, end_offset = -1, -1
+            run_cursor = 0
+            start_run, end_run = None, None
+            start_run_idx, end_run_idx = -1, -1
+            start_offset, end_offset = -1, -1
 
-                    for i, run in enumerate(runs):
-                        run_len = len(run.text)
-                        if start_run is None and run_cursor + run_len > start_char_index:
-                            start_run = run
-                            start_run_idx = i
-                            start_offset = start_char_index - run_cursor
-                        if end_run is None and run_cursor + run_len >= end_char_index:
-                            end_run = run
-                            end_run_idx = i
-                            end_offset = end_char_index - run_cursor
-                            break
-                        run_cursor += run_len
+            for i, run in enumerate(runs):
+                run_len = len(run.text)
+                if start_run is None and run_cursor + run_len > start_char_index:
+                    start_run = run
+                    start_run_idx = i
+                    start_offset = start_char_index - run_cursor
+                if end_run is None and run_cursor + run_len >= end_char_index:
+                    end_run = run
+                    end_run_idx = i
+                    end_offset = end_char_index - run_cursor
+                    break
+                run_cursor += run_len
 
-                    # --- 执行替换 ---
-                    if start_run is None or end_run is None:
-                        # 如果没有找到起始或结束run，可能存在问题，跳出循环
-                        break
+            # --- 执行替换 ---
+            if start_run is None or end_run is None:
+                # 如果没有找到起始或结束run，可能存在问题，跳出循环
+                break
 
-                    if start_run_idx == end_run_idx:
-                        # 占位符在单个run内
-                        start_run.text = start_run.text[:start_offset] + str(value) + end_run.text[end_offset:]
-                    else:
-                        # 占位符横跨多个run
-                        # 1. 修改起始run
-                        start_run.text = start_run.text[:start_offset] + str(value)
-                        # 2. 修改结束run
-                        end_run.text = end_run.text[end_offset:]
-                        # 3. 清空中间的runs
-                        for i in range(start_run_idx + 1, end_run_idx):
-                            runs[i].text = ""
+            if start_run_idx == end_run_idx:
+                # 占位符在单个run内
+                start_run.text = start_run.text[:start_offset] + str(value) + end_run.text[end_offset:]
+            else:
+                # 占位符横跨多个run
+                # 1. 修改起始run
+                start_run.text = start_run.text[:start_offset] + str(value)
+                # 2. 修改结束run
+                end_run.text = end_run.text[end_offset:]
+                # 3. 清空中间的runs
+                for i in range(start_run_idx + 1, end_run_idx):
+                    runs[i].text = ""
 
     def extract_variables_from_template(self, template_path: str) -> List[Dict[str, str]]:
         """

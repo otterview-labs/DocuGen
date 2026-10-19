@@ -20,11 +20,11 @@ export async function uploadTemplate(formData) {
   }
 }
 
-export async function fetchTemplateVariables(templateName) {
+export async function fetchTemplateVariables(templateName, { refresh = false } = {}) {
   try {
-    const res = await api.get("/api/get-template-variables", {
-      params: { template_name: templateName }
-    });
+    const res = refresh
+      ? await api.post("/api/refresh-template-variables", new URLSearchParams({ template_name: templateName }))
+      : await api.get("/api/get-template-variables", { params: { template_name: templateName } });
     return { data: res.data.variables || [] };
   } catch (error) {
     return { error: handleError(error) };

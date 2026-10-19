@@ -55,6 +55,16 @@ class Store:
         with self.connect() as db:
             return [json.loads(row[0]) for row in db.execute("SELECT body FROM templates ORDER BY name")]
 
+    def update_template_variables(self, template_id: str, variables: list[dict]) -> dict:
+        with self.connect() as db:
+            row = db.execute("SELECT body FROM templates WHERE id=?", (template_id,)).fetchone()
+            if row is None:
+                raise ValueError("模板不存在。")
+            body = json.loads(row[0])
+            body.update(variables=variables, updated_at=now())
+            db.execute("UPDATE templates SET body=? WHERE id=?", (json.dumps(body), template_id))
+        return body
+
     def template(self, name: str) -> dict | None:
         with self.connect() as db:
             row = db.execute("SELECT body FROM templates WHERE name=? OR id=?", (name, name)).fetchone()

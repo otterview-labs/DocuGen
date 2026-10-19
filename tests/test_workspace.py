@@ -317,6 +317,87 @@ def test_template_values_are_not_recursively_expanded(tmp_path):
     assert paragraph.text == "{{变量}}保留 和 {{变量}}保留"
 
 
+def test_spaced_template_variables_preserve_runs_and_literal_values(tmp_path):
+    from quill.legacy.template import BaseTemplatesGenerator
+
+    document = Document()
+    paragraph = document.add_paragraph()
+    paragraph.add_run("项目：{{ 项").bold = True
+    paragraph.add_run("目名称 }} / 【 负责人 】 / {{数量}}")
+    BaseTemplatesGenerator(tmp_path)._fill_template(document, {
+        "项目名称": "【负责人】（字面值）", "负责人": "示例乙", "数量": "45",
+    })
+    assert paragraph.text == "项目：【负责人】（字面值） / 示例乙 / 45"
+    assert paragraph.runs[0].bold is True
+
+
+def test_variable_refresh_reparses_the_saved_file_and_keeps_previous_metadata_on_failure(client):
+    upload(client, "示例 · 重新提取")
+    store = client.app.state.store
+    template = store.template("示例 · 重新提取")
+    store.update_template_variables(template["id"], [])
+    refreshed = client.post("/api/refresh-template-variables", data={"template_name": template["name"]})
+    assert refreshed.status_code == 200
+    assert {v["name"] for v in refreshed.json()["variables"]} == {"项目名称", "负责人"}
+    assert store.template(template["name"])["variables"] == refreshed.json()["variables"]
+    assert store.template(template["name"])["created_at"] == template["created_at"]
+    assert client.post("/api/refresh-template-variables", data={"template_name": template["name"]},
+                       headers={"Authorization": ""}).status_code == 401
+    (store.root / "templates" / (template["id"] + ".docx")).write_bytes(b"invalid")
+    assert client.post("/api/refresh-template-variables", data={"template_name": template["name"]}).status_code == 400
+    assert store.template(template["name"])["variables"] == refreshed.json()["variables"]
+    assert client.post("/api/refresh-template-variables", data={"template_name": "missing"}).status_code == 404
+
+
+def test_ai_template_fill_retries_field_queries_and_retains_real_sources(client):
+    upload(client, "示例 · 资料取材")
+    queries = []
+
+    class Knowledge:
+        async def search(self, query, collections, **options):
+            queries.append((query, collections, options))
+            if query in {"项目名称", "负责人"}:
+                return [{"resource_id": "actual-source", "title": "项目确认单",
+                         "content": "项目名称为北岸项目，负责人为示例乙。"}]
+            return []
+
+    class Model:
+        async def chat(self, system, prompt):
+            assert "项目确认单" in prompt
+            return json.dumps({"项目名称": "北岸项目", "负责人": "示例乙"})
+
+    client.app.state.generation.knowledge = Knowledge()
+    client.app.state.llm = Model()
+    filled = client.post("/api/ai-fill-template-variables", json={
+        "template_name": "示例 · 资料取材", "enable_rag": True, "kb_name": "selected-collection",
+    })
+    assert filled.status_code == 200, filled.text
+    assert filled.json()["variables"] == {"项目名称": "北岸项目", "负责人": "示例乙"}
+    assert len(filled.json()["sources"]) == 1
+    assert filled.json()["sources"][0]["resource_id"] == "actual-source"
+    assert all(collections == ["selected-collection"] for _, collections, _ in queries)
+    assert [query for query, _, _ in queries[1:]] == ["项目名称", "负责人"]
+    assert all(options == {"mode": "keyword", "top_k": 3} for _, _, options in queries[1:])
+
+
+async def test_template_fallback_stays_bounded_and_preserves_no_hit_failure(tmp_path):
+    from quill.generation import GenerationService
+
+    class Knowledge:
+        def __init__(self):
+            self.queries = []
+
+        async def search(self, query, collections, **options):
+            self.queries.append(query)
+            return []
+
+    knowledge = Knowledge()
+    service = GenerationService(Store(tmp_path), knowledge, None)
+    with pytest.raises(ProviderError, match="没有检索到"):
+        await service.references("template", ["only-this-collection"], "", fallback_queries=[str(i) for i in range(50)])
+    assert knowledge.queries == ["template"] + [str(i) for i in range(8)]
+
+
 def test_word_export_contains_a_real_toc_field(tmp_path):
     from quill.legacy.document import DocumentGenerator
 

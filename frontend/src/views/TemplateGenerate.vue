@@ -22,7 +22,7 @@
             </div>
             <UiButton
               :disabled="loadingVars"
-              @click="loadVariables"
+              @click="loadVariables({ refresh: true })"
               size="compact"
               ><RefreshCw
                 :size="15"
@@ -242,30 +242,32 @@ async function loadTemplateMeta() {
   };
 }
 
-function resetValues(varList) {
+function resetValues(varList, preserve = false) {
+  const previous = preserve ? { ...values } : {};
   Object.keys(values).forEach((k) => delete values[k]);
   (varList || []).forEach((v) => {
-    values[v.name] = v.default_value || "";
+    values[v.name] = Object.hasOwn(previous, v.name) ? previous[v.name] : v.default_value || "";
   });
 }
 
-async function loadVariables() {
+async function loadVariables({ refresh = false } = {}) {
   if (!templateId.value) return;
   loadingVars.value = true;
   lastMessage.value = "";
   try {
     // 优先使用元数据中的变量
-    if (template.value?.variables && template.value.variables.length > 0) {
+    if (!refresh && template.value?.variables && template.value.variables.length > 0) {
       variables.value = template.value.variables;
       resetValues(variables.value);
     } else {
-      const { data, error } = await fetchTemplateVariables(templateId.value);
+      const { data, error } = await fetchTemplateVariables(templateId.value, { refresh });
       if (error) {
         lastMessage.value = `提取变量失败：${error}`;
-        variables.value = [];
+        if (!refresh) variables.value = [];
       } else {
         variables.value = data || [];
-        resetValues(variables.value);
+        resetValues(variables.value, refresh);
+        if (template.value) template.value.variables = variables.value;
       }
     }
   } finally {

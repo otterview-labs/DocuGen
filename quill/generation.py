@@ -20,8 +20,26 @@ class GenerationService:
         self.renderer = DocumentGenerator(store.root / "downloads")
         self.queue: asyncio.Queue[str] = asyncio.Queue(maxsize=100)
 
-    async def references(self, query: str, collection_ids: list[str], manual: str) -> list[dict]:
+    async def references(
+        self, query: str, collection_ids: list[str], manual: str, *, fallback_queries: list[str] | None = None,
+    ) -> list[dict]:
         sources = await self.knowledge.search(query, collection_ids) if collection_ids else []
+        if collection_ids and not sources and fallback_queries:
+            # Exact keyword retrieval cannot match an entire template as one phrase.
+            # Retry a bounded set of actual field names within the selected collections.
+            seen = set()
+            for term in list(dict.fromkeys(fallback_queries))[:8]:
+                for source in await self.knowledge.search(term, collection_ids, mode="keyword", top_k=3):
+                    identity = source.get("resource_id") or source.get("content_id") or (
+                        source.get("title"), source.get("content")
+                    )
+                    if identity not in seen:
+                        seen.add(identity)
+                        sources.append(source)
+                    if len(sources) >= 8:
+                        break
+                if len(sources) >= 8:
+                    break
         if collection_ids and not sources:
             raise ProviderError("所选知识库没有检索到相关资料，请补充资料或调整主题后重试。")
         if manual.strip():
