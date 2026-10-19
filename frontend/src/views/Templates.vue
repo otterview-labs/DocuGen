@@ -90,7 +90,7 @@
               /></UiButton>
             </div>
             <span class="document-tag"
-              >Quill 内置 · {{ preview.category }}</span
+              >DocuGen 内置 · {{ preview.category }}</span
             >
             <h3>{{ preview.name }}</h3>
             <p>{{ preview.description }}</p>

@@ -166,3 +166,18 @@ The corrected complete walkthrough passed all eight recorded steps. The model id
 Detailed local walkthrough evidence is under ignored `artifacts/hands-on-20261019/`, including `report-before.json`, `template-before.json`, the final `report.json`, screenshots and the browser-downloaded synthetic DOCX. No deployed/customer content was supplied to the model and no paid cloud model was called.
 
 The corrected workspace image is deployed at 8080. Read-only acceptance passed five routes at 1440px and 390px, with no saved access key, no initial API failures, no page exceptions and no page overflow. Persisted collection/template counts remain 1/1, and all three deployed services are healthy. The isolated synthetic test containers/volumes were removed after verification; local evidence files remain available for review.
+
+## DocuGen repository integration, 2026-10-19
+
+The integrated tree retains both DocuGen and Quill commit histories and includes the completed starter-template commit `33e5f06`. Public branding, package metadata, API title/version and README screenshots use DocuGen. The Python namespace, environment variables, browser storage keys and existing volume names remain compatible.
+
+Fresh checks against the integrated tree:
+
+- Workspace/backend tests: **55 passed**.
+- Knowledge-engine tests in their own process: **90 passed**.
+- Ruff: passed. Vue production build: passed.
+- Browser regression against an isolated local workspace and SQLite knowledge engine: **33 passed, 1 skipped**. The skipped case requires an explicitly configured real model; this integration run made no model calls.
+- DocuGen branding and no horizontal overflow checked at 1440px and 390px on knowledge and template-filling pages. README captures use only explicitly labeled synthetic material. The template-library regression also checks 1024px.
+- Full original-DocuGen, published-Quill and final local-Quill Git bundles were created and verified before repository cleanup. The old DocuGen tree is preserved by branch and tag; source-release metadata is backed up separately.
+
+Existing 8080 services, runtime databases, user templates and customer files were not changed by this integration. Historical runtime templates from the old DocuGen service are not included in the source migration; they require a separate data migration.
