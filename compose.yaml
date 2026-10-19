@@ -1,0 +1,82 @@
+services:
+  workspace:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      QUILL_DATA_DIR: /data
+      QUILL_KNOWLEDGE_URL: http://knowledge:8006
+      QUILL_API_KEY: ${QUILL_API_KEY:-}
+      QUILL_LLM_BASE_URL: ${QUILL_LLM_BASE_URL:-https://api.openai.com/v1}
+      QUILL_LLM_API_KEY: ${QUILL_LLM_API_KEY:-}
+      QUILL_LLM_MODEL: ${QUILL_LLM_MODEL:-}
+      QUILL_LLM_REASONING_EFFORT: ${QUILL_LLM_REASONING_EFFORT:-}
+      QUILL_LLM_TIMEOUT: ${QUILL_LLM_TIMEOUT:-120}
+      QUILL_LLM_MAX_TOKENS: ${QUILL_LLM_MAX_TOKENS:-4096}
+    volumes:
+      - workspace-data:/data
+    depends_on:
+      knowledge:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+  knowledge:
+    build: services/knowledge
+    environment:
+      DB_DATABASE_TYPE: postgresql
+      DB_MYSQL_HOST: postgres
+      DB_MYSQL_PORT: 5432
+      DB_MYSQL_USER: quill
+      DB_MYSQL_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      DB_MYSQL_DATABASE: quill
+      STARTUP_INITIALIZE_DATABASE_ON_STARTUP: "true"
+      STARTUP_RUN_DATABASE_MIGRATIONS_ON_STARTUP: "false"
+      STARTUP_SEED_LLM_CONFIG_ON_STARTUP: "false"
+      STARTUP_CHECK_DATABASE_ON_STARTUP: "true"
+      STARTUP_FAIL_FAST_ON_STARTUP_ERROR: "true"
+      VECTOR_DB_TYPE: pgvector
+      VECTOR_DB_DIMENSION: ${QUILL_EMBEDDING_DIMENSION:-1536}
+      GRAPH_DB_ENABLED: "false"
+      # Trusted internal service only: never publish the engine port directly.
+      ENVIRONMENT: development
+      SKIP_AUTH: "true"
+      DEV_MODE: "true"
+      API_LOGGING_ENABLED: "false"
+      LLM_PROVIDER: openai
+      OPENAI_API_BASE: ${QUILL_LLM_BASE_URL:-https://api.openai.com/v1}
+      OPENAI_API_KEY: ${QUILL_LLM_API_KEY:-}
+      OPENAI_MODEL_NAME: ${QUILL_LLM_MODEL:-}
+      EMBEDDING_PROVIDER: openai
+      EMBEDDING_OPENAI_EMBEDDING_MODEL: ${QUILL_EMBEDDING_MODEL:-text-embedding-3-small}
+      RERANK_PROVIDER: disabled
+    volumes:
+      - knowledge-data:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8006/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: quill
+      POSTGRES_DB: quill
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quill -d quill"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+volumes:
+  workspace-data:
+  knowledge-data:
+  postgres-data:

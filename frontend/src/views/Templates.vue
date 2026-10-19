@@ -1,937 +1,452 @@
 <template>
-  <div class="templates-page">
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-content">
-        <div class="badge-tag">📄 DocuGen 模版市场</div>
-        <h1 class="hero-title">发现文档生成模版</h1>
-        <p class="hero-subtitle">选择合适的模版，快速生成专业文档</p>
-
-        <!-- Search Bar -->
-        <div class="search-container">
-          <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
+  <section class="document-workspace templates-page">
+    <UiPageHeader
+      title="文档模板"
+      description="从常用文档开始，先看结构，再填写内容。也可以上传自己的 Word 模板。"
+      ><template #actions
+        ><UiButton to="/create" variant="primary"
+          ><Plus :size="16" />上传模板</UiButton
+        ></template
+      ></UiPageHeader
+    >
+    <UiNotice v-if="actionError" tone="error" :message="actionError" />
+    <section class="catalog-panel" aria-label="模板库">
+      <UiTabs
+        v-model="source"
+        label="模板来源"
+        :items="sourceTabs"
+        id-prefix="template-source-"
+      />
+      <div
+        :id="'template-source-' + source + '-panel'"
+        role="tabpanel"
+        :aria-labelledby="'template-source-' + source + '-tab'"
+      >
+        <div class="catalog-toolbar">
+          <label class="catalog-search ui-search-field"
+            ><Search :size="17" /><input
               v-model="searchQuery"
-              type="text"
-              placeholder="搜索模版..."
-              class="search-input"
-              @input="handleSearch"
-            />
-          </div>
-        </div>
-
-        <!-- Category Filter -->
-        <div class="category-filter">
-          <button
-            v-for="cat in categories"
-            :key="cat.id"
-            :class="['category-btn', { active: selectedCategory === cat.id }]"
-            @click="selectCategory(cat.id)"
+              type="search"
+              aria-label="搜索模板"
+              placeholder="搜索模板名称或说明…"
+              @input="currentPage = 1"
+          /></label>
+          <span class="catalog-total"
+            >{{ filteredTemplates.length }} 个模板</span
           >
-            <span class="category-icon">{{ cat.icon }}</span>
-            <span>{{ cat.name }}</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Templates Grid -->
-    <section class="templates-section">
-      <div class="section-header">
-        <h2>全部模版 <span class="count">({{ filteredTemplates.length }})</span></h2>
-        <div class="view-toggle">
-          <button :class="['toggle-btn', { active: viewMode === 'grid' }]" @click="viewMode = 'grid'">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <rect x="3" y="3" width="7" height="7" rx="1"/>
-              <rect x="14" y="3" width="7" height="7" rx="1"/>
-              <rect x="3" y="14" width="7" height="7" rx="1"/>
-              <rect x="14" y="14" width="7" height="7" rx="1"/>
-            </svg>
-          </button>
-          <button :class="['toggle-btn', { active: viewMode === 'list' }]" @click="viewMode = 'list'">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <rect x="3" y="5" width="18" height="4" rx="1"/>
-              <rect x="3" y="13" width="18" height="4" rx="1"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      <div v-if="loading" class="loading-state">
-        <div class="spinner"></div>
-        <p>加载模版中...</p>
-      </div>
-
-      <!-- Empty State -->
-      <div v-else-if="filteredTemplates.length === 0" class="empty-state">
-        <div class="empty-icon">📭</div>
-        <h3>暂无模版</h3>
-        <p>{{ searchQuery ? '未找到匹配的模版，试试其他关键词' : '还没有可用的模版' }}</p>
-        <button class="create-btn" @click="$router.push('/create')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-          创建第一个模版
-        </button>
-      </div>
-
-      <!-- Grid View -->
-      <div v-else-if="viewMode === 'grid'" class="templates-grid">
-        <div
-          v-for="template in paginatedTemplates"
-          :key="template.name"
-          class="template-card"
-          @click="useTemplate(template)"
-        >
-          <div class="card-header">
-            <div class="card-icon">{{ getTemplateIcon(template) }}</div>
-            <span class="card-badge">{{ template.category || '通用' }}</span>
+          <div class="view-switch" role="group" aria-label="模板显示方式">
+            <UiButton
+              :aria-pressed="viewMode === 'grid'"
+              size="compact"
+              aria-label="网格视图"
+              @click="viewMode = 'grid'"
+              variant="ghost"
+              icon-only
+              ><LayoutGrid :size="17" /></UiButton
+            ><UiButton
+              :aria-pressed="viewMode === 'list'"
+              size="compact"
+              aria-label="列表视图"
+              @click="viewMode = 'list'"
+              variant="ghost"
+              icon-only
+              ><List :size="18"
+            /></UiButton>
           </div>
-          <div class="card-body">
-            <h3 class="card-title">{{ template.name }}</h3>
-            <p class="card-description">{{ template.description || '暂无描述' }}</p>
-            <div class="card-footer">
-              <div class="template-stats">
-                <span class="stat">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                  </svg>
-                  {{ template.format || 'DOCX' }}
-                </span>
-                <span class="stat">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M12 2v20M2 12h20"/>
-                  </svg>
-                  {{ template.variables?.length || 0 }} 变量
-                </span>
+        </div>
+        <section
+          v-if="preview"
+          id="template-structure"
+          ref="previewPanel"
+          class="template-structure"
+          tabindex="-1"
+          aria-label="模板结构预览"
+          @keydown.esc.stop="closePreview"
+        >
+          <div class="template-paper">
+            <p class="template-paper-header">{{ preview.name }} · DOCX</p>
+            <h2>{{ preview.name }}</h2>
+            <dl class="template-paper-fields">
+              <template v-for="field in preview.fields" :key="field"
+                ><dt>{{ field }}</dt>
+                <dd>{{ placeholder(field) }}</dd></template
+              >
+            </dl>
+            <section v-for="section in preview.sections" :key="section.field">
+              <h3>{{ section.title }}</h3>
+              <p>{{ placeholder(section.field) }}</p>
+            </section>
+          </div>
+          <aside class="template-structure-info">
+            <div class="editor-section-heading">
+              <h2>模板结构预览</h2>
+              <UiButton
+                variant="ghost"
+                size="compact"
+                icon-only
+                aria-label="关闭模板预览"
+                @click="closePreview"
+                ><X
+              /></UiButton>
+            </div>
+            <span class="document-tag"
+              >DocuGen 内置 · {{ preview.category }}</span
+            >
+            <h3>{{ preview.name }}</h3>
+            <p>{{ preview.description }}</p>
+            <dl class="document-summary">
+              <dt>可填写变量</dt>
+              <dd>{{ preview.variables.length }} 个</dd>
+              <dt>纸张</dt>
+              <dd>A4 · 纵向</dd>
+              <dt>包含版式</dt>
+              <dd>标题、信息表、章节、页眉和页码</dd>
+            </dl>
+            <UiButton
+              variant="primary"
+              class="full-width"
+              :disabled="!!using"
+              @click="useTemplate(preview)"
+              ><ArrowRight />{{
+                using === preview.id ? "正在添加…" : "使用此模板"
+              }}</UiButton
+            >
+            <UiButton
+              class="full-width template-original"
+              :disabled="downloading"
+              @click="downloadOriginal(preview)"
+              ><Download />下载 Word 模板</UiButton
+            >
+            <p>
+              此处展示内容结构。Word 的实际分页与字体以下载文件为准，可在 Word
+              中调整版式后重新上传。
+            </p>
+          </aside>
+        </section>
+        <div class="catalog-categories" role="group" aria-label="模板分类">
+          <UiButton
+            variant="ghost"
+            size="compact"
+            v-for="category in categories"
+            :key="category"
+            :aria-pressed="selectedCategory === category"
+            @click="
+              selectedCategory = category;
+              currentPage = 1;
+            "
+          >
+            {{ category }}
+          </UiButton>
+        </div>
+        <UiEmptyState
+          v-if="loading"
+          :icon="LoaderCircle"
+          description="正在读取模板…"
+          state="loading"
+        ></UiEmptyState>
+        <UiEmptyState
+          v-else-if="loadError"
+          :icon="AlertCircle"
+          title="暂时无法读取模板"
+          :description="loadError"
+          state="error"
+          heading="h2"
+          ><UiButton @click="loadTemplates"
+            ><RefreshCw :size="15" />重新加载
+          </UiButton></UiEmptyState
+        >
+        <UiEmptyState
+          v-else-if="!filteredTemplates.length"
+          :icon="Files"
+          :title="
+            searchQuery || selectedCategory !== '全部'
+              ? '没有匹配的模板'
+              : '把常用文档，变成可复用的模板'
+          "
+          :description="
+            searchQuery || selectedCategory !== '全部'
+              ? '换一个关键词或分类，再试一次。'
+              : '上传 Word 文件，自动识别变量。每次填写新内容，保留熟悉的文档格式。'
+          "
+          heading="h2"
+          ><UiButton
+            v-if="searchQuery || selectedCategory !== '全部'"
+            @click="
+              searchQuery = '';
+              selectedCategory = '全部';
+            "
+          >
+            清除筛选</UiButton
+          ><UiButton v-else to="/create" variant="primary"
+            ><Plus :size="15" />创建第一个模板</UiButton
+          ></UiEmptyState
+        >
+        <div
+          v-else
+          class="template-catalog"
+          :class="{ 'list-view': viewMode === 'list' }"
+        >
+          <article
+            v-for="template in paginatedTemplates"
+            :key="
+              template.origin === 'builtin'
+                ? 'builtin-' + template.id
+                : template.id
+            "
+            class="template-entry"
+          >
+            <div
+              v-if="template.origin === 'builtin'"
+              class="template-sheet-outline"
+              aria-hidden="true"
+            >
+              <strong>{{ template.name }}</strong>
+              <span>{{ template.fields.slice(0, 3).join(" · ") }}</span>
+              <span
+                v-for="section in template.sections.slice(0, 3)"
+                :key="section.title"
+                >{{ section.title }}</span
+              >
+            </div>
+            <div v-else class="template-sheet" aria-hidden="true">
+              <FileText :size="27" :stroke-width="1.3" /><span>DOCX</span>
+            </div>
+            <div class="template-entry-body">
+              <span class="document-tag"
+                >{{ template.category || "通用" }} ·
+                {{
+                  template.origin === "builtin" ? "内置模板" : "工作区模板"
+                }}</span
+              >
+              <h2>
+                <template v-if="template.origin === 'builtin'">{{
+                  template.name
+                }}</template>
+                <RouterLink
+                  v-else
+                  :to="{
+                    name: 'generate',
+                    params: { templateId: template.name },
+                  }"
+                  >{{ template.name }}</RouterLink
+                >
+              </h2>
+              <p>
+                {{ template.description || "填写模板变量，生成 Word 文档。" }}
+              </p>
+              <div class="template-entry-footer">
+                <span>{{ template.variables?.length || 0 }} 个变量</span
+                ><UiButton
+                  v-if="template.origin === 'builtin'"
+                  variant="text"
+                  size="compact"
+                  :aria-label="'预览' + template.name"
+                  :aria-expanded="preview?.id === template.id"
+                  aria-controls="template-structure"
+                  @click="openPreview(template, $event)"
+                  >查看结构</UiButton
+                >
+                <UiButton
+                  v-if="template.origin === 'builtin'"
+                  variant="text"
+                  :disabled="!!using"
+                  :aria-label="'使用' + template.name"
+                  @click="useTemplate(template)"
+                  >{{ using === template.id ? "正在添加…" : "使用模板"
+                  }}<ArrowRight
+                /></UiButton>
+                <UiButton
+                  v-else
+                  :to="{
+                    name: 'generate',
+                    params: { templateId: template.name },
+                  }"
+                  variant="text"
+                  >使用模板<ArrowRight :size="15"
+                /></UiButton>
               </div>
-              <button class="use-btn" @click.stop="useTemplate(template)">
-                使用模版
-              </button>
             </div>
-          </div>
+          </article>
         </div>
-      </div>
-
-      <!-- List View -->
-      <div v-else class="templates-list">
-        <div
-          v-for="template in paginatedTemplates"
-          :key="template.name"
-          class="template-list-item"
-          @click="useTemplate(template)"
-        >
-          <div class="list-icon">
-            {{ getTemplateIcon(template) }}
+        <footer class="catalog-footer">
+          <span
+            >内置模板可直接填写；上传和已使用的模板保存在当前共享工作区。</span
+          >
+          <div v-if="totalPages > 1" class="pagination-controls">
+            <UiButton
+              aria-label="上一页模板"
+              :disabled="currentPage === 1"
+              @click="currentPage--"
+              variant="ghost"
+              icon-only
+              ><ChevronLeft :size="17" /></UiButton
+            ><span>{{ currentPage }} / {{ totalPages }}</span
+            ><UiButton
+              aria-label="下一页模板"
+              :disabled="currentPage === totalPages"
+              @click="currentPage++"
+              variant="ghost"
+              icon-only
+              ><ChevronRight :size="17"
+            /></UiButton>
           </div>
-          <div class="list-content">
-            <div class="list-header">
-              <h3 class="list-title">{{ template.name }}</h3>
-              <span class="category-label">{{ template.category || '通用' }}</span>
-            </div>
-            <p class="list-description">{{ template.description || '暂无描述' }}</p>
-            <div class="template-stats">
-              <span class="stat">{{ template.format || 'DOCX' }}</span>
-              <span class="divider">•</span>
-              <span class="stat">{{ template.variables?.length || 0 }} 个变量</span>
-            </div>
-          </div>
-          <button class="use-btn" @click.stop="useTemplate(template)">
-            使用模版
-          </button>
-        </div>
-      </div>
-
-      <!-- Pagination -->
-      <div class="pagination" v-if="totalPages > 1">
-        <button
-          class="page-btn"
-          :disabled="currentPage === 1"
-          @click="changePage(currentPage - 1)"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
-        </button>
-
-        <button
-          v-for="page in displayPages"
-          :key="page"
-          :class="['page-number', { active: currentPage === page }]"
-          @click="changePage(page)"
-        >
-          {{ page }}
-        </button>
-
-        <button
-          class="page-btn"
-          :disabled="currentPage === totalPages"
-          @click="changePage(currentPage + 1)"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
-        </button>
+        </footer>
       </div>
     </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <div class="cta-content">
-        <h2>需要自定义模版？</h2>
-        <p>上传你自己的文档模版，让 AI 帮助你快速生成</p>
-        <button class="cta-btn" @click="$router.push('/create')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="17 8 12 3 7 8"/>
-            <line x1="12" y1="3" x2="12" y2="15"/>
-          </svg>
-          上传模版
-        </button>
-      </div>
-    </section>
-  </div>
+    <p class="document-footnote">
+      <Info :size="15" />占位符支持 <code>【变量】</code> 和
+      <code v-pre>{{ 变量 }}</code
+      >，生成后请核对内容与格式。
+    </p>
+  </section>
 </template>
-
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { fetchTemplates } from '../api/templates';
-
-const router = useRouter();
-const searchQuery = ref('');
-const selectedCategory = ref('all');
-const viewMode = ref('grid');
-const currentPage = ref(1);
-const itemsPerPage = 9;
-const templates = ref([]);
-const loading = ref(true);
-
-const categories = [
-  { id: 'all', name: '全部', icon: '📋' },
-  { id: 'report', name: '报告', icon: '📊' },
-  { id: 'contract', name: '合同', icon: '📜' },
-   { id: 'resume', name: '简历', icon: '👤' },
-   { id: 'bidding', name: '招投标', icon: '📑' },
-  { id: 'proposal', name: '方案', icon: '💡' },
-  { id: 'letter', name: '函件', icon: '✉️' },
-  { id: 'other', name: '其他', icon: '📄' }
-];
-
-onMounted(async () => {
-  await loadTemplates();
-});
-
-async function loadTemplates() {
-  loading.value = true;
-  const { data, error } = await fetchTemplates();
-  loading.value = false;
-
+import UiEmptyState from "../components/ui/UiEmptyState.vue";
+import UiPageHeader from "../components/ui/UiPageHeader.vue";
+import UiButton from "../components/ui/UiButton.vue";
+import UiNotice from "../components/ui/UiNotice.vue";
+import UiTabs from "../components/ui/UiTabs.vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
+import {
+  AlertCircle,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Files,
+  FileText,
+  Info,
+  LayoutGrid,
+  List,
+  LoaderCircle,
+  Plus,
+  RefreshCw,
+  Search,
+  X,
+  Download,
+} from "@lucide/vue";
+import {
+  fetchTemplates,
+  fetchTemplateLibrary,
+  useLibraryTemplate,
+} from "../api/templates";
+import { downloadFile } from "../api/client";
+const router = useRouter(),
+  route = useRoute();
+const source = ref(route.query.source === "builtin" ? "builtin" : "all");
+const library = ref([]),
+  preview = ref(null),
+  previewPanel = ref(null),
+  using = ref(""),
+  downloading = ref(false),
+  actionError = ref("");
+let previewTrigger;
+const sourceTabs = computed(() => [
+  {
+    value: "all",
+    label: "全部模板",
+    count: templates.value.length + library.value.length,
+  },
+  { value: "builtin", label: "内置模板", count: library.value.length },
+  { value: "workspace", label: "工作区模板", count: templates.value.length },
+]);
+const placeholder = (field) => "{{ " + field + " }}";
+async function openPreview(template, event) {
+  previewTrigger = event.currentTarget;
+  preview.value = template;
+  await nextTick();
+  previewPanel.value?.focus();
+  previewPanel.value?.scrollIntoView({ block: "start", behavior: "instant" });
+}
+function closePreview() {
+  preview.value = null;
+  nextTick(() => previewTrigger?.focus());
+}
+async function useTemplate(template) {
+  using.value = template.id;
+  actionError.value = "";
+  const { data, error } = await useLibraryTemplate(template.id);
+  using.value = "";
   if (error) {
-    console.error('加载模版失败:', error);
-    templates.value = [];
+    actionError.value = error;
     return;
   }
-
-  templates.value = data || [];
+  router.push({ name: "generate", params: { templateId: data.name } });
 }
-
-const filteredTemplates = computed(() => {
-  let result = templates.value;
-
-  // Category filter
-  if (selectedCategory.value !== 'all') {
-    result = result.filter(t =>
-      (t.category || '').toLowerCase() === getCategoryName(selectedCategory.value).toLowerCase()
+async function downloadOriginal(template) {
+  downloading.value = true;
+  actionError.value = "";
+  try {
+    await downloadFile(
+      `/api/template-library/${encodeURIComponent(template.id)}/download`,
+      template.name + ".docx",
     );
+  } catch (error) {
+    actionError.value = error.message || "模板下载失败，请重试。";
+  } finally {
+    downloading.value = false;
   }
-
-  // Search filter
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    result = result.filter(t =>
-      t.name.toLowerCase().includes(query) ||
-      (t.description && t.description.toLowerCase().includes(query))
+}
+const searchQuery = ref(""),
+  selectedCategory = ref("全部"),
+  viewMode = ref("grid"),
+  currentPage = ref(1),
+  templates = ref([]),
+  loading = ref(true),
+  loadError = ref("");
+const visibleTemplates = computed(() =>
+  source.value === "builtin"
+    ? library.value
+    : source.value === "workspace"
+      ? templates.value
+      : [...templates.value, ...library.value],
+);
+const categories = computed(() => [
+  "全部",
+  ...new Set(visibleTemplates.value.map((t) => t.category || "通用")),
+]);
+watch(source, () => {
+  currentPage.value = 1;
+  selectedCategory.value = "全部";
+  preview.value = null;
+});
+const filteredTemplates = computed(() =>
+  visibleTemplates.value.filter((template) => {
+    const category = template.category || "通用";
+    const matchesCategory =
+      selectedCategory.value === "全部" || category === selectedCategory.value;
+    const query = searchQuery.value.trim().toLowerCase();
+    return (
+      matchesCategory &&
+      (!query ||
+        [
+          template.name,
+          template.description,
+          ...(template.variables || []).map((v) => v.name),
+        ].some((value) => (value || "").toLowerCase().includes(query)))
     );
-  }
-
-  return result;
-});
-
-const totalPages = computed(() => Math.ceil(filteredTemplates.value.length / itemsPerPage));
-
-const paginatedTemplates = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return filteredTemplates.value.slice(start, end);
-});
-
-const displayPages = computed(() => {
-  const pages = [];
-  const maxDisplay = 5;
-  let start = Math.max(1, currentPage.value - Math.floor(maxDisplay / 2));
-  let end = Math.min(totalPages.value, start + maxDisplay - 1);
-
-  if (end - start < maxDisplay - 1) {
-    start = Math.max(1, end - maxDisplay + 1);
-  }
-
-  for (let i = start; i <= end; i++) {
-    pages.push(i);
-  }
-
-  return pages;
-});
-
-function getCategoryName(categoryId) {
-  const category = categories.find(c => c.id === categoryId);
-  return category ? category.name : '';
+  }),
+);
+const totalPages = computed(() =>
+  Math.ceil(filteredTemplates.value.length / 9),
+);
+const paginatedTemplates = computed(() =>
+  filteredTemplates.value.slice(
+    (currentPage.value - 1) * 9,
+    currentPage.value * 9,
+  ),
+);
+async function loadTemplates() {
+  loading.value = true;
+  loadError.value = "";
+  const [workspace, builtin] = await Promise.all([
+    fetchTemplates(),
+    fetchTemplateLibrary(),
+  ]);
+  templates.value = workspace.data || [];
+  library.value = builtin.data || [];
+  loadError.value = workspace.error || builtin.error || "";
+  loading.value = false;
 }
-
-function getTemplateIcon(template) {
-  const categoryIcons = {
-    '报告': '📊',
-    '合同': '📜',
-    '简历': '👤',
-    '招投标': '📑',
-    '方案': '💡',
-    '函件': '✉️'
-  };
-  return categoryIcons[template.category] || '📄';
-}
-
-function selectCategory(categoryId) {
-  selectedCategory.value = categoryId;
-  currentPage.value = 1;
-}
-
-function handleSearch() {
-  currentPage.value = 1;
-}
-
-function changePage(page) {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
-
-function useTemplate(template) {
-  router.push({ name: 'generate', params: { templateId: template.name } });
-}
+onMounted(loadTemplates);
 </script>
-
-<style scoped>
-.templates-page {
-  min-height: 100vh;
-  padding-bottom: 60px;
-  background: #fff;
-  color: #111827;
-}
- 
-.templates-page :deep(*) {
-  color: inherit;
-}
-
-.hero-section {
-  padding: 60px 20px;
-  text-align: center;
-  background: #fff;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.hero-content {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.badge-tag {
-  display: inline-flex;
-  padding: 8px 20px;
-  border-radius: 20px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #1d4ed8;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 24px;
-  animation: fadeInUp 0.6s ease;
-}
-
-.hero-title {
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 800;
-  margin: 0 0 16px;
-  color: #111827;
-  animation: fadeInUp 0.6s ease 0.1s backwards;
-}
-
-.hero-subtitle {
-  font-size: 18px;
-  color: #4b5563;
-  margin: 0 0 40px;
-  animation: fadeInUp 0.6s ease 0.2s backwards;
-}
-
-.search-container {
-  margin: 40px auto 30px;
-  max-width: 600px;
-  animation: fadeInUp 0.6s ease 0.3s backwards;
-}
-
-.search-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-icon {
-  position: absolute;
-  left: 20px;
-  width: 20px;
-  height: 20px;
-  color: #64748b;
-  stroke-width: 2;
-}
-
-.search-input {
-  width: 100%;
-  padding: 14px 20px 14px 52px;
-  background: #fff;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  color: #111827;
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background: #fff;
-}
-
-.search-input::placeholder {
-  color: #94a3b8;
-}
-
-.category-filter {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-  animation: fadeInUp 0.6s ease 0.4s backwards;
-}
-
-.category-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  color: #111827;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.category-btn:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #111827;
-  transform: translateY(-2px);
-}
-
-.category-btn.active {
-  background: #e5edff;
-  border-color: #1d4ed8;
-  color: #1d4ed8;
-}
-
-.category-icon {
-  font-size: 18px;
-}
-
-.templates-section {
-  padding: 60px 20px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.section-header h2 {
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0;
-  color: #111827;
-}
-
-.count {
-  color: #6b7280;
-  font-size: 18px;
-  font-weight: 400;
-}
-
-.view-toggle {
-  display: flex;
-  gap: 6px;
-  background: #f3f4f6;
-  padding: 6px;
-  border-radius: 10px;
-}
-
-.toggle-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: #111827;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.toggle-btn svg {
-  width: 18px;
-  height: 18px;
-}
-
-.toggle-btn:hover {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.toggle-btn.active {
-  background: #1d4ed8;
-  color: #fff;
-}
-
-.loading-state,
-.empty-state {
-  text-align: center;
-  padding: 80px 20px;
-}
-
-.spinner {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 20px;
-  border: 4px solid rgba(59, 130, 246, 0.2);
-  border-top-color: #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.empty-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
-}
-
-.empty-state h3 {
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0 0 12px;
-  color: #111827;
-}
-
-.empty-state p {
-  font-size: 16px;
-  color: #4b5563;
-  margin: 0 0 30px;
-}
-
-.create-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.create-btn svg {
-  width: 18px;
-  height: 18px;
-  stroke-width: 2.5;
-}
-
-.create-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-}
-
-.templates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  margin-bottom: 40px;
-}
-
-.template-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  animation: fadeInUp 0.4s ease backwards;
-}
-
-.template-card:hover {
-  transform: translateY(-4px);
-  border-color: #1d4ed8;
-  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.15);
-}
-
-.card-header {
-  padding: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.card-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  background: #eef2ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-}
-
-.card-badge {
-  padding: 4px 12px;
-  background: #e5edff;
-  color: #1d4ed8;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.card-body {
-  padding: 24px;
-}
-
-.card-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 12px;
-  color: #111827;
-}
-
-.card-description {
-  font-size: 14px;
-  color: #4b5563;
-  line-height: 1.6;
-  margin: 0 0 20px;
-  min-height: 42px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 16px;
-  border-top: 1px solid #e5e7eb;
-}
-
-.template-stats {
-  display: flex;
-  gap: 16px;
-}
-
-.stat {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #6b7280;
-  font-size: 13px;
-}
-
-.stat svg {
-  width: 14px;
-  height: 14px;
-  stroke-width: 2;
-}
-
-.divider {
-  color: #9ca3af;
-}
-
-.use-btn {
-  padding: 8px 16px;
-  background: #111827;
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.use-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-}
-
-/* List View */
-.templates-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.template-list-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.template-list-item:hover {
-  border-color: #1d4ed8;
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.12);
-  transform: translateX(4px);
-}
-
-.list-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
-  background: #eef2ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  flex-shrink: 0;
-}
-
-.list-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.list-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.list-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0;
-  color: #111827;
-}
-
-.category-label {
-  padding: 4px 10px;
-  background: #e5edff;
-  color: #1d4ed8;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.list-description {
-  font-size: 14px;
-  color: #4b5563;
-  line-height: 1.6;
-  margin: 0 0 12px;
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 60px;
-}
-
-.page-btn,
-.page-number {
-  min-width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #111827;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.page-btn:not(:disabled):hover,
-.page-number:hover {
-  background: #f8fafc;
-  border-color: #1d4ed8;
-  transform: translateY(-2px);
-}
-
-.page-number.active {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
-  color: #fff;
-}
-
-.page-btn svg {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2;
-}
-
-/* CTA Section */
-.cta-section {
-  margin-top: 80px;
-  padding: 50px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 20px;
-  text-align: center;
-  max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.cta-content h2 {
-  font-size: 28px;
-  font-weight: 700;
-  margin: 0 0 12px;
-  color: #111827;
-}
-
-.cta-content p {
-  font-size: 16px;
-  color: #4b5563;
-  margin: 0 0 28px;
-}
-
-.cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 28px;
-  background: #111827;
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
-}
-
-.cta-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
-}
-
-.cta-btn svg {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2.5;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-section {
-    padding: 40px 16px;
-  }
-
-  .templates-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .template-list-item {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .cta-section {
-    padding: 30px 20px;
-  }
-
-  .category-filter {
-    gap: 8px;
-  }
-
-  .category-btn {
-    font-size: 13px;
-    padding: 8px 14px;
-  }
-}
-</style>

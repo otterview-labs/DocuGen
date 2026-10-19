@@ -1,20 +1,22 @@
-# DocuGen Vue Workspace
+# Quill workspace UI
 
-Vue 3 + Vite 前端，用于模板上传、变量提取、AI 填充与文档生成（对接 FastAPI 后端）。
+Vue workbench adapted from DocuGen, with knowledge collections/retrieval, document writing, template upload, variable editing and authenticated downloads. The interface currently uses Chinese.
 
-## 开发
+Run the Quill API on loopback port 8080, then:
 
 ```bash
-cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-- 默认通过 Vite 代理将 `/api`、`/download` 指向 `http://127.0.0.1:8080`（见 `vite.config.js`）。如需更换后端地址，可在 `.env` 中设置 `VITE_API_BASE=http://your-host:8080`。
-- 依赖：Node 18+、npm。
+The Vite development proxy forwards `/api` and `/download` to the local API. For the built-in backend UI, run `npm run build` and start Quill; the backend serves `dist/`.
 
-## 主要页面
-- 模板上传：DOCX，名称/描述 + 文件，自动注册模板。
-- 变量提取：从占位符（【变量】或 `{{变量}}`）提取变量并展示可编辑表单。
-- AI 填充：可选开启 RAG，选择知识库或提供自定义片段。
- - 文档生成：提交变量，调用 `/api/generate-from-template`，返回文件名，可从 `/download/{filename}` 获取。
+The shared API key is entered in the header and kept in sessionStorage. It never goes into a download URL. All authorized visitors share the same workspace.
+
+Browser checks run against an existing local service. With a root `.venv` and `.env` present:
+
+```bash
+QUILL_TEST_URL=http://127.0.0.1:8080 npx playwright test
+```
+
+Checks create an explicitly named test template, exercise upload/fill/download, and capture desktop/mobile writing pages. Artifacts are excluded from Git.

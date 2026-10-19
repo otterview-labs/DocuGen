@@ -1,0 +1,21 @@
+Otterview DocuGen
+Copyright 2026 Otterview Quill contributors
+
+This product includes adapted source from:
+
+1. JetLinks knowledge runtime
+   Repository: https://github.com/jetlinks-v2/jetlinks-knowledge-runtime
+   Source revision: 73eaa749472e9b0263d3d66d22917aa67528cffe
+   Adapted knowledge service under services/knowledge/.
+
+2. DocuGen
+   Repository: https://github.com/BetaStreetOmnis/DocuGen
+   Source revision: 5c2799899abcfba6d1aecd0b0a340ecca5b04e71
+   Adapted Vue interface, template handling and Word rendering methods.
+
+Original authorship is retained. The project owner confirmed authorization to
+release these adaptations publicly on 2026-10-19. See docs/PROVENANCE.md for
+source boundaries and changes.
+
+Third-party dependencies, external model weights, templates and user data are
+governed by their respective terms and are not relicensed by this notice.

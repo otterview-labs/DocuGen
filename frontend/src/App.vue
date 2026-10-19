@@ -1,284 +1,130 @@
 <template>
-  <div id="app">
-    <div class="bg-pattern"></div>
-
-    <!-- Header Navigation -->
-    <header class="app-header">
-      <div class="header-container">
-        <div class="brand">
-          <div class="brand-icon">📄</div>
-          <div class="brand-text">
-            <div class="brand-name">DocuGen</div>
-            <div class="brand-tagline">文档生成工作台</div>
-          </div>
-        </div>
-
-        <nav class="main-nav">
-          <RouterLink to="/" class="nav-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <rect x="3" y="3" width="7" height="7" rx="1"/>
-              <rect x="14" y="3" width="7" height="7" rx="1"/>
-              <rect x="3" y="14" width="7" height="7" rx="1"/>
-              <rect x="14" y="14" width="7" height="7" rx="1"/>
-            </svg>
-            模版市场
-          </RouterLink>
-          <RouterLink to="/create" class="nav-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="17 8 12 3 7 8"/>
-              <line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-            上传模版
-          </RouterLink>
-        </nav>
-
-        <div class="header-actions">
-          <button class="action-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 16v-4M12 8h.01"/>
-            </svg>
-          </button>
-        </div>
+  <div class="quill-shell">
+    <aside class="app-sidebar" aria-label="主导航">
+      <RouterLink to="/knowledge" class="quill-brand" aria-label="DocuGen 首页">
+        <span class="quill-symbol"
+          ><Feather :size="24" :stroke-width="1.5"
+        /></span>
+        <span class="brand-copy"
+          ><strong>DocuGen<span class="brand-period">.</span></strong
+          ><small>知识与文档工作台</small></span
+        >
+      </RouterLink>
+      <nav class="workspace-nav" aria-label="工作台导航">
+        <RouterLink
+          v-for="item in navigation"
+          :key="item.path"
+          :to="item.path"
+          :aria-label="item.label"
+        >
+          <component :is="item.icon" :size="19" :stroke-width="1.7" /><span>{{
+            item.label
+          }}</span>
+          <ChevronRight class="nav-indicator" :size="14" />
+        </RouterLink>
+      </nav>
+      <div class="sidebar-note">
+        <BookOpen :size="18" />
+        <p>从资料出发，<br />写出有依据的内容。</p>
       </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="app-main">
-      <RouterView />
-    </main>
-
-    <!-- Footer -->
-    <footer class="app-footer">
-      <div class="footer-container">
-        <p>© 2024 DocuGen · AI驱动的文档生成平台</p>
+      <div class="sidebar-bottom">
+        <div class="workspace-identity">
+          <span class="workspace-avatar">O</span
+          ><span
+            ><strong>Otterview Labs</strong><small>本地共享工作区</small></span
+          >
+        </div>
+        <details v-if="authenticationRequired" class="connection-settings">
+          <summary>
+            <Settings :size="17" /><span>连接设置</span
+            ><ChevronDown :size="14" />
+          </summary>
+          <form @submit.prevent="saveKey" class="connection-form">
+            <label
+              >访问密钥<input
+                class="field-input"
+                type="password"
+                v-model="accessKey"
+                autocomplete="off"
+                placeholder="输入工作区访问密钥"
+            /></label>
+            <p>保存在当前标签页中。共享工作区内的资料对持有密钥的成员可见。</p>
+            <UiButton type="submit" variant="primary" size="compact"
+              >保存并连接</UiButton
+            >
+          </form>
+        </details>
       </div>
-    </footer>
+    </aside>
+    <div class="app-frame">
+      <header class="workspace-bar">
+        <div class="breadcrumbs">
+          <span>工作区</span><ChevronRight :size="13" /><strong>{{
+            pageTitle
+          }}</strong>
+        </div>
+        <div class="workspace-bar-actions">
+          <span class="model-state" :class="{ ready: modelConfigured }"
+            ><span class="status-dot"></span
+            >{{
+              modelConfigured === null
+                ? "未连接工作区"
+                : modelConfigured
+                  ? "生成模型已配置"
+                  : "生成模型未配置"
+            }}</span
+          ><a href="/docs" target="_blank" rel="noopener" class="docs-link"
+            >API 文档 <ArrowUpRight :size="14"
+          /></a>
+        </div>
+      </header>
+      <main id="main-content" class="app-content"><RouterView /></main>
+    </div>
   </div>
 </template>
-
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
+import UiButton from "./components/ui/UiButton.vue";
+import { computed, onMounted, ref } from "vue";
+import { RouterLink, RouterView, useRoute } from "vue-router";
+import {
+  ArrowUpRight,
+  BookOpen,
+  ChevronDown,
+  ChevronRight,
+  Feather,
+  Library,
+  LayoutTemplate,
+  PenLine,
+  Settings,
+  Upload,
+} from "@lucide/vue";
+import { api } from "./api/client";
+import "./styles/workbench.css";
+import "./styles/documents.css";
+import "./styles/ui.css";
+const route = useRoute();
+const accessKey = ref(sessionStorage.getItem("quill-key") || "");
+const modelConfigured = ref(null);
+const authenticationRequired = ref(false);
+const navigation = [
+  { path: "/knowledge", label: "知识库", icon: Library },
+  { path: "/writing", label: "文档写作", icon: PenLine },
+  { path: "/templates", label: "文档模板", icon: LayoutTemplate },
+  { path: "/create", label: "上传模板", icon: Upload },
+];
+const pageTitle = computed(() => route.meta.title || "文档模板");
+function saveKey() {
+  sessionStorage.setItem("quill-key", accessKey.value);
+  window.location.reload();
+}
+onMounted(async () => {
+  try {
+    const { data } = await api.get("/api/v1/status");
+    modelConfigured.value = data.model_configured;
+    authenticationRequired.value = data.authentication;
+  } catch (error) {
+    authenticationRequired.value = error.response?.status === 401;
+    /* Each workspace screen shows its own actionable connection error. */
+  }
+});
 </script>
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
-  --accent: #3b82f6;
-  --accent-secondary: #8b5cf6;
-  --border: rgba(255, 255, 255, 0.1);
-  --shadow: rgba(0, 0, 0, 0.5);
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.6;
-}
-
-#app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.bg-pattern {
-  position: fixed;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15), transparent 40%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Header */
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-
-.header-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-name {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.5px;
-}
-
-.brand-tagline {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  font-weight: 500;
-}
-
-.main-nav {
-  display: flex;
-  gap: 8px;
-  flex: 1;
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-link svg {
-  width: 18px;
-  height: 18px;
-  stroke-width: 2;
-}
-
-.nav-link:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.nav-link.router-link-active {
-  color: #60a5fa;
-  background: rgba(59, 130, 246, 0.15);
-}
-
-.header-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.action-btn {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.action-btn svg {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2;
-}
-
-.action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--accent);
-  color: var(--text-primary);
-}
-
-/* Main */
-.app-main {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-
-/* Footer */
-.app-footer {
-  position: relative;
-  z-index: 1;
-  padding: 24px 0;
-  border-top: 1px solid var(--border);
-  margin-top: 60px;
-}
-
-.footer-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-  text-align: center;
-}
-
-.footer-container p {
-  font-size: 14px;
-  color: var(--text-tertiary);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .header-container {
-    flex-wrap: wrap;
-  }
-
-  .main-nav {
-    width: 100%;
-    order: 3;
-  }
-
-  .brand-tagline {
-    display: none;
-  }
-
-  .nav-link {
-    flex: 1;
-    justify-content: center;
-  }
-}
-</style>

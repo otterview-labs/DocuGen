@@ -1,0 +1,16 @@
+{
+  "knowledge": {
+    "repository": "https://github.com/jetlinks-v2/jetlinks-knowledge-runtime",
+    "commit": "73eaa749472e9b0263d3d66d22917aa67528cffe",
+    "files": 169,
+    "source": "committed HEAD; existing working-tree changes excluded"
+  },
+  "docugen": {
+    "repository": "https://github.com/BetaStreetOmnis/DocuGen",
+    "commit": "5c2799899abcfba6d1aecd0b0a340ecca5b04e71",
+    "imports": [
+      "template/Word rendering methods",
+      "Vue frontend"
+    ]
+  }
+}
