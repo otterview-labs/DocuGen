@@ -80,7 +80,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             with suppress(asyncio.CancelledError):
                 await worker
 
-    app = FastAPI(title="Otterview DocuGen", version="0.2.0", lifespan=lifespan)
+    app = FastAPI(title="Otterview DocuGen", version="0.2.1", lifespan=lifespan)
     app.state.store = store
 
     async def authorize(request: Request):
@@ -99,7 +99,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/health")
     async def health():
-        return {"status": "ok", "service": "docugen", "version": "0.2.0"}
+        return {"status": "ok", "service": "docugen", "version": "0.2.1"}
 
     @app.get("/api/v1/status", dependencies=secured)
     async def status():

@@ -181,3 +181,7 @@ Fresh checks against the integrated tree:
 - Full original-DocuGen, published-Quill and final local-Quill Git bundles were created and verified before repository cleanup. The old DocuGen tree is preserved by branch and tag; source-release metadata is backed up separately.
 
 Existing 8080 services, runtime databases, user templates and customer files were not changed by this integration. Historical runtime templates from the old DocuGen service are not included in the source migration; they require a separate data migration.
+
+### Final upload-workspace refinement
+
+The migration also retains the subsequent local frontend commit `6839f51` so that the completed upload-page refinement is included in DocuGen rather than left behind in the former working branch. DocuGen 0.2.1 carries that refinement. The final workspace tests pass (55), Ruff and Vue build pass, and the browser suite passes 35 cases with one real-model case skipped. Knowledge-engine source is unchanged from the separately passing 90-case run above. GitHub-hosted jobs were queued without a runner at publication time; these local results are not reported as completed cloud checks.

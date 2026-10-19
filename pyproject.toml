@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "otterview-docugen"
-version = "0.2.0"
+version = "0.2.1"
 description = "A self-hosted knowledge and document workspace"
 requires-python = ">=3.11"
 dependencies = [
