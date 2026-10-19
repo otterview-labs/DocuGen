@@ -1,6 +1,6 @@
-# Quill product context
+# DocuGen product context
 
-Confirmed: Otterview Labs project, named Quill, combining JetLinks knowledge capabilities and DocuGen document generation into a new local repository under open-source/quill.
+Otterview DocuGen combines a knowledge workspace with Word template filling and document generation. The user chose DocuGen as the public product name on 2026-10-19 and authorized integrating the former Quill repository into https://github.com/otterview-labs/DocuGen. Quill's Python namespace and runtime configuration names remain compatible with existing installations.
 
 The first delivery is a functional integration for a single shared workspace. Users import and organize source files, inspect extracted content, retrieve facts, fill Word templates and generate documents with source records. Following the initial integration, the user requested a richer knowledge workflow and a full visual upgrade. The knowledge surface and shared shell use the user-confirmed reading workbench direction. A subsequent user request to reference VoltAgent/awesome-design-md extends the same visual system to writing, template browsing, upload/variable entry and template-based generation; existing backend contracts remain in use.
 

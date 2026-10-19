@@ -78,7 +78,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             with suppress(asyncio.CancelledError):
                 await worker
 
-    app = FastAPI(title="Otterview Quill", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="Otterview DocuGen", version="0.2.0", lifespan=lifespan)
     app.state.store = store
 
     async def authorize(request: Request):
@@ -97,7 +97,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/health")
     async def health():
-        return {"status": "ok", "service": "quill", "version": "0.1.0"}
+        return {"status": "ok", "service": "docugen", "version": "0.2.0"}
 
     @app.get("/api/v1/status", dependencies=secured)
     async def status():
@@ -323,7 +323,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return FileResponse(index)
         return JSONResponse(
             {
-                "service": "Otterview Quill",
+                "service": "Otterview DocuGen",
                 "docs": "/docs",
                 "message": "在 frontend 执行 npm ci && npm run build，或运行开发服务器。",
             }

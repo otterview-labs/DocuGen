@@ -1,5 +1,5 @@
 ---
-name: Quill
+name: DocuGen
 description: A shared warm-paper workbench for knowledge, templates and source-grounded writing
 colors:
   accent: '#28644e'
@@ -160,13 +160,13 @@ components:
     padding: 28px 24px
 ---
 
-# Design System: Quill
+# Design System: DocuGen
 
 ## Overview
 
 **Creative North Star: "The Reading Workbench"**
 
-Quill places warm working paper beside deep green navigation. The mood is calm, literate and practical: deep ink carries source text and headings, neutral muted text carries supporting information, and green identifies actions and the current working context. The small serif wordmark provides the literary cue; Chinese working text uses one platform sans family.
+DocuGen places warm working paper beside deep green navigation. The mood is calm, literate and practical: deep ink carries source text and headings, neutral muted text carries supporting information, and green identifies actions and the current working context. The small serif wordmark provides the literary cue; Chinese working text uses one platform sans family.
 
 The reading-workbench world spans knowledge management, source inspection, writing, template browsing, upload and template-based generation. Its visual primitives now have one canonical owner: ui.css and the shared UiButton, UiPageHeader, UiNotice, UiEmptyState, UiTabs and UiFilePicker components. Workbench, knowledge and document styles arrange these primitives and define deliberate reading or content-title roles. This record follows the actual component rules and computed-style reports at 1440px, 1024px and 390px; the confirmed visual identity is preserved.
 

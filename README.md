@@ -1,10 +1,10 @@
-# Otterview Quill
+# Otterview DocuGen
 
 把手头的资料放进知识库，查原文、填 Word 模板，或者按章节起草文档。
 
 已有 Word 模板时，可以上传模板，识别里面的变量，手动填写或让模型根据参考资料填入，再下载 Word。需要从头写文档时，可以先改大纲，再按章节生成，回头核对取用的资料。
 
-当前为 **0.1.0**，按 [Apache-2.0](LICENSE) 发布。采用一个共享工作区，本机使用默认无需访问密钥，也可按需启用共享访问密钥，适合个人或可信团队自部署。没有多租户、独立用户权限或协同编辑。来源记录表示模型取材依据，不等同于逐句事实核验。
+当前为 **0.2.0**，按 [Apache-2.0](LICENSE) 发布。采用一个共享工作区，本机使用默认无需访问密钥，也可按需启用共享访问密钥，适合个人或可信团队自部署。没有多租户、独立用户权限或协同编辑。来源记录表示模型取材依据，不等同于逐句事实核验。
 
 [English](README.en.md) · [架构与边界](docs/ARCHITECTURE.md) · [界面设计参考](docs/UI_REFERENCES.md) · [源码来源与发布条件](docs/PROVENANCE.md)
 
@@ -29,11 +29,21 @@
 
 占位符变量名两侧允许空格，例如 `{{ 项目名称 }}`。点击“提取变量”或“重新提取变量”会重新解析保存的 DOCX、更新变量记录，并保留同名字段已填写的内容。模板使用知识库辅助时，完整模板查询无命中会按最多 8 个字段名称进行关键词取材，最多保留 8 条去重来源；无命中仍明确报错，不补造资料。
 
+## 版本与升级
+
+当前主线整合了原 Quill 知识与文档工作台，产品名称统一为 **Otterview DocuGen**。
+
+- 旧版 DocuGen 保存在 [`legacy/docugen-20261019`](https://github.com/otterview-labs/DocuGen/tree/legacy/docugen-20261019) 分支和 `docugen-legacy-20261019` 标签。旧版配置、EasyRAG 连接及部分 API 与新版不同，切换前请备份资料、模板、数据库和生成文件，并在独立环境验证。
+- 已使用 Quill 的工作区继续沿用 `QUILL_*` 配置、`quill` Python 包名和原数据目录。已有 Docker 部署请继续使用原来的项目名（例如 `docker compose -p quill`），避免新建一组空数据卷；新安装可使用下文的 `docugen` 项目名。
+- 后续代码、版本发布和问题反馈统一在本仓库维护。原 Quill 0.1.0 的源码发布保留在本仓库的历史 Release 中。
+
 ## 本地启动工作台
 
 需要 Python 3.11+、Node.js 22.12+。在仓库根目录运行：
 
 ```bash
+git clone https://github.com/otterview-labs/DocuGen.git
+cd DocuGen
 uv venv --python 3.11
 uv pip install --python .venv/bin/python -e '.[dev]'
 cp .env.example .env
@@ -64,12 +74,12 @@ uv pip install --python .venv/bin/python -r services/knowledge/requirements.quil
 
 ```bash
 # 编辑 .env：设置随机 POSTGRES_PASSWORD；本机使用可保持 QUILL_API_KEY 为空。
-docker compose -p quill up -d --build
+docker compose -p docugen up -d --build
 ```
 
 Compose 启动工作台、知识引擎、PostgreSQL + pgvector。只有工作台 8080 映射到 **127.0.0.1**；知识引擎和数据库不发布宿主机端口。三个服务的数据均存放在命名卷中。备份时分别保存三个卷；`docker compose down` 保留卷，`down -v` 会删除数据。
 
-知识引擎默认按内部可信服务运行，跳过其旧用户认证，由 Quill 网关控制入口。**不要直接对公网发布知识引擎端口。** 网络共享需要自行配置 TLS 反向代理，并保留访问密钥。当前使用单个 Quill 进程和内置任务执行器，不支持多 worker 或横向扩容。
+知识引擎默认按内部可信服务运行，跳过其旧用户认证，由 DocuGen 网关控制入口。**不要直接对公网发布知识引擎端口。** 网络共享需要自行配置 TLS 反向代理，并保留访问密钥。当前使用单个 DocuGen 进程和内置任务执行器，不支持多 worker 或横向扩容。
 
 语义检索需要配置可调用的 Embedding 模型；维度由 `QUILL_EMBEDDING_DIMENSION` 指定，必须与模型输出一致。未配置时可以保存文本并使用关键词检索，界面会区分“已保存”和“已建立向量索引”。写作和 Embedding 默认复用同一模型网关地址与凭据。
 
@@ -107,7 +117,7 @@ quill/                     统一 API、持久化、模型与知识库适配、�
 quill/legacy/              从 DocuGen 提取的模板处理和 Word 导出方法
 frontend/                  基于 DocuGen Vue 工作台的统一入口
 services/knowledge/        JetLinks 知识引擎源码与独立运行依赖
-tests/                     Quill 集成与契约测试
+tests/                     DocuGen 集成与契约测试
 docs/                      架构、来源清单与发布状态
 compose.yaml               完整本地部署入口
 ```

@@ -1,5 +1,13 @@
 # Source provenance and publication status
 
+## DocuGen integration, 2026-10-19
+
+The project owner chose **Otterview DocuGen** as the public product name. This repository integrates the former Quill workspace while retaining the original DocuGen and Quill Git histories. The original DocuGen tree is preserved on `legacy/docugen-20261019` and `docugen-legacy-20261019`; the former Quill 0.1.0 release is preserved under `quill-v0.1.0`. Earlier entries below describe the source imports and verification under the Quill name. The previously confirmed Apache-2.0 release authorization and original attribution remain in force for the integrated adaptations.
+
+Only committed source is integrated. Runtime workspaces, credentials, customer templates and generated artifacts are excluded. Existing installations retain their runtime namespace and data/volume names.
+
+## Earlier Quill source records
+
 This is a new local repository assembled for Otterview Quill on 2026-10-16. Exact upstream revisions are recorded in [upstream.json](upstream.json).
 
 | Source | Imported material | Treatment |

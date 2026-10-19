@@ -1,4 +1,4 @@
-"""Start Quill and the text/keyword knowledge engine on loopback without Docker."""
+"""Start DocuGen and the text/keyword knowledge engine on loopback without Docker."""
 import os
 import signal
 import subprocess
@@ -48,7 +48,7 @@ try:
     processes.append(subprocess.Popen(
         [sys.executable, "-m", "uvicorn", "quill.main:app", "--host", "127.0.0.1", "--port", "8080", "--workers", "1"],
         cwd=ROOT, env={**os.environ, "QUILL_KNOWLEDGE_URL": "http://127.0.0.1:8006"}))
-    print("Quill: http://127.0.0.1:8080 — local SQLite / keyword profile", flush=True)
+    print("DocuGen: http://127.0.0.1:8080 — local SQLite / keyword profile", flush=True)
     while all(process.poll() is None for process in processes):
         time.sleep(0.5)
 finally:

@@ -3,8 +3,8 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "otterview-quill"
-version = "0.1.0"
+name = "otterview-docugen"
+version = "0.2.0"
 description = "A self-hosted knowledge and document workspace"
 requires-python = ">=3.11"
 dependencies = [

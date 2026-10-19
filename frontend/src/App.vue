@@ -1,12 +1,12 @@
 <template>
   <div class="quill-shell">
     <aside class="app-sidebar" aria-label="主导航">
-      <RouterLink to="/knowledge" class="quill-brand" aria-label="Quill 首页">
+      <RouterLink to="/knowledge" class="quill-brand" aria-label="DocuGen 首页">
         <span class="quill-symbol"
           ><Feather :size="24" :stroke-width="1.5"
         /></span>
         <span class="brand-copy"
-          ><strong>Quill<span class="brand-period">.</span></strong
+          ><strong>DocuGen<span class="brand-period">.</span></strong
           ><small>知识与文档工作台</small></span
         >
       </RouterLink>
