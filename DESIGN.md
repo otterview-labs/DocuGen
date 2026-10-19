@@ -289,6 +289,8 @@ Index and generation status labels use compact rectangular shapes. Neutral statu
 
 ### Resource Preview / Generated Text
 
+The document template library uses the same workbench palette and shared controls. Its source tabs distinguish built-in starter definitions from workspace copies, and category choices reflect actual template records. Starter thumbnails show real section names. The inline structure preview pairs working paper with an action aside, stacks below 800px, and explicitly distinguishes structure from Word pagination. The upload page offers a direct library entry and category/description fields. Template behavior and provenance are recorded in `docs/TEMPLATE_LIBRARY.md` and the template surface contract; no global tokens or raster assets were added.
+
 Resource rows combine a wrapping source name, metadata and text readiness label. Hover and active-source fills differ subtly; title hover underlines. Retrieval exposes source actions and excerpts, with highlight fill behind ink text. Opening a source focuses its shared close action; closing restores the trigger or active library tab. Escape also closes it. The preview is an adjacent reading region rather than a modal focus trap.
 
 Source and generated prose use the reading role, preserve whitespace and wrap long content. Reading segments are explicitly labeled as browsing aids. The preview enters over 220ms with an 8px horizontal move and slight brightness change. The shared reduced-motion query removes animations and transitions. Generation history and downloads retain the same semantic palette and shared primitives.

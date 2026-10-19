@@ -1,5 +1,23 @@
 import { api, handleError } from "./client";
 
+export async function fetchTemplateLibrary() {
+  try {
+    const res = await api.get("/api/template-library");
+    return { data: res.data.templates || [] };
+  } catch (error) {
+    return { error: handleError(error) };
+  }
+}
+
+export async function useLibraryTemplate(id) {
+  try {
+    const res = await api.post(`/api/template-library/${encodeURIComponent(id)}/use`);
+    return { data: res.data.template };
+  } catch (error) {
+    return { error: handleError(error) };
+  }
+}
+
 export async function fetchTemplates() {
   try {
     const res = await api.get("/api/templates");
