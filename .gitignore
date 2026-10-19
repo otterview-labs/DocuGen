@@ -17,3 +17,6 @@ storage/
 *.log
 .DS_Store
 artifacts/
+
+# Local visual acceptance captures
+.impeccable/review/

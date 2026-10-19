@@ -1,166 +1,223 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-17T18:21:09+08:00",
+  "generatedAt": "2026-10-19T16:40:33.641765+00:00",
   "title": "Design System: DocuGen",
   "extensions": {
     "colorMeta": {
       "accent": {
         "role": "primary",
-        "displayName": "Working Green",
+        "displayName": "Action Blue",
+        "canonical": "#2563eb",
         "tonalRamp": [
-          "oklch(15% 0.0726 166.3)",
-          "oklch(27% 0.0726 166.3)",
-          "oklch(38% 0.0726 166.3)",
-          "oklch(49% 0.0726 166.3)",
-          "oklch(61% 0.0726 166.3)",
-          "oklch(73% 0.0726 166.3)",
-          "oklch(84% 0.0726 166.3)",
-          "oklch(95% 0.0726 166.3)"
+          "oklch(15% 0.2152 262.9)",
+          "oklch(27% 0.2152 262.9)",
+          "oklch(38% 0.2152 262.9)",
+          "oklch(49% 0.2152 262.9)",
+          "oklch(61% 0.2152 262.9)",
+          "oklch(73% 0.2152 262.9)",
+          "oklch(84% 0.2152 262.9)",
+          "oklch(95% 0.2152 262.9)"
         ]
       },
       "accent-hover": {
         "role": "primary",
-        "displayName": "Working Green Hover",
+        "displayName": "Action Blue Hover",
+        "canonical": "#1d4ed8",
         "tonalRamp": [
-          "oklch(15% 0.0633 165.2)",
-          "oklch(27% 0.0633 165.2)",
-          "oklch(38% 0.0633 165.2)",
-          "oklch(49% 0.0633 165.2)",
-          "oklch(61% 0.0633 165.2)",
-          "oklch(73% 0.0633 165.2)",
-          "oklch(84% 0.0633 165.2)",
-          "oklch(95% 0.0633 165.2)"
+          "oklch(15% 0.2172 264.4)",
+          "oklch(27% 0.2172 264.4)",
+          "oklch(38% 0.2172 264.4)",
+          "oklch(49% 0.2172 264.4)",
+          "oklch(61% 0.2172 264.4)",
+          "oklch(73% 0.2172 264.4)",
+          "oklch(84% 0.2172 264.4)",
+          "oklch(95% 0.2172 264.4)"
         ]
       },
       "ink": {
         "role": "neutral",
-        "displayName": "Deep Ink",
+        "displayName": "Slate Ink",
+        "canonical": "#0f172a",
         "tonalRamp": [
-          "oklch(15% 0.0264 176.2)",
-          "oklch(27% 0.0264 176.2)",
-          "oklch(38% 0.0264 176.2)",
-          "oklch(49% 0.0264 176.2)",
-          "oklch(61% 0.0264 176.2)",
-          "oklch(73% 0.0264 176.2)",
-          "oklch(84% 0.0264 176.2)",
-          "oklch(95% 0.0264 176.2)"
+          "oklch(15% 0.0398 265.8)",
+          "oklch(27% 0.0398 265.8)",
+          "oklch(38% 0.0398 265.8)",
+          "oklch(49% 0.0398 265.8)",
+          "oklch(61% 0.0398 265.8)",
+          "oklch(73% 0.0398 265.8)",
+          "oklch(84% 0.0398 265.8)",
+          "oklch(95% 0.0398 265.8)"
         ]
       },
       "muted": {
         "role": "neutral",
-        "displayName": "Muted Neutral",
+        "displayName": "Muted Slate",
+        "canonical": "#64748b",
         "tonalRamp": [
-          "oklch(15% 0.0199 158.7)",
-          "oklch(27% 0.0199 158.7)",
-          "oklch(38% 0.0199 158.7)",
-          "oklch(49% 0.0199 158.7)",
-          "oklch(61% 0.0199 158.7)",
-          "oklch(73% 0.0199 158.7)",
-          "oklch(84% 0.0199 158.7)",
-          "oklch(95% 0.0199 158.7)"
+          "oklch(15% 0.0407 257.4)",
+          "oklch(27% 0.0407 257.4)",
+          "oklch(38% 0.0407 257.4)",
+          "oklch(49% 0.0407 257.4)",
+          "oklch(61% 0.0407 257.4)",
+          "oklch(73% 0.0407 257.4)",
+          "oklch(84% 0.0407 257.4)",
+          "oklch(95% 0.0407 257.4)"
         ]
       },
       "paper": {
         "role": "neutral",
-        "displayName": "Warm Paper",
+        "displayName": "White Card",
+        "canonical": "#ffffff",
         "tonalRamp": [
-          "oklch(15% 0.0054 95.1)",
-          "oklch(27% 0.0054 95.1)",
-          "oklch(38% 0.0054 95.1)",
-          "oklch(49% 0.0054 95.1)",
-          "oklch(61% 0.0054 95.1)",
-          "oklch(73% 0.0054 95.1)",
-          "oklch(84% 0.0054 95.1)",
-          "oklch(95% 0.0054 95.1)"
+          "oklch(15% 0.0000 0.0)",
+          "oklch(27% 0.0000 0.0)",
+          "oklch(38% 0.0000 0.0)",
+          "oklch(49% 0.0000 0.0)",
+          "oklch(61% 0.0000 0.0)",
+          "oklch(73% 0.0000 0.0)",
+          "oklch(84% 0.0000 0.0)",
+          "oklch(95% 0.0000 0.0)"
         ]
       },
       "ground": {
         "role": "neutral",
-        "displayName": "Workbench Ground",
+        "displayName": "Cool Canvas",
+        "canonical": "#f8fafc",
         "tonalRamp": [
-          "oklch(15% 0.0079 106.5)",
-          "oklch(27% 0.0079 106.5)",
-          "oklch(38% 0.0079 106.5)",
-          "oklch(49% 0.0079 106.5)",
-          "oklch(61% 0.0079 106.5)",
-          "oklch(73% 0.0079 106.5)",
-          "oklch(84% 0.0079 106.5)",
-          "oklch(95% 0.0079 106.5)"
+          "oklch(15% 0.0034 247.9)",
+          "oklch(27% 0.0034 247.9)",
+          "oklch(38% 0.0034 247.9)",
+          "oklch(49% 0.0034 247.9)",
+          "oklch(61% 0.0034 247.9)",
+          "oklch(73% 0.0034 247.9)",
+          "oklch(84% 0.0034 247.9)",
+          "oklch(95% 0.0034 247.9)"
         ]
       },
       "line": {
         "role": "neutral",
         "displayName": "Fine Rule",
+        "canonical": "#e2e8f0",
         "tonalRamp": [
-          "oklch(15% 0.0132 130.8)",
-          "oklch(27% 0.0132 130.8)",
-          "oklch(38% 0.0132 130.8)",
-          "oklch(49% 0.0132 130.8)",
-          "oklch(61% 0.0132 130.8)",
-          "oklch(73% 0.0132 130.8)",
-          "oklch(84% 0.0132 130.8)",
-          "oklch(95% 0.0132 130.8)"
+          "oklch(15% 0.0126 255.5)",
+          "oklch(27% 0.0126 255.5)",
+          "oklch(38% 0.0126 255.5)",
+          "oklch(49% 0.0126 255.5)",
+          "oklch(61% 0.0126 255.5)",
+          "oklch(73% 0.0126 255.5)",
+          "oklch(84% 0.0126 255.5)",
+          "oklch(95% 0.0126 255.5)"
         ]
       },
       "sidebar": {
         "role": "neutral",
-        "displayName": "Deep Navigation",
+        "displayName": "Navy Header",
+        "canonical": "#0f172a",
         "tonalRamp": [
-          "oklch(15% 0.0314 175.3)",
-          "oklch(27% 0.0314 175.3)",
-          "oklch(38% 0.0314 175.3)",
-          "oklch(49% 0.0314 175.3)",
-          "oklch(61% 0.0314 175.3)",
-          "oklch(73% 0.0314 175.3)",
-          "oklch(84% 0.0314 175.3)",
-          "oklch(95% 0.0314 175.3)"
+          "oklch(15% 0.0398 265.8)",
+          "oklch(27% 0.0398 265.8)",
+          "oklch(38% 0.0398 265.8)",
+          "oklch(49% 0.0398 265.8)",
+          "oklch(61% 0.0398 265.8)",
+          "oklch(73% 0.0398 265.8)",
+          "oklch(84% 0.0398 265.8)",
+          "oklch(95% 0.0398 265.8)"
         ]
       },
       "sidebar-text": {
         "role": "neutral",
         "displayName": "Navigation Text",
+        "canonical": "#cbd5e1",
         "tonalRamp": [
-          "oklch(15% 0.0187 150.5)",
-          "oklch(27% 0.0187 150.5)",
-          "oklch(38% 0.0187 150.5)",
-          "oklch(49% 0.0187 150.5)",
-          "oklch(61% 0.0187 150.5)",
-          "oklch(73% 0.0187 150.5)",
-          "oklch(84% 0.0187 150.5)",
-          "oklch(95% 0.0187 150.5)"
+          "oklch(15% 0.0198 252.9)",
+          "oklch(27% 0.0198 252.9)",
+          "oklch(38% 0.0198 252.9)",
+          "oklch(49% 0.0198 252.9)",
+          "oklch(61% 0.0198 252.9)",
+          "oklch(73% 0.0198 252.9)",
+          "oklch(84% 0.0198 252.9)",
+          "oklch(95% 0.0198 252.9)"
         ]
       },
       "nav-selected": {
-        "role": "neutral",
-        "displayName": "Pale Leaf",
+        "role": "primary",
+        "displayName": "Navigation Selection",
+        "canonical": "#1c3056",
         "tonalRamp": [
-          "oklch(15% 0.0419 125.0)",
-          "oklch(27% 0.0419 125.0)",
-          "oklch(38% 0.0419 125.0)",
-          "oklch(49% 0.0419 125.0)",
-          "oklch(61% 0.0419 125.0)",
-          "oklch(73% 0.0419 125.0)",
-          "oklch(84% 0.0419 125.0)",
-          "oklch(95% 0.0419 125.0)"
+          "oklch(15% 0.0731 262.1)",
+          "oklch(27% 0.0731 262.1)",
+          "oklch(38% 0.0731 262.1)",
+          "oklch(49% 0.0731 262.1)",
+          "oklch(61% 0.0731 262.1)",
+          "oklch(73% 0.0731 262.1)",
+          "oklch(84% 0.0731 262.1)",
+          "oklch(95% 0.0731 262.1)"
+        ]
+      },
+      "nav-selected-text": {
+        "role": "primary",
+        "displayName": "Navigation Selected Text",
+        "canonical": "#93c5fd",
+        "tonalRamp": [
+          "oklch(15% 0.0956 251.8)",
+          "oklch(27% 0.0956 251.8)",
+          "oklch(38% 0.0956 251.8)",
+          "oklch(49% 0.0956 251.8)",
+          "oklch(61% 0.0956 251.8)",
+          "oklch(73% 0.0956 251.8)",
+          "oklch(84% 0.0956 251.8)",
+          "oklch(95% 0.0956 251.8)"
+        ]
+      },
+      "nav-hover": {
+        "role": "neutral",
+        "displayName": "Navigation Hover",
+        "canonical": "#1e293b",
+        "tonalRamp": [
+          "oklch(15% 0.0368 260.0)",
+          "oklch(27% 0.0368 260.0)",
+          "oklch(38% 0.0368 260.0)",
+          "oklch(49% 0.0368 260.0)",
+          "oklch(61% 0.0368 260.0)",
+          "oklch(73% 0.0368 260.0)",
+          "oklch(84% 0.0368 260.0)",
+          "oklch(95% 0.0368 260.0)"
+        ]
+      },
+      "header-muted": {
+        "role": "neutral",
+        "displayName": "Header Metadata",
+        "canonical": "#94a3b8",
+        "tonalRamp": [
+          "oklch(15% 0.0351 256.8)",
+          "oklch(27% 0.0351 256.8)",
+          "oklch(38% 0.0351 256.8)",
+          "oklch(49% 0.0351 256.8)",
+          "oklch(61% 0.0351 256.8)",
+          "oklch(73% 0.0351 256.8)",
+          "oklch(84% 0.0351 256.8)",
+          "oklch(95% 0.0351 256.8)"
         ]
       },
       "action-text": {
         "role": "neutral",
-        "displayName": "Warm Action White",
+        "displayName": "Action White",
+        "canonical": "#ffffff",
         "tonalRamp": [
-          "oklch(15% 0.0133 97.4)",
-          "oklch(27% 0.0133 97.4)",
-          "oklch(38% 0.0133 97.4)",
-          "oklch(49% 0.0133 97.4)",
-          "oklch(61% 0.0133 97.4)",
-          "oklch(73% 0.0133 97.4)",
-          "oklch(84% 0.0133 97.4)",
-          "oklch(95% 0.0133 97.4)"
+          "oklch(15% 0.0000 0.0)",
+          "oklch(27% 0.0000 0.0)",
+          "oklch(38% 0.0000 0.0)",
+          "oklch(49% 0.0000 0.0)",
+          "oklch(61% 0.0000 0.0)",
+          "oklch(73% 0.0000 0.0)",
+          "oklch(84% 0.0000 0.0)",
+          "oklch(95% 0.0000 0.0)"
         ]
       },
       "danger": {
         "role": "neutral",
         "displayName": "Destructive Red",
+        "canonical": "#9d3a33",
         "tonalRamp": [
           "oklch(15% 0.1336 27.2)",
           "oklch(27% 0.1336 27.2)",
@@ -175,6 +232,7 @@
       "danger-soft": {
         "role": "neutral",
         "displayName": "Destructive Surface",
+        "canonical": "#fcf0ec",
         "tonalRamp": [
           "oklch(15% 0.0141 39.4)",
           "oklch(27% 0.0141 39.4)",
@@ -188,49 +246,53 @@
       },
       "focus": {
         "role": "neutral",
-        "displayName": "Focus Green",
+        "displayName": "Focus Blue",
+        "canonical": "#93c5fd",
         "tonalRamp": [
-          "oklch(15% 0.0675 158.1)",
-          "oklch(27% 0.0675 158.1)",
-          "oklch(38% 0.0675 158.1)",
-          "oklch(49% 0.0675 158.1)",
-          "oklch(61% 0.0675 158.1)",
-          "oklch(73% 0.0675 158.1)",
-          "oklch(84% 0.0675 158.1)",
-          "oklch(95% 0.0675 158.1)"
+          "oklch(15% 0.0956 251.8)",
+          "oklch(27% 0.0956 251.8)",
+          "oklch(38% 0.0956 251.8)",
+          "oklch(49% 0.0956 251.8)",
+          "oklch(61% 0.0956 251.8)",
+          "oklch(73% 0.0956 251.8)",
+          "oklch(84% 0.0956 251.8)",
+          "oklch(95% 0.0956 251.8)"
         ]
       },
       "accent-soft": {
         "role": "primary",
-        "displayName": "Soft Green",
+        "displayName": "Soft Blue",
+        "canonical": "#eff6ff",
         "tonalRamp": [
-          "oklch(15% 0.0136 145.5)",
-          "oklch(27% 0.0136 145.5)",
-          "oklch(38% 0.0136 145.5)",
-          "oklch(49% 0.0136 145.5)",
-          "oklch(61% 0.0136 145.5)",
-          "oklch(73% 0.0136 145.5)",
-          "oklch(84% 0.0136 145.5)",
-          "oklch(95% 0.0136 145.5)"
+          "oklch(15% 0.0142 254.6)",
+          "oklch(27% 0.0142 254.6)",
+          "oklch(38% 0.0142 254.6)",
+          "oklch(49% 0.0142 254.6)",
+          "oklch(61% 0.0142 254.6)",
+          "oklch(73% 0.0142 254.6)",
+          "oklch(84% 0.0142 254.6)",
+          "oklch(95% 0.0142 254.6)"
         ]
       },
       "surface-subtle": {
         "role": "neutral",
         "displayName": "Subtle Surface",
+        "canonical": "#f8fafc",
         "tonalRamp": [
-          "oklch(15% 0.0067 115.7)",
-          "oklch(27% 0.0067 115.7)",
-          "oklch(38% 0.0067 115.7)",
-          "oklch(49% 0.0067 115.7)",
-          "oklch(61% 0.0067 115.7)",
-          "oklch(73% 0.0067 115.7)",
-          "oklch(84% 0.0067 115.7)",
-          "oklch(95% 0.0067 115.7)"
+          "oklch(15% 0.0034 247.9)",
+          "oklch(27% 0.0034 247.9)",
+          "oklch(38% 0.0034 247.9)",
+          "oklch(49% 0.0034 247.9)",
+          "oklch(61% 0.0034 247.9)",
+          "oklch(73% 0.0034 247.9)",
+          "oklch(84% 0.0034 247.9)",
+          "oklch(95% 0.0034 247.9)"
         ]
       },
       "amber": {
         "role": "neutral",
         "displayName": "Warning Amber",
+        "canonical": "#886222",
         "tonalRamp": [
           "oklch(15% 0.0931 76.8)",
           "oklch(27% 0.0931 76.8)",
@@ -245,6 +307,7 @@
       "amber-soft": {
         "role": "neutral",
         "displayName": "Warning Surface",
+        "canonical": "#f9f1df",
         "tonalRamp": [
           "oklch(15% 0.0253 86.9)",
           "oklch(27% 0.0253 86.9)",
@@ -258,65 +321,69 @@
       },
       "line-strong": {
         "role": "neutral",
-        "displayName": "Line Strong",
+        "displayName": "Control Rule",
+        "canonical": "#cbd5e1",
         "tonalRamp": [
-          "oklch(15% 0.0213 140.9)",
-          "oklch(27% 0.0213 140.9)",
-          "oklch(38% 0.0213 140.9)",
-          "oklch(49% 0.0213 140.9)",
-          "oklch(61% 0.0213 140.9)",
-          "oklch(73% 0.0213 140.9)",
-          "oklch(84% 0.0213 140.9)",
-          "oklch(95% 0.0213 140.9)"
+          "oklch(15% 0.0198 252.9)",
+          "oklch(27% 0.0198 252.9)",
+          "oklch(38% 0.0198 252.9)",
+          "oklch(49% 0.0198 252.9)",
+          "oklch(61% 0.0198 252.9)",
+          "oklch(73% 0.0198 252.9)",
+          "oklch(84% 0.0198 252.9)",
+          "oklch(95% 0.0198 252.9)"
         ]
       },
       "hover": {
         "role": "neutral",
-        "displayName": "Hover",
+        "displayName": "Control Hover",
+        "canonical": "#f1f5f9",
         "tonalRamp": [
-          "oklch(15% 0.0151 123.0)",
-          "oklch(27% 0.0151 123.0)",
-          "oklch(38% 0.0151 123.0)",
-          "oklch(49% 0.0151 123.0)",
-          "oklch(61% 0.0151 123.0)",
-          "oklch(73% 0.0151 123.0)",
-          "oklch(84% 0.0151 123.0)",
-          "oklch(95% 0.0151 123.0)"
+          "oklch(15% 0.0069 247.9)",
+          "oklch(27% 0.0069 247.9)",
+          "oklch(38% 0.0069 247.9)",
+          "oklch(49% 0.0069 247.9)",
+          "oklch(61% 0.0069 247.9)",
+          "oklch(73% 0.0069 247.9)",
+          "oklch(84% 0.0069 247.9)",
+          "oklch(95% 0.0069 247.9)"
         ]
       },
       "highlight": {
         "role": "neutral",
-        "displayName": "Highlight",
+        "displayName": "Source Highlight",
+        "canonical": "#dbeafe",
         "tonalRamp": [
-          "oklch(15% 0.0621 115.5)",
-          "oklch(27% 0.0621 115.5)",
-          "oklch(38% 0.0621 115.5)",
-          "oklch(49% 0.0621 115.5)",
-          "oklch(61% 0.0621 115.5)",
-          "oklch(73% 0.0621 115.5)",
-          "oklch(84% 0.0621 115.5)",
-          "oklch(95% 0.0621 115.5)"
+          "oklch(15% 0.0316 255.6)",
+          "oklch(27% 0.0316 255.6)",
+          "oklch(38% 0.0316 255.6)",
+          "oklch(49% 0.0316 255.6)",
+          "oklch(61% 0.0316 255.6)",
+          "oklch(73% 0.0316 255.6)",
+          "oklch(84% 0.0316 255.6)",
+          "oklch(95% 0.0316 255.6)"
         ]
       },
       "brand-symbol": {
         "role": "neutral",
-        "displayName": "Brand Symbol",
+        "displayName": "Brand Mark White",
+        "canonical": "#ffffff",
         "tonalRamp": [
-          "oklch(15% 0.0669 118.7)",
-          "oklch(27% 0.0669 118.7)",
-          "oklch(38% 0.0669 118.7)",
-          "oklch(49% 0.0669 118.7)",
-          "oklch(61% 0.0669 118.7)",
-          "oklch(73% 0.0669 118.7)",
-          "oklch(84% 0.0669 118.7)",
-          "oklch(95% 0.0669 118.7)"
+          "oklch(15% 0.0000 0.0)",
+          "oklch(27% 0.0000 0.0)",
+          "oklch(38% 0.0000 0.0)",
+          "oklch(49% 0.0000 0.0)",
+          "oklch(61% 0.0000 0.0)",
+          "oklch(73% 0.0000 0.0)",
+          "oklch(84% 0.0000 0.0)",
+          "oklch(95% 0.0000 0.0)"
         ]
       }
     },
     "typographyMeta": {
       "wordmark": {
         "displayName": "Wordmark",
-        "purpose": "Serif identity;31px desktop/24px mobile."
+        "purpose": "Platform sans identity; 20px/800 desktop, 18px/800 mobile, line-height 1.2."
       },
       "headline": {
         "displayName": "Headline",
@@ -349,24 +416,28 @@
       "meta": {
         "displayName": "Meta",
         "purpose": "12px provenance and secondary information."
+      },
+      "navigation": {
+        "displayName": "Navigation",
+        "purpose": "Horizontal top navigation; 14px/600 desktop, 12px/600 mobile."
       }
     },
     "shadows": [
       {
         "name": "connection-popover",
-        "value": "0 15px 40px #11251b24",
+        "value": "0 15px 40px #0f172a24",
         "purpose": "Connection settings overlap."
       },
       {
         "name": "floating-preview",
-        "value": "-12px 15px 40px #22331b1a",
+        "value": "-12px 15px 40px #0f172a1a",
         "purpose": "Floating preview from 641px through 1359px."
       }
     ],
     "motion": [
       {
         "name": "control-state",
-        "value": "background .15s, border-color .15s",
+        "value": "background .15s, border-color .15s, color .15s",
         "purpose": "Shared button state changes."
       },
       {
@@ -386,15 +457,11 @@
         "value": "640px"
       },
       {
-        "name": "editor-stack-max",
+        "name": "navigation-wrap-editor-stack-max",
         "value": "800px"
       },
       {
-        "name": "icon-rail-max",
-        "value": "1050px"
-      },
-      {
-        "name": "two-column-catalog-max",
+        "name": "header-compact-catalog-two-columns-max",
         "value": "1100px"
       },
       {
@@ -404,10 +471,6 @@
       {
         "name": "wide-preview-min",
         "value": "1600px"
-      },
-      {
-        "name": "content-cap-min",
-        "value": "1800px"
       }
     ]
   },
@@ -418,7 +481,7 @@
       "refersTo": "button-primary",
       "description": "Canonical UiButton primary variant.",
       "html": "<button type=\"button\" class=\"ds-button-primary\"><svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5v14M5 12h14\"/></svg>导入资料</button>",
-      "css": ".ds-button-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);background:var(--paper,#fffefa);color:var(--ink,#20332e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;background:var(--accent,#28644e);border-color:var(--accent,#28644e);color:var(--action-text,#fffdf3);}.ds-button-primary svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-primary:hover:not(:disabled){background:var(--hover,#f0f4e9);border-color:var(--line-strong,#cbd6c9);background:var(--accent-hover,#1c4e3b);border-color:var(--accent-hover,#1c4e3b);}.ds-button-primary:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-primary:disabled{opacity:.5;cursor:not-allowed}.ds-button-primary.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-primary[aria-pressed=\"true\"]{background:var(--accent-soft,#e6eee6);color:var(--accent,#28644e)}@media(max-width:640px){.ds-button-primary{height:44px}.ds-button-primary.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none}}"
+      "css": ".ds-button-primary{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd5e1);border-radius:var(--control-radius,6px);background:var(--paper,#ffffff);color:var(--ink,#0f172a);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;background:var(--accent,#2563eb);border-color:var(--accent,#2563eb);color:var(--action-text,#ffffff);}.ds-button-primary svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-primary:hover:not(:disabled){background:var(--hover,#f1f5f9);border-color:var(--line-strong,#cbd5e1);background:var(--accent-hover,#1d4ed8);border-color:var(--accent-hover,#1d4ed8);}.ds-button-primary:focus-visible{outline:3px solid var(--focus,#93c5fd);outline-offset:3px;}.ds-button-primary:disabled{opacity:.5;cursor:not-allowed}.ds-button-primary.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-primary[aria-pressed=\"true\"]{background:var(--accent-soft,#eff6ff);color:var(--accent,#2563eb)}@media(max-width:640px){.ds-button-primary{height:44px}.ds-button-primary.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none}}"
     },
     {
       "name": "Secondary Button",
@@ -426,7 +489,7 @@
       "refersTo": "button-secondary",
       "description": "Canonical UiButton secondary variant.",
       "html": "<button type=\"button\" class=\"ds-button-secondary\">复制正文</button>",
-      "css": ".ds-button-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);background:var(--paper,#fffefa);color:var(--ink,#20332e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;}.ds-button-secondary svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-secondary:hover:not(:disabled){background:var(--hover,#f0f4e9);border-color:var(--line-strong,#cbd6c9);}.ds-button-secondary:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-secondary:disabled{opacity:.5;cursor:not-allowed}.ds-button-secondary.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-secondary[aria-pressed=\"true\"]{background:var(--accent-soft,#e6eee6);color:var(--accent,#28644e)}@media(max-width:640px){.ds-button-secondary{height:44px}.ds-button-secondary.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-secondary{transition:none}}"
+      "css": ".ds-button-secondary{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd5e1);border-radius:var(--control-radius,6px);background:var(--paper,#ffffff);color:var(--ink,#0f172a);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;}.ds-button-secondary svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-secondary:hover:not(:disabled){background:var(--hover,#f1f5f9);border-color:var(--line-strong,#cbd5e1);}.ds-button-secondary:focus-visible{outline:3px solid var(--focus,#93c5fd);outline-offset:3px;}.ds-button-secondary:disabled{opacity:.5;cursor:not-allowed}.ds-button-secondary.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-secondary[aria-pressed=\"true\"]{background:var(--accent-soft,#eff6ff);color:var(--accent,#2563eb)}@media(max-width:640px){.ds-button-secondary{height:44px}.ds-button-secondary.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-secondary{transition:none}}"
     },
     {
       "name": "Ghost Button",
@@ -434,7 +497,7 @@
       "refersTo": "button-ghost",
       "description": "Canonical UiButton ghost variant. Includes a compact pressed category choice.",
       "html": "<button type=\"button\" class=\"ds-button-ghost\">更多操作</button> <button type=\"button\" class=\"ds-button-ghost ds-compact\" aria-pressed=\"true\">全部</button>",
-      "css": ".ds-button-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);background:var(--paper,#fffefa);color:var(--ink,#20332e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;background:transparent;border-color:transparent;color:var(--muted,#66736b);}.ds-button-ghost svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-ghost:hover:not(:disabled){background:var(--hover,#f0f4e9);border-color:var(--line-strong,#cbd6c9);border-color:transparent;color:var(--ink,#20332e);}.ds-button-ghost:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-ghost:disabled{opacity:.5;cursor:not-allowed}.ds-button-ghost.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-ghost[aria-pressed=\"true\"]{background:var(--accent-soft,#e6eee6);color:var(--accent,#28644e)}@media(max-width:640px){.ds-button-ghost{height:44px}.ds-button-ghost.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-ghost{transition:none}}"
+      "css": ".ds-button-ghost{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd5e1);border-radius:var(--control-radius,6px);background:var(--paper,#ffffff);color:var(--ink,#0f172a);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;background:transparent;border-color:transparent;color:var(--muted,#64748b);}.ds-button-ghost svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-ghost:hover:not(:disabled){background:var(--hover,#f1f5f9);border-color:var(--line-strong,#cbd5e1);border-color:transparent;color:var(--ink,#0f172a);}.ds-button-ghost:focus-visible{outline:3px solid var(--focus,#93c5fd);outline-offset:3px;}.ds-button-ghost:disabled{opacity:.5;cursor:not-allowed}.ds-button-ghost.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-ghost[aria-pressed=\"true\"]{background:var(--accent-soft,#eff6ff);color:var(--accent,#2563eb)}@media(max-width:640px){.ds-button-ghost{height:44px}.ds-button-ghost.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-ghost{transition:none}}"
     },
     {
       "name": "Text Button",
@@ -442,7 +505,7 @@
       "refersTo": "button-text",
       "description": "Canonical UiButton text variant.",
       "html": "<button type=\"button\" class=\"ds-button-text\">用于写作</button>",
-      "css": ".ds-button-text{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);background:var(--paper,#fffefa);color:var(--ink,#20332e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;background:transparent;border-color:transparent;color:var(--accent,#28644e);height:var(--control-compact,32px);padding-inline:0;}.ds-button-text svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-text:hover:not(:disabled){background:var(--hover,#f0f4e9);border-color:var(--line-strong,#cbd6c9);background:transparent;border-color:transparent;text-decoration:underline;text-underline-offset:4px;}.ds-button-text:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-text:disabled{opacity:.5;cursor:not-allowed}.ds-button-text.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-text[aria-pressed=\"true\"]{background:var(--accent-soft,#e6eee6);color:var(--accent,#28644e)}@media(max-width:640px){.ds-button-text{height:44px}.ds-button-text.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-text{transition:none}}@media(max-width:640px){.ds-button-text{height:40px}}"
+      "css": ".ds-button-text{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd5e1);border-radius:var(--control-radius,6px);background:var(--paper,#ffffff);color:var(--ink,#0f172a);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;background:transparent;border-color:transparent;color:var(--accent,#2563eb);height:var(--control-compact,32px);padding-inline:0;}.ds-button-text svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-text:hover:not(:disabled){background:var(--hover,#f1f5f9);border-color:var(--line-strong,#cbd5e1);background:transparent;border-color:transparent;text-decoration:underline;text-underline-offset:4px;}.ds-button-text:focus-visible{outline:3px solid var(--focus,#93c5fd);outline-offset:3px;}.ds-button-text:disabled{opacity:.5;cursor:not-allowed}.ds-button-text.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-text[aria-pressed=\"true\"]{background:var(--accent-soft,#eff6ff);color:var(--accent,#2563eb)}@media(max-width:640px){.ds-button-text{height:44px}.ds-button-text.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-text{transition:none}}@media(max-width:640px){.ds-button-text{height:40px}}"
     },
     {
       "name": "Danger Button",
@@ -450,7 +513,7 @@
       "refersTo": "button-danger",
       "description": "Canonical UiButton danger variant.",
       "html": "<button type=\"button\" class=\"ds-button-danger\">确认移除</button>",
-      "css": ".ds-button-danger{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);background:var(--paper,#fffefa);color:var(--ink,#20332e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;background:var(--danger-soft,#fcf0ec);border-color:var(--danger,#9d3a33);color:var(--danger,#9d3a33);}.ds-button-danger svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-danger:hover:not(:disabled){background:var(--hover,#f0f4e9);border-color:var(--line-strong,#cbd6c9);background:var(--danger-soft,#fcf0ec);border-color:var(--danger,#9d3a33);}.ds-button-danger:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-button-danger:disabled{opacity:.5;cursor:not-allowed}.ds-button-danger.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-danger[aria-pressed=\"true\"]{background:var(--accent-soft,#e6eee6);color:var(--accent,#28644e)}@media(max-width:640px){.ds-button-danger{height:44px}.ds-button-danger.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-danger{transition:none}}"
+      "css": ".ds-button-danger{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:var(--control-height,40px);padding:0 14px;border:1px solid var(--line-strong,#cbd5e1);border-radius:var(--control-radius,6px);background:var(--paper,#ffffff);color:var(--ink,#0f172a);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:var(--font-control,13px);font-weight:var(--weight-medium,500);line-height:1.5;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s,color .15s;background:var(--danger-soft,#fcf0ec);border-color:var(--danger,#9d3a33);color:var(--danger,#9d3a33);}.ds-button-danger svg{width:16px;height:16px;stroke-width:1.75;flex-shrink:0}.ds-button-danger:hover:not(:disabled){background:var(--hover,#f1f5f9);border-color:var(--line-strong,#cbd5e1);background:var(--danger-soft,#fcf0ec);border-color:var(--danger,#9d3a33);}.ds-button-danger:focus-visible{outline:3px solid var(--focus,#93c5fd);outline-offset:3px;}.ds-button-danger:disabled{opacity:.5;cursor:not-allowed}.ds-button-danger.ds-compact{height:var(--control-compact,32px);padding-inline:10px}.ds-button-danger[aria-pressed=\"true\"]{background:var(--accent-soft,#eff6ff);color:var(--accent,#2563eb)}@media(max-width:640px){.ds-button-danger{height:44px}.ds-button-danger.ds-compact{height:40px}}@media(prefers-reduced-motion:reduce){.ds-button-danger{transition:none}}"
     },
     {
       "name": "Shared Field",
@@ -458,30 +521,22 @@
       "refersTo": "field",
       "description": "Canonical labeled field with regular text and responsive control geometry.",
       "html": "<label class=\"ds-label\">资料名称<input class=\"ds-field\" value=\"项目资料\" /></label>",
-      "css": ".ds-label{display:grid;gap:8px;font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:13px;font-weight:600;line-height:1.5;color:var(--ink,#20332e)}.ds-field{display:block;min-height:var(--control-height,40px);height:var(--control-height,40px);padding:9px 11px;border:1px solid var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);background:var(--paper,#fffefa);color:var(--ink,#20332e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:14px;font-weight:400;line-height:1.5;caret-color:var(--accent,#28644e)}.ds-field:focus{border-color:var(--accent,#28644e)}.ds-field:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:2px}.ds-field::placeholder{color:var(--muted,#66736b);font-weight:400;opacity:1}@media(max-width:640px){.ds-field{height:44px;min-height:44px;font-size:16px}}"
+      "css": ".ds-label{display:grid;gap:8px;font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:13px;font-weight:600;line-height:1.5;color:var(--ink,#0f172a)}.ds-field{box-sizing:border-box;display:block;min-height:var(--control-height,40px);height:var(--control-height,40px);padding:9px 11px;border:1px solid var(--line-strong,#cbd5e1);border-radius:var(--control-radius,6px);background:var(--paper,#ffffff);color:var(--ink,#0f172a);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:14px;font-weight:400;line-height:1.5;caret-color:var(--accent,#2563eb)}.ds-field:focus{border-color:var(--accent,#2563eb)}.ds-field:focus-visible{outline:3px solid var(--focus,#93c5fd);outline-offset:2px}.ds-field::placeholder{color:var(--muted,#64748b);font-weight:400;opacity:1}@media(max-width:640px){.ds-field{height:44px;min-height:44px;font-size:16px}}"
     },
     {
       "name": "App Navigation",
       "kind": "nav",
       "refersTo": "nav-active",
-      "description": "Deep navigation with pale-leaf active destination.",
-      "html": "<nav class=\"ds-nav\"><a href=\"#knowledge\" aria-current=\"page\">知识库</a><a href=\"#writing\">文档写作</a></nav>",
-      "css": ".ds-nav{display:grid;gap:7px;padding:16px;background:var(--sidebar,#172e28);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);}.ds-nav a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:var(--control-radius,6px);font-size:14px;font-weight:500;color:#bccdbf;text-decoration:none;transition:background .15s,color .15s}.ds-nav a:hover{background:#263f34;color:#f0f4e6}.ds-nav a[aria-current=\"page\"]{background:#dce8ca;color:#203d2b}.ds-nav a:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}@media(max-width:640px){.ds-nav a{font-size:12px;min-height:42px;padding:9px 4px}}@media(prefers-reduced-motion:reduce){.ds-nav a{transition:none}}"
+      "description": "Navy top header, bold sans DocuGen wordmark and horizontal blue-selected navigation; links wrap to a second row at 800px.",
+      "html": "<header class=\"ds-header\"><div class=\"ds-header-inner\"><a class=\"ds-brand\" href=\"#knowledge\"><span class=\"ds-symbol\"><svg aria-hidden=\"true\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z\"/><path d=\"M14 2v6h6M8 13h8M8 17h8\"/></svg></span><span><strong>DocuGen</strong><small>知识与文档工作台</small></span></a><nav class=\"ds-nav\" aria-label=\"工作台导航\"><a href=\"#knowledge\" aria-current=\"page\">知识库</a><a href=\"#writing\">文档写作</a><a href=\"#templates\">模板市场</a><a href=\"#create\">导入 Word</a></nav></div></header>",
+      "css": ".ds-header{background:var(--sidebar,#0f172a);color:var(--sidebar-text,#cbd5e1);font-size:14px;line-height:1.65;font-family:var(--font-family-working,-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif)}.ds-header-inner{box-sizing:border-box;display:flex;align-items:center;gap:36px;max-width:1488px;min-height:80px;padding:16px 32px;margin:0 auto}.ds-brand{display:flex;align-items:center;gap:12px;flex-shrink:0;text-decoration:none}.ds-symbol{box-sizing:border-box;display:grid;place-items:center;width:44px;height:44px;background:var(--accent,#2563eb);color:var(--brand-symbol,#ffffff);border-radius:10px}.ds-brand strong{display:block;font-size:20px;line-height:1.2;font-weight:800;letter-spacing:-.025em;color:#f8fafc}.ds-brand small{display:block;font-size:11px;color:#94a3b8;margin-top:5px}.ds-nav{display:flex;gap:8px}.ds-nav a{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:600;color:#cbd5e1;text-decoration:none;white-space:nowrap;transition:background .15s,color .15s}.ds-nav a:hover{background:#1e293b;color:#ffffff}.ds-nav a[aria-current=page]{background:#1c3056;color:#93c5fd}.ds-nav a:focus-visible,.ds-brand:focus-visible{outline:3px solid var(--focus,#93c5fd);outline-offset:3px}@media(max-width:1100px){.ds-header-inner{gap:24px}.ds-nav a{padding-inline:12px}}@media(max-width:800px){.ds-header-inner{flex-wrap:wrap;gap:16px;padding:16px 24px}.ds-nav{order:3;flex-basis:100%}.ds-nav a{flex:1;justify-content:center}}@media(max-width:640px){.ds-header-inner{padding:14px 16px 10px;gap:12px}.ds-symbol{width:36px;height:36px;border-radius:8px}.ds-brand strong{font-size:18px}.ds-brand small{display:none}.ds-nav{gap:4px}.ds-nav a{padding:9px 4px;gap:5px;min-height:42px;font-size:12px}}@media(prefers-reduced-motion:reduce){.ds-nav a{transition:none}}"
     },
     {
       "name": "Shared Tabs",
       "kind": "custom",
       "description": "Canonical UiTabs appearance. The Vue component supplies roving focus, Left/Right, Home and End behavior.",
       "html": "<div class=\"ds-tabs\" role=\"tablist\" aria-label=\"知识库功能\"><button role=\"tab\" aria-selected=\"true\" tabindex=\"0\">资料管理<small>3</small></button><button role=\"tab\" aria-selected=\"false\" tabindex=\"-1\">检索与问答</button></div>",
-      "css": ".ds-tabs{display:flex;align-items:center;gap:24px;padding:0 24px;border-bottom:1px solid var(--line,#e0e5dc);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);}.ds-tabs>button{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--muted,#66736b);font-family:inherit;font-size:13px;font-weight:500;line-height:1.5;white-space:nowrap;cursor:pointer}.ds-tabs>button[aria-selected=\"true\"]{border-bottom-color:var(--accent,#28644e);color:var(--accent,#28644e)}.ds-tabs>button:focus-visible{outline:3px solid var(--focus,#7aab8e);outline-offset:3px;}.ds-tabs small{font-size:12px;font-weight:500;padding:0 5px;border-radius:4px;background:var(--accent-soft,#e6eee6);color:var(--accent,#28644e)}.ds-tabs>button:not([aria-selected=\"true\"]) small{background:var(--surface-subtle,#fafbf6);color:var(--muted,#66736b)}@media(max-width:640px){.ds-tabs{gap:20px;padding-inline:18px}}"
-    },
-    {
-      "name": "Shared Feedback",
-      "kind": "custom",
-      "refersTo": "notice",
-      "description": "Canonical success notice and compact empty-state composition, from UiNotice and UiEmptyState.",
-      "html": "<div class=\"ds-notice\" role=\"status\"><span>资料已保存。</span></div><div class=\"ds-empty\"><h3>还没有资料</h3><p>导入文件后，可在这里检查原文与取材依据。</p></div>",
-      "css": ".ds-notice{display:flex;align-items:flex-start;gap:10px;padding:14px 16px;margin:16px 0;border:1px solid var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);background:var(--accent-soft,#e6eee6);color:var(--accent,#28644e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);font-size:13px;font-weight:400;line-height:1.8;overflow-wrap:anywhere}.ds-empty{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;min-height:170px;padding:32px 20px;text-align:center;color:var(--muted,#66736b);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);}.ds-empty h3{margin:0;font-size:16px;font-weight:600;line-height:1.5;color:var(--ink,#20332e)}.ds-empty p{margin:0;font-size:13px;font-weight:400;line-height:1.8;max-width:46ch;color:var(--muted,#66736b)}@media(max-width:640px){.ds-notice{padding:12px}.ds-empty{padding:40px 20px}}"
+      "css": ".ds-tabs{display:flex;align-items:center;gap:24px;padding:0 24px;border-bottom:1px solid var(--line,#e2e8f0);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);}.ds-tabs>button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--muted,#64748b);font-family:inherit;font-size:13px;font-weight:500;line-height:1.5;white-space:nowrap;cursor:pointer}.ds-tabs>button[aria-selected=\"true\"]{border-bottom-color:var(--accent,#2563eb);color:var(--accent,#2563eb)}.ds-tabs>button:focus-visible{outline:3px solid var(--focus,#93c5fd);outline-offset:3px;}.ds-tabs small{font-size:12px;font-weight:500;padding:0 5px;border-radius:4px;background:var(--accent-soft,#eff6ff);color:var(--accent,#2563eb)}.ds-tabs>button:not([aria-selected=\"true\"]) small{background:var(--surface-subtle,#f8fafc);color:var(--muted,#64748b)}@media(max-width:640px){.ds-tabs{gap:20px;padding-inline:18px}}"
     },
     {
       "name": "Reading Panel",
@@ -489,7 +544,7 @@
       "refersTo": "panel",
       "description": "Flat source container preserving the intentional content-title and reading roles.",
       "html": "<article class=\"ds-panel\"><header><span>资料预览</span><h2>项目说明</h2></header><p>从资料出发，写出有依据的内容。\n\n原文与取材依据保留在一起。</p></article>",
-      "css": ".ds-panel{border:1px solid var(--line,#e0e5dc);border-radius:var(--radius-panel,9px);background:var(--paper,#fffefa);overflow:hidden;color:var(--ink,#20332e);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);}.ds-panel header{padding:24px 24px 18px;border-bottom:1px solid var(--line,#e0e5dc)}.ds-panel header>span{font-size:12px;color:var(--muted,#66736b)}.ds-panel h2{margin:5px 0 0;font-size:20px;font-weight:500;line-height:1.6;letter-spacing:-.025em;overflow-wrap:anywhere}.ds-panel p{margin:0;padding:24px;max-width:75ch;font-size:15px;line-height:1.95;white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:640px){.ds-panel p{padding:23px 21px}.ds-panel header{padding:23px 21px 18px}}"
+      "css": ".ds-panel{box-sizing:border-box;border:1px solid var(--line,#e2e8f0);border-radius:var(--radius-panel,14px);background:var(--paper,#ffffff);overflow:hidden;color:var(--ink,#0f172a);font-family:var(--font-family-working,-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);}.ds-panel header{padding:24px 24px 18px;border-bottom:1px solid var(--line,#e2e8f0)}.ds-panel header>span{font-size:12px;color:var(--muted,#64748b)}.ds-panel h2{margin:5px 0 0;font-size:20px;font-weight:500;line-height:1.6;letter-spacing:-.025em;overflow-wrap:anywhere}.ds-panel p{margin:0;padding:24px;max-width:75ch;font-size:15px;line-height:1.95;white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:640px){.ds-panel p{padding:23px 21px}.ds-panel header{padding:23px 21px 18px}}"
     },
     {
       "name": "Shared File Picker",
@@ -497,22 +552,22 @@
       "refersTo": "file-picker",
       "description": "Canonical UiFilePicker appearance and native single-file input. Vue owns model updates, drag/drop, selected filename/size and reset behavior; callers supply accept and validation.",
       "html": "<div class=\"ds-file-picker\"><input type=\"file\" aria-label=\"选择文件\" required /><svg aria-hidden=\"true\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12\"/></svg><div class=\"ds-file-picker-copy\"><strong>选择文件，或拖放到这里</strong><span>保留原文件，按所选方式处理。</span></div></div>",
-      "css": ".ds-file-picker{position:relative;display:flex;align-items:center;gap:16px;min-width:0;min-height:104px;padding:20px;background:var(--surface-subtle,#fafbf6);color:var(--accent,#28644e);border:1px dashed var(--line-strong,#cbd6c9);border-radius:var(--control-radius,6px);font-family:var(--font-family-working,-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif)}.ds-file-picker>input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.ds-file-picker>svg{flex-shrink:0;stroke-width:1.75}.ds-file-picker-copy{min-width:0;flex:1;display:grid;gap:6px}.ds-file-picker-copy strong{color:var(--ink,#20332e);font-size:var(--font-body,14px);font-weight:var(--weight-medium,500);line-height:1.5;overflow-wrap:anywhere}.ds-file-picker-copy span{color:var(--muted,#66736b);font-size:var(--font-meta,12px);font-weight:var(--weight-regular,400);line-height:1.6}.ds-file-picker:hover,.ds-file-picker--dragging{background:var(--accent-soft,#e6eee6);border-color:var(--accent,#28644e)}.ds-file-picker:hover .ds-file-picker-copy span,.ds-file-picker--dragging .ds-file-picker-copy span{color:var(--accent,#28644e)}.ds-file-picker--selected{border-style:solid}.ds-file-picker:focus-within{outline:3px solid var(--focus,#7aab8e);outline-offset:3px}.ds-file-picker:has(input:disabled){opacity:.52}.ds-file-picker>input:disabled{cursor:not-allowed}@media(max-width:640px){.ds-file-picker{padding:16px;min-height:100px;gap:12px}}"
+      "css": ".ds-file-picker{box-sizing:border-box;position:relative;display:flex;align-items:center;gap:16px;min-width:0;min-height:104px;padding:20px;background:var(--surface-subtle,#f8fafc);color:var(--accent,#2563eb);border:1px dashed var(--line-strong,#cbd5e1);border-radius:var(--control-radius,6px);font-family:var(--font-family-working,-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif)}.ds-file-picker>input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.ds-file-picker>svg{flex-shrink:0;stroke-width:1.75}.ds-file-picker-copy{min-width:0;flex:1;display:grid;gap:6px}.ds-file-picker-copy strong{color:var(--ink,#0f172a);font-size:var(--font-body,14px);font-weight:var(--weight-medium,500);line-height:1.5;overflow-wrap:anywhere}.ds-file-picker-copy span{color:var(--muted,#64748b);font-size:var(--font-meta,12px);font-weight:var(--weight-regular,400);line-height:1.6}.ds-file-picker:hover,.ds-file-picker--dragging{background:var(--accent-soft,#eff6ff);border-color:var(--accent,#2563eb)}.ds-file-picker:hover .ds-file-picker-copy span,.ds-file-picker--dragging .ds-file-picker-copy span{color:var(--accent,#2563eb)}.ds-file-picker--selected{border-style:solid}.ds-file-picker:focus-within{outline:3px solid var(--focus,#93c5fd);outline-offset:3px}.ds-file-picker:has(input:disabled){opacity:.52}.ds-file-picker>input:disabled{cursor:not-allowed}@media(max-width:640px){.ds-file-picker{padding:16px;min-height:100px;gap:12px}}"
     }
   ],
   "narrative": {
-    "northStar": "The Reading Workbench",
-    "overview": "DocuGen places warm working paper beside deep green navigation. The mood is calm, literate and practical: deep ink carries source text and headings, neutral muted text carries supporting information, and green identifies actions and the current working context. The small serif wordmark provides the literary cue; Chinese working text uses one platform sans family.\n\nThe reading-workbench world spans knowledge management, source inspection, writing, template browsing, upload and template-based generation. Its visual primitives now have one canonical owner: ui.css and the shared UiButton, UiPageHeader, UiNotice, UiEmptyState, UiTabs and UiFilePicker components. Workbench, knowledge and document styles arrange these primitives and define deliberate reading or content-title roles. This record follows the actual component rules and computed-style reports at 1440px, 1024px and 390px; the confirmed visual identity is preserved.",
+    "northStar": "The Vue Template Market",
+    "overview": "DocuGen restores the visual family the user explicitly selected on 2026-10-20: “Vue 模板市场：深蓝顶部导航、白色内容卡片、蓝色按钮”. A deep navy top band anchors horizontal icon navigation; white working cards sit on a cool light-gray canvas. Clear blue marks actions, selection and readiness. The wordmark and Chinese interface use the same platform sans family.\n\nThis current authority replaces the earlier warm-paper, green-sidebar reading-workbench identity. The reference is the actual original DocuGen Vue application at commit `5c2799899abcfba6d1aecd0b0a340ecca5b04e71`, captured in `artifacts/legacy-ui-comparison/original-market.png` and `original-create.png`. This is a code-led adaptation of that visual family to expanded knowledge, writing and template workflows; it makes no pixel-exact reproduction claim. Shared controls, content hierarchy, real Word covers and functional behavior continue to use their existing source owners. Final human taste acceptance remains with the user.",
     "keyCharacteristics": [
-      "Warm paper and subtle neutral surfaces beneath deep green navigation.",
-      "One working font family, semantic type roles and consistent action geometry.",
-      "Ink reading text, muted metadata and green action/selection states.",
-      "Shared buttons, page headers, notices, empty states, keyboard tabs and native file selection across all flows."
+      "Deep navy horizontal navigation at every viewport width.",
+      "Cool gray canvas, white cards, fine slate borders and clear blue actions.",
+      "One platform sans family with a compact bold wordmark and consistent semantic text roles.",
+      "Shared controls, keyboard tabs, source inspection and native file selection across knowledge and document flows."
     ],
     "rules": [
       {
-        "name": "The Quiet Paper Rule",
-        "body": "Use ink for sustained reading and muted neutral text for metadata. Reserve green for actions, readiness and selection; keep warm paper as the working surface.",
+        "name": "The Blue Action Rule",
+        "body": "Use blue for actions, readiness and selection. Keep sustained reading in slate ink and working cards white beneath the navy top navigation.",
         "section": "colors"
       },
       {
@@ -536,7 +591,7 @@
     "donts": [
       "Don’t redefine a shared button’s height, font, color, radius or icon geometry in page CSS.",
       "Don’t shrink compact action labels; compact changes geometry while preserving 13px/500 text.",
-      "Don’t restore emoji iconography, blue glow shadows or decorative gradients from the replaced interface.",
+      "Don’t reintroduce the user-rejected warm-green sidebar or serif wordmark as the current app identity.",
       "Don’t add shadows to every container; use border and surface tone for resting structure.",
       "Don’t present reading segments, index readiness, counts or answers as decoration; their labels and states must follow actual data."
     ]

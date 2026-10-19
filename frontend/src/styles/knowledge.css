@@ -917,7 +917,7 @@
     width: 420px;
     max-height: none;
     z-index: 30;
-    box-shadow: -12px 15px 40px #22331b1a;
+    box-shadow: -12px 15px 40px #0f172a1a;
   }
   .optional-column {
     display: none;

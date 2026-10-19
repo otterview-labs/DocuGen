@@ -30,6 +30,11 @@
 }
 .create-starter-list li {
   min-width: 0;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+  padding: 16px;
 }
 .create-starter-preview {
   display: block;

@@ -19,8 +19,11 @@ for (const width of [1440, 1024, 390]) {
       headers: { Authorization: `Bearer ${key}` },
     });
     expect(response.ok()).toBeTruthy();
-    const template = (await response.json()).templates.find(item =>
-      ["项目名称", "负责人"].every(name => item.variables.some(variable => variable.name === name)));
+    const template = (await response.json()).templates.find((item) =>
+      ["项目名称", "负责人"].every((name) =>
+        item.variables.some((variable) => variable.name === name),
+      ),
+    );
     expect(template).toBeTruthy();
     const report = {};
     for (const route of [
@@ -32,7 +35,10 @@ for (const width of [1440, 1024, 390]) {
     ]) {
       await page.goto(route);
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-      if (route === "/create") await page.getByLabel("选择模板", { exact: true }).selectOption(template.name);
+      if (route === "/create")
+        await page
+          .getByLabel("选择模板", { exact: true })
+          .selectOption(template.name);
       if (route === "/knowledge")
         await expect(page.locator(".library-title h2")).toBeVisible();
       if (route === "/create" || route.startsWith("/generate/"))
@@ -109,17 +115,29 @@ for (const width of [1440, 1024, 390]) {
           },
         };
       });
+      const shell = await page.locator(".app-header").evaluate((header) => ({
+        background: getComputedStyle(header).backgroundColor,
+        bottom: header.getBoundingClientRect().bottom,
+        navBottom: header.querySelector("nav").getBoundingClientRect().bottom,
+        navLinks: [...header.querySelectorAll("nav a")].map((link) => {
+          const box = link.getBoundingClientRect();
+          return box.left >= 0 && box.right <= innerWidth;
+        }),
+      }));
+      expect(shell.background).toBe("rgb(15, 23, 42)");
+      expect(shell.navBottom).toBeLessThanOrEqual(shell.bottom);
+      expect(shell.navLinks).toEqual([true, true, true, true]);
       report[route] = details;
       expect(details.heading).toEqual({
         font: width <= 640 ? "24px" : "28px",
         weight: "600",
-        color: "rgb(32, 51, 46)",
+        color: "rgb(15, 23, 42)",
       });
       const colors = {
-        "ui-button--primary": "rgb(255, 253, 243)",
-        "ui-button--secondary": "rgb(32, 51, 46)",
-        "ui-button--ghost": "rgb(102, 115, 107)",
-        "ui-button--text": "rgb(40, 100, 78)",
+        "ui-button--primary": "rgb(255, 255, 255)",
+        "ui-button--secondary": "rgb(15, 23, 42)",
+        "ui-button--ghost": "rgb(100, 116, 139)",
+        "ui-button--text": "rgb(37, 99, 235)",
         "ui-button--danger": "rgb(157, 58, 51)",
       };
       for (const control of details.buttons) {
@@ -139,7 +157,7 @@ for (const width of [1440, 1024, 390]) {
               : 40,
         );
         expect(control.color, route + " " + control.label).toBe(
-          control.pressed ? "rgb(40, 100, 78)" : colors[control.variant],
+          control.pressed ? "rgb(37, 99, 235)" : colors[control.variant],
         );
         for (const icon of control.icons)
           expect(icon, control.label).toEqual({
@@ -158,7 +176,7 @@ for (const width of [1440, 1024, 390]) {
           width <= 640 ? "16px" : "14px",
         );
         expect(field.weight, field.label).toBe("400");
-        expect(field.color, field.label).toBe("rgb(32, 51, 46)");
+        expect(field.color, field.label).toBe("rgb(15, 23, 42)");
       }
       expect(
         await page.evaluate(
@@ -200,7 +218,8 @@ test("identical AI fill actions share the compact toolbar size", async ({
   const styles = [];
   for (const route of ["/create", "/generate/" + encodeURIComponent(name)]) {
     await page.goto(route);
-    if (route === "/create") await page.getByLabel("选择模板", { exact: true }).selectOption(name);
+    if (route === "/create")
+      await page.getByLabel("选择模板", { exact: true }).selectOption(name);
     const button = page.getByRole("button", { name: "AI 填充", exact: true });
     await expect(button).toBeVisible();
     styles.push(
@@ -248,6 +267,37 @@ test("shared form buttons preserve outline and explicit submit behavior", async 
   expect(submissions).toBe(1);
 });
 
-test('canonical link buttons retain href, keyboard role and navigation',async({page})=>{
- await page.goto('/templates');const upload=page.locator('.heading-actions').getByRole('link',{name:'上传模板',exact:true});await expect(upload).toHaveAttribute('href','/create');await upload.focus();await upload.press('Enter');await expect(page.getByRole('heading',{level:1,name:'上传模板',exact:true})).toBeVisible();const back=page.locator('.heading-actions').getByRole('link',{name:'返回模板库',exact:true});await expect(back).toHaveAttribute('href','/templates');await back.focus();await back.press('Enter');await expect(page.getByRole('heading',{level:1,name:'文档模板',exact:true})).toBeVisible();await page.getByLabel('搜索模板',{exact:true}).fill('示例 · 项目验收记录');const use=page.locator('.template-entry').getByRole('link',{name:'使用模板',exact:true});await expect(use).toHaveAttribute('href',/\/generate\//);await use.focus();await use.press('Enter');await expect(page.getByRole('heading',{level:1})).toBeVisible();await expect(page.getByLabel('项目名称',{exact:true})).toBeVisible();
+test("canonical link buttons retain href, keyboard role and navigation", async ({
+  page,
+}) => {
+  await page.goto("/templates");
+  const upload = page
+    .locator(".heading-actions")
+    .getByRole("link", { name: "上传模板", exact: true });
+  await expect(upload).toHaveAttribute("href", "/create");
+  await upload.focus();
+  await upload.press("Enter");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "上传模板", exact: true }),
+  ).toBeVisible();
+  const back = page
+    .locator(".heading-actions")
+    .getByRole("link", { name: "返回模板库", exact: true });
+  await expect(back).toHaveAttribute("href", "/templates");
+  await back.focus();
+  await back.press("Enter");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "文档模板", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByLabel("搜索模板", { exact: true })
+    .fill("示例 · 项目验收记录");
+  const use = page
+    .locator(".template-entry")
+    .getByRole("link", { name: "使用模板", exact: true });
+  await expect(use).toHaveAttribute("href", /\/generate\//);
+  await use.focus();
+  await use.press("Enter");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByLabel("项目名称", { exact: true })).toBeVisible();
 });

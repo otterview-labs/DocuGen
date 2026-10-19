@@ -9,25 +9,29 @@ related_targets: ["frontend/src/App.vue","frontend/src/styles/knowledge.css","fr
 
 Mode: Operate. Audience: Chinese-speaking self-hosted workspace users organizing source material before document writing. Primary task: import, inspect, retrieve and reuse a source. User requested a substantial feature upgrade and redesign after finding the initial knowledge page too simple and ugly.
 
-## Direction contract
+## Current direction contract — 2026-10-20
 
 THESIS: Make source inspection the center of the knowledge workflow, with the selected document and its retrieval evidence one action apart.
 
-OWN-WORLD: Deep green navigation, warm white working paper, olive secondary information, compact rules and Lucide line icons. System sans for Chinese working text; a small Georgia wordmark. Brand expression stays in palette, type and density.
+OWN-WORLD: The user-selected “Vue 模板市场：深蓝顶部导航、白色内容卡片、蓝色按钮”. Deep navy horizontal top navigation, white working cards, cool slate canvas/text and blue actions/selection. One system sans family including the compact bold wordmark; compact rules and Lucide line icons. Current normative tokens and responsive geometry live in DESIGN.md.
 
 STORY: Choose a collection, import files or paste text, check the extracted original, retrieve relevant sources, then carry the collection into writing. Counts and index states reflect actual storage.
 
-FIRST VIEWPORT: A 208px app rail, 190px collection list, flexible document table and page-level import/create actions. Opening a source introduces a 380px right preview at desktop widths. Mobile switches to collection chips and a full-width source view.
+FIRST VIEWPORT: A full-width navy top header with horizontal icon navigation, white workspace bar and content capped at 1488px. The 190px collection list and flexible document table retain page-level import/create actions. Opening a source introduces a 380px right preview from 1360px; narrower desktop/tablet uses the bounded floating preview. At 800px and below top navigation wraps to a second horizontal row. Mobile switches collections to horizontal choices and opens a full-width source view.
 
-FORM: Grounded candidate 4, reading/field-guide workbench, direction seed 04518e4f. Code-led. The user confirmed this direction via the optional preference question. No approved comp or decision raster exists. Durable contract recorded during finish; it was not persisted before implementation.
+FORM: Code-led restoration of the original Vue application at commit 5c2799899abcfba6d1aecd0b0a340ecca5b04e71, anchored by actual original market/create captures. This explicitly replaces the former reading/field-guide workbench (candidate 4, seed 04518e4f), whose initial preference did not constitute acceptance of the later rejected visual result. No approved comp or pixel-exact reproduction claim exists. Final human taste acceptance remains the user’s.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
 ## Quality bar
 
-Controls retain conventional behavior and visible labels; source names and text remain legible in Chinese. Management, retrieval and preview must work at 1440px and 390px with no page overflow. Empty, loading, errors, missing models, imports and removal all have explicit states. No invented statistics, OCR capability, vector chunks or model answers. Reading segments are labeled as a browsing aid. Search source navigation is the signature interaction. No shipped raster assets.
+Controls retain conventional behavior and visible labels; source names and text remain legible in Chinese. Management, retrieval and preview must work at 1440px and 390px with no page overflow. Empty, loading, errors, missing models, imports and removal all have explicit states. No invented statistics, OCR capability, vector chunks or model answers. Reading segments are labeled as a browsing aid. Search source navigation is the signature interaction. No knowledge-specific raster assets. The twelve authentic starter DOCX covers in the template workflows retain their source/hash provenance.
 
-## Reference-driven refinement
+## Historical refinements — superseded visual identity
+
+The following sections preserve earlier functional decisions and their sequence. Warm-green, serif-wordmark and app-rail guidance below is historical and must not override the current direction contract or DESIGN.md. The current pass retains all seven knowledge tabs and 28 operation entries; provider gates and real-data requirements remain binding. Final review inspected the 24-state matrix at 1440px/1024px/390px and found no material visual fixes. Bounded test/deployment results are in docs/VALIDATION.md.
+
+### Reference-driven refinement
 
 The user requested further UI optimization using VoltAgent/awesome-design-md. Preserve the confirmed Operate reading-workbench world. Adapt control consistency and surface discipline from the Linear analysis, neutral text and template presentation from Notion, and reading hierarchy from Mintlify. These are marketing-site analyses translated to app tasks, not literal application templates. References and source revision are recorded in docs/UI_REFERENCES.md.
 

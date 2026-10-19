@@ -422,18 +422,35 @@
 .template-original {
   margin-top: 12px;
 }
-.list-view .template-cover { width: 110px; flex-shrink: 0; --template-cover-height: 135px; }
+.list-view .template-cover {
+  width: 110px;
+  flex-shrink: 0;
+  --template-cover-height: 135px;
+}
 .template-entry-footer {
   flex-wrap: wrap;
 }
 @media (max-width: 1100px) {
-  .template-structure { grid-template-columns: minmax(0, 1fr) 260px; }
-  .list-view .template-cover { display: none; }
+  .template-structure {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+  .list-view .template-cover {
+    display: none;
+  }
 }
 @media (max-width: 800px) {
-  .template-structure { grid-template-columns: minmax(0, 1fr); }
-  .template-structure-info { border-left: 0; border-top: 1px solid var(--line); }
-  .template-paper { max-height: 470px; padding: 24px; margin: 16px; }
+  .template-structure {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .template-structure-info {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .template-paper {
+    max-height: 470px;
+    padding: 24px;
+    margin: 16px;
+  }
 }
 .catalog-toolbar {
   display: flex;
@@ -476,20 +493,22 @@
 .template-catalog {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 24px;
+  background: var(--ground);
 }
 .template-entry {
   padding: 26px;
-  border-bottom: 1px solid var(--line);
-  border-right: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: var(--paper);
   min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
 }
-.template-entry:nth-child(3n) {
-  border-right: 0;
-}
+
 .template-sheet {
   display: flex;
   align-items: center;
@@ -559,7 +578,7 @@
 .list-view .template-entry {
   flex-direction: row;
   align-items: center;
-  border-right: 0;
+  margin-bottom: 12px;
   padding: 22px 24px;
   gap: 20px;
 }
@@ -629,12 +648,7 @@
   .template-catalog {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .template-entry:nth-child(3n) {
-    border-right: 1px solid var(--line);
-  }
-  .template-entry:nth-child(2n) {
-    border-right: 0;
-  }
+
   .editor-submit {
     flex-wrap: wrap;
   }
@@ -673,9 +687,10 @@
 @media (max-width: 640px) {
   .template-catalog {
     grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 16px;
   }
   .template-entry {
-    border-right: 0 !important;
     padding: 23px;
   }
   .template-entry h2 {

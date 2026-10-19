@@ -1,5 +1,15 @@
 # Document template library
 
+## Current direction — 2026-10-20
+
+Mode: Operate. The user explicitly replaced the previous warm-paper green-sidebar identity with “Vue 模板市场：深蓝顶部导航、白色内容卡片、蓝色按钮”. Current authority is `DESIGN.md`: navy horizontal top navigation, sans wordmark, white cards, cool gray ground and blue shared controls across all five routes. Preserve the document-first gallery and actual upload/fill/download behavior while adapting the original Vue visual family. Original-source references are recorded in `docs/UI_REFERENCES.md`; this is not a pixel-exact reproduction. Final human taste acceptance remains the user’s.
+
+The four featured real starter covers, explicit selection, compact import panel, content editor and export summary remain the current surface composition. All twelve original DOCX thumbnails and their embedded/source-hash provenance are retained. No assets are created by this visual restoration. The navy header remains horizontal at all widths and wraps to a second row at 800px; page-specific controls continue to inherit `ui.css`. The capture matrix covers initial and selected create states plus workspace/built-in catalog states at 1440px, 1024px and 390px. Final review and bounded regression/deployment evidence are recorded in `docs/VALIDATION.md`.
+
+## Historical functional and composition decisions
+
+The following records describe earlier iterations. Their functional constraints and provenance remain relevant; their warm-green visual commitments are superseded by the current direction above.
+
 Mode: Operate. Preserve the accepted reading-workbench identity, shared controls, typography, warm paper and deep green navigation. User feedback: the merged `/create` surface made the original template-led workflow hard to find, and the available template content was too sparse.
 
 Provide actual reusable DOCX templates, distinguish built-in definitions from saved workspace copies, and let users understand the content before committing to a template. The catalog retains categories, search, grid/list views and pagination. Built-in entries now show a thumbnail rendered from the actual starter DOCX first page; workspace entries retain the document icon. The separate inline structure preview pairs a paper reading region with metadata and actions on desktop, stacking on mobile. That reading view remains explicitly structural, not a rendered Word screenshot or pagination guarantee. Original download and manual filling work without a model. Upload preserves custom category and description.
@@ -12,7 +22,7 @@ The user rejected the previous `/create` presentation as visually worse. Preserv
 
 Initially no template is implicitly selected. Content fields and the compact export summary appear after upload or explicit selection, reducing irrelevant empty/disabled regions. Template switching clears the previous download and retrieval sources; explicit re-extraction continues to preserve confirmed values. On desktop, preparation uses a 1.55:1 split and the variable region has a 300px sticky export summary; below 800px these stack, and below 640px fields stack as well. Use page-local `create.css` only for composition and content roles, with shared controls unchanged. Bounded desktop/tablet/mobile captures cover initial and selected-template states; the complete browser suite passed 35 tests, with the optional real-model invocation skipped. No shipping raster assets or palette changes.
 
-## Current document-first correction
+## Document-first correction preceding the visual replacement
 
 The user rejected the preceding `/create` attempts twice because the change was not visually apparent. The correction changes the first visible composition while preserving the reading-workbench world: four authentic starter covers lead the page, with a workspace-template selector and compact upload panel below. The featured records are 项目实施方案、项目验收报告、工作周报 and 会议纪要, selected by their real library identifiers. Names, category labels, variable counts and the full-library count come from the API.
 
@@ -24,4 +34,4 @@ Thumbnails are generated read-only from `/api/template-library` and its original
 
 `TemplateCover` uses lazy image loading and a fixed-height crop of a proportionate first-page image. It shows real template/section text plus an explicit image-unavailable message on failure; structure and use actions remain usable. These thumbnails are snapshots of empty original starters, not a guarantee of readable body text at gallery scale, full-document coverage or Word pagination. Font availability, font substitution, render-engine differences and filled content can change layout. Uploaded customer files are outside this asset scope.
 
-This document records the current implementation and source evidence. Earlier validation counts above apply to their historical refinement; final screenshot review and testing of this correction must be recorded separately once completed.
+Earlier validation counts above apply to their historical refinement. The current replacement’s final screenshot review and bounded checks are recorded separately in `docs/VALIDATION.md`; they do not retrospectively establish user acceptance of any earlier presentation.
