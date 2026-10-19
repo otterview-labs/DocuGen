@@ -85,6 +85,10 @@ for (const width of [1440, 1024, 390]) {
       "generate/" + encodeURIComponent(title),
     ]) {
       await page.goto("/" + route);
+      if (route === "create")
+        await page.getByLabel("选择模板", { exact: true }).selectOption(title);
+      if (route === "templates")
+        await page.getByLabel("搜索模板", { exact: true }).fill(title);
       if (route === "templates")
         await expect(
           page.getByRole("link", { name: title, exact: true }),

@@ -2,13 +2,24 @@
   <section class="document-workspace">
     <UiPageHeader
       title="上传模板"
-      description="选择模板，填写变量，生成可下载的 Word 文档。"
+      description="上传已有 Word 文件，保留版式并自动识别变量。没有现成文件，也可以从内置模板开始。"
       ><template #actions
         ><UiButton to="/templates"
           ><ArrowLeft :size="15" />返回模板库</UiButton
         ></template
       ></UiPageHeader
     >
+    <div class="template-library-intro">
+      <div>
+        <h2>还没有 Word 模板？</h2>
+        <p>
+          项目方案、验收报告、周报、会议纪要、简历等常用模板，可预览结构并直接填写。
+        </p>
+      </div>
+      <UiButton :to="{ path: '/templates', query: { source: 'builtin' } }"
+        ><Files />浏览内置模板<ArrowRight
+      /></UiButton>
+    </div>
     <div class="document-editor">
       <div class="editor-main">
         <section class="editor-section">
@@ -82,6 +93,27 @@
                 :size="15"
               />{{ uploading ? "上传中…" : "上传并入库" }}</UiButton
             >
+          </div>
+          <div class="template-upload-metadata">
+            <div>
+              <label class="field-label" for="upload-category">模板分类</label
+              ><select
+                id="upload-category"
+                v-model="uploadCategory"
+                class="field-input"
+              >
+                <option v-for="category in uploadCategories" :key="category">
+                  {{ category }}
+                </option>
+              </select>
+            </div>
+            <label class="field-label"
+              >模板说明<input
+                v-model="uploadDescription"
+                class="field-input"
+                maxlength="500"
+                placeholder="用途、适用场景或填写提示（可选）"
+            /></label>
           </div>
         </section>
         <section class="editor-section">
@@ -221,6 +253,8 @@ import UiPageHeader from "../components/ui/UiPageHeader.vue";
 import UiButton from "../components/ui/UiButton.vue";
 import { RouterLink } from "vue-router";
 import {
+  ArrowRight,
+  Files,
   ArrowLeft,
   BookOpen,
   CheckCircle2,
@@ -262,6 +296,18 @@ const customRagContent = ref("");
 const uploadInput = ref(null);
 const uploadFile = ref(null);
 const uploadName = ref("");
+const uploadCategory = ref("通用");
+const uploadDescription = ref("");
+const uploadCategories = [
+  "通用",
+  "报告",
+  "合同",
+  "简历",
+  "招投标",
+  "方案",
+  "函件",
+  "其他",
+];
 const uploading = ref(false);
 
 const currentTemplate = computed(
@@ -300,7 +346,9 @@ function resetValues(varList, preserve = false) {
   const previous = preserve ? { ...values } : {};
   Object.keys(values).forEach((k) => delete values[k]);
   (varList || []).forEach((v) => {
-    values[v.name] = Object.hasOwn(previous, v.name) ? previous[v.name] : v.default_value || "";
+    values[v.name] = Object.hasOwn(previous, v.name)
+      ? previous[v.name]
+      : v.default_value || "";
   });
 }
 
@@ -324,7 +372,8 @@ async function loadVariables({ refresh = false } = {}) {
       } else {
         variables.value = data || [];
         resetValues(variables.value, refresh);
-        if (currentTemplate.value) currentTemplate.value.variables = variables.value;
+        if (currentTemplate.value)
+          currentTemplate.value.variables = variables.value;
       }
     }
   } finally {
@@ -402,7 +451,8 @@ async function handleUpload() {
     const formData = new FormData();
     formData.append("template_name", uploadName.value || uploadFile.value.name);
     formData.append("file", uploadFile.value);
-    formData.append("description", "上传自创建页面");
+    formData.append("description", uploadDescription.value);
+    formData.append("category", uploadCategory.value);
     const { data, error } = await uploadTemplate(formData);
     if (error || !data?.success) {
       status.value = `上传失败：${error || data?.error || "未知错误"}`;

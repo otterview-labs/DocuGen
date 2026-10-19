@@ -38,15 +38,20 @@ class Store:
         finally:
             db.close()
 
-    def add_template(self, name: str, variables: list[dict], template_id: str) -> dict:
+    def add_template(
+        self, name: str, variables: list[dict], template_id: str, *,
+        category: str = "通用", description: str = "自定义 Word 模板", builtin_id: str | None = None,
+    ) -> dict:
         body = {
             "id": template_id,
             "name": name,
             "variables": variables,
-            "category": "通用",
-            "description": "自定义 Word 模板",
+            "category": category,
+            "description": description,
             "created_at": now(),
         }
+        if builtin_id:
+            body["builtin_id"] = builtin_id
         with self.connect() as db:
             db.execute("INSERT INTO templates VALUES (?, ?, ?)", (template_id, name, json.dumps(body)))
         return body

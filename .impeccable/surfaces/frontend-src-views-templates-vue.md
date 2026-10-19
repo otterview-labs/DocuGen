@@ -1,0 +1,7 @@
+# Document template library
+
+Mode: Operate. Preserve the accepted reading-workbench identity, shared controls, typography, warm paper and deep green navigation. User feedback: the merged `/create` surface made the original template-led workflow hard to find, and the available template content was too sparse.
+
+Provide actual reusable DOCX templates, distinguish built-in definitions from saved workspace copies, and let users understand the content before committing to a template. The catalog retains categories, search, grid/list views and pagination. Built-in entries show their real section structure; inline preview pairs a paper reading region with metadata and actions on desktop, stacking on mobile. This preview is explicitly structural, not a rendered Word screenshot or pagination guarantee. Original download and manual filling work without a model. Upload preserves custom category and description.
+
+Focus enters the inline preview and returns to its trigger on close; Escape closes it. Tabs use the shared keyboard behavior. Use existing tokens and components; no global design-token changes and no shipping raster assets. Verify actual DOCX output, catalog-to-editor navigation, downloads, duplicate/colliding names, upload metadata, shared-control styles and layouts at 1440px, 1024px and 390px. Previous deployment templates are not claimed as migrated; the twelve starters are original content definitions.

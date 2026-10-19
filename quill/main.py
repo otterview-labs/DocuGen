@@ -7,11 +7,12 @@ import sqlite3
 import zipfile
 from contextlib import asynccontextmanager, suppress
 from pathlib import Path
-from uuid import uuid4
+from urllib.parse import quote
+from uuid import NAMESPACE_URL, uuid4, uuid5
 
 import httpx
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -22,6 +23,7 @@ from quill.knowledge_tools import tools_router
 from quill.legacy.template import BaseTemplatesGenerator
 from quill.providers import KnowledgeClient, LLMClient, ProviderError, reference_text
 from quill.store import Store
+from quill.template_library import catalog, get_template, render_starter
 
 
 class DraftRequest(BaseModel):
@@ -156,6 +158,50 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def list_templates():
         return {"templates": store.templates()}
 
+    def require_starter(key: str) -> dict:
+        template = get_template(key)
+        if template is None:
+            raise HTTPException(404, "内置模板不存在。")
+        return template
+
+    @app.get("/api/template-library", dependencies=secured)
+    async def list_starters():
+        return {"templates": catalog()}
+
+    @app.get("/api/template-library/{key}/download", dependencies=secured)
+    async def download_starter(key: str):
+        template = require_starter(key)
+        return Response(
+            render_starter(template),
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            headers={"Content-Disposition": "attachment; filename*=UTF-8''" + quote(template["name"] + ".docx")},
+        )
+
+    @app.post("/api/template-library/{key}/use", dependencies=secured)
+    async def use_starter(key: str):
+        template = require_starter(key)
+        template_id = uuid5(NAMESPACE_URL, "quill:template-library:" + key).hex
+        existing = store.template(template_id)
+        if existing:
+            return {"template": existing}
+        name = template["name"]
+        suffix = 1
+        while store.template(name):
+            name = f"{template['name']} · 内置{suffix}"
+            suffix += 1
+        path = store.root / "templates" / f"{template_id}.docx"
+        path.write_bytes(render_starter(template))
+        try:
+            variables = templates.extract_variables_from_template(str(path))
+            installed = store.add_template(
+                name, variables, template_id, category=template["category"],
+                description=template["description"], builtin_id=key,
+            )
+        except Exception:
+            path.unlink(missing_ok=True)
+            raise
+        return {"template": installed}
+
     def require_template(name: str) -> dict:
         template = store.template(name)
         if not template:
@@ -163,7 +209,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return template
 
     @app.post("/api/upload-template", dependencies=secured)
-    async def upload_template(file: UploadFile = File(...), template_name: str = Form("")):
+    async def upload_template(
+        file: UploadFile = File(...), template_name: str = Form(""),
+        category: str = Form("通用"), description: str = Form("自定义 Word 模板"),
+    ):
+        if category not in {"通用", "报告", "合同", "简历", "招投标", "方案", "函件", "其他"}:
+            raise HTTPException(400, "请选择有效的模板分类。")
+        if len(description) > 500:
+            raise HTTPException(400, "模板说明不能超过 500 字。")
         if not file.filename or Path(file.filename).suffix.lower() != ".docx":
             raise HTTPException(400, "请上传 DOCX 模板，旧版 DOC 需要先转换。")
         name = (template_name.strip() or Path(file.filename).stem)[:100]
@@ -185,7 +238,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         path.write_bytes(data)
         try:
             variables = await asyncio.to_thread(templates.extract_variables_from_template, str(path))
-            template = store.add_template(name, variables, template_id)
+            template = store.add_template(
+                name, variables, template_id, category=category,
+                description=description.strip() or "自定义 Word 模板",
+            )
         except sqlite3.IntegrityError:
             path.unlink(missing_ok=True)
             raise HTTPException(409, "该模板名称已存在，请换一个名称。") from None
