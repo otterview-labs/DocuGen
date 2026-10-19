@@ -517,8 +517,7 @@ select,
 textarea {
   font-family: inherit;
 }
-.template-select-row,
-.template-upload-row {
+.template-select-row {
   gap: 12px;
 }
 .ui-search-field:has(.ui-button) {

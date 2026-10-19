@@ -117,31 +117,14 @@
   font-family: inherit;
   font-size: 0.95em;
 }
-.template-select-row,
-.template-upload-row {
+.template-select-row {
   display: flex;
   align-items: center;
   margin-top: 9px;
 }
-.template-select-row .field-input,
-.template-upload-row .field-input {
+.template-select-row .field-input {
   flex: 1;
   min-width: 0;
-}
-.upload-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: var(--font-meta);
-  color: var(--muted);
-  margin: 26px 0 17px;
-}
-.upload-divider:before,
-.upload-divider:after {
-  content: "";
-  height: 1px;
-  background: var(--line);
-  flex: 1;
 }
 .template-upload-drop {
   display: flex;
@@ -369,33 +352,11 @@
   border-radius: var(--radius-panel);
   overflow: hidden;
 }
-.template-library-intro {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-panel);
-}
-.template-library-intro h2 {
-  font-size: var(--font-section);
-  font-weight: 600;
-}
-.template-library-intro p,
 .template-structure-info > p {
   color: var(--muted);
   font-size: var(--font-control);
   line-height: 1.85;
   margin-top: 8px;
-}
-.template-upload-metadata {
-  display: grid;
-  grid-template-columns: 140px minmax(0, 1fr);
-  gap: 16px;
-  margin-top: 18px;
 }
 .template-sheet-outline {
   width: 100%;
@@ -495,10 +456,6 @@
   .template-structure { grid-template-columns: minmax(0, 1fr); }
   .template-structure-info { border-left: 0; border-top: 1px solid var(--line); }
   .template-paper { max-height: 470px; padding: 24px; margin: 16px; }
-  .template-library-intro { align-items: flex-start; flex-direction: column; gap: 16px; padding: 20px; }
-}
-@media (max-width: 640px) {
-  .template-upload-metadata { grid-template-columns: minmax(0, 1fr); }
 }
 .catalog-toolbar {
   display: flex;
@@ -758,12 +715,6 @@
     padding: 18px 17px;
     align-items: flex-start;
     flex-wrap: wrap;
-  }
-  .template-upload-row {
-    flex-wrap: wrap;
-  }
-  .template-upload-row .field-input {
-    flex: 1 1 100%;
   }
   .template-select-row {
     align-items: stretch;

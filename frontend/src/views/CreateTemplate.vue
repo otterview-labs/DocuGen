@@ -1,217 +1,305 @@
 <template>
-  <section class="document-workspace">
+  <section class="document-workspace create-page">
     <UiPageHeader
       title="上传模板"
-      description="上传已有 Word 文件，保留版式并自动识别变量。没有现成文件，也可以从内置模板开始。"
-      ><template #actions
-        ><UiButton to="/templates"
-          ><ArrowLeft :size="15" />返回模板库</UiButton
-        ></template
-      ></UiPageHeader
+      description="保留熟悉的 Word 版式，让下一份文档从模板开始。"
     >
-    <div class="template-library-intro">
-      <div>
-        <h2>还没有 Word 模板？</h2>
-        <p>
-          项目方案、验收报告、周报、会议纪要、简历等常用模板，可预览结构并直接填写。
-        </p>
-      </div>
-      <UiButton :to="{ path: '/templates', query: { source: 'builtin' } }"
-        ><Files />浏览内置模板<ArrowRight
-      /></UiButton>
-    </div>
-    <div class="document-editor">
-      <div class="editor-main">
-        <section class="editor-section">
-          <div class="editor-section-heading">
-            <div>
-              <h2>模板与变量</h2>
-              <p>选择已有模板，或上传新的 Word 文件。</p>
-            </div>
-            <UiButton
-              aria-label="重新加载模板"
-              :disabled="loadingTemplates"
-              @click="loadTemplates"
-              variant="ghost"
-              icon-only
-              ><RefreshCw :size="17" :class="{ spin: loadingTemplates }"
-            /></UiButton>
+      <template #actions
+        ><UiButton to="/templates"><ArrowLeft />返回模板库</UiButton></template
+      >
+    </UiPageHeader>
+
+    <ol class="create-workflow" aria-label="模板生成流程">
+      <li
+        :class="{
+          complete: selectedTemplateName,
+          current: !selectedTemplateName,
+        }"
+      >
+        <span class="workflow-marker"
+          ><Check v-if="selectedTemplateName" /><span v-else>1</span></span
+        >
+        <div><strong>准备模板</strong><span>上传文件或选择已有模板</span></div>
+        <ChevronRight aria-hidden="true" />
+      </li>
+      <li :class="{ current: selectedTemplateName, complete: downloadUrl }">
+        <span class="workflow-marker"
+          ><Check v-if="downloadUrl" /><span v-else>2</span></span
+        >
+        <div><strong>填写内容</strong><span>填写变量，核对文档信息</span></div>
+        <ChevronRight aria-hidden="true" />
+      </li>
+      <li :class="{ current: downloadUrl }">
+        <span class="workflow-marker">3</span>
+        <div><strong>导出文档</strong><span>沿用原版式，下载 Word</span></div>
+      </li>
+    </ol>
+
+    <div class="create-intake">
+      <section
+        class="create-upload-panel"
+        aria-labelledby="create-upload-heading"
+      >
+        <div class="create-section-title">
+          <div>
+            <h2 id="create-upload-heading">导入你的 Word 模板</h2>
+            <p>已有固定格式？上传后自动识别可填写的内容。</p>
           </div>
-          <label class="field-label" for="selected-template">选择模板</label>
-          <div class="template-select-row">
-            <select
-              id="selected-template"
-              v-model="selectedTemplateName"
-              class="field-input"
-              @change="handleTemplateChange"
-            >
-              <option disabled value="">请选择模板</option>
-              <option
-                v-for="template in templates"
-                :key="template.name"
-                :value="template.name"
-              >
-                {{ template.name }}（{{ template.category || "通用" }}）
-              </option></select
-            ><UiButton
-              :disabled="!selectedTemplateName || loadingVars"
-              @click="loadVariables({ refresh: true })"
-              ><ScanText :size="15" />提取变量
-            </UiButton>
-          </div>
-          <div class="upload-divider"><span>或上传新模板</span></div>
-          <label
-            class="template-upload-drop ui-upload"
-            for="template-upload"
-            @dragover.prevent
-            @drop.prevent="
-              handleFileSelect({ target: { files: $event.dataTransfer.files } })
-            "
-            ><input
-              id="template-upload"
-              ref="uploadInput"
-              class="sr-only"
-              type="file"
-              accept=".docx"
-              @change="handleFileSelect"
-            /><Upload :size="25" :stroke-width="1.5" /><strong>{{
-              uploadFile ? uploadFile.name : "点击选择或拖入 Word 模板"
-            }}</strong
-            ><span>仅支持 DOCX · 自动提取占位符</span></label
-          >
-          <div class="template-upload-row">
-            <input
+          <span class="document-tag">DOCX</span>
+        </div>
+        <label
+          class="template-upload-drop ui-upload"
+          :class="{ dragging, 'has-file': uploadFile }"
+          for="template-upload"
+          @dragover.prevent="dragging = true"
+          @dragleave="dragging = false"
+          @drop.prevent="dropTemplate"
+        >
+          <input
+            id="template-upload"
+            ref="uploadInput"
+            class="sr-only"
+            type="file"
+            accept=".docx"
+            :disabled="uploading"
+            @change="handleFileSelect"
+          />
+          <FileText v-if="uploadFile" aria-hidden="true" /><Upload
+            v-else
+            aria-hidden="true"
+          />
+          <strong>{{
+            uploadFile ? uploadFile.name : "点击选择，或将 Word 文件拖到这里"
+          }}</strong>
+          <span>{{
+            uploadFile
+              ? formatBytes(uploadFile.size) + " · 点击可更换文件"
+              : "支持 .docx · 保留标题、表格、页眉与页脚"
+          }}</span>
+        </label>
+        <div class="create-template-details">
+          <label class="field-label" for="upload-name"
+            >模板名称<input
+              id="upload-name"
               v-model="uploadName"
               class="field-input"
-              aria-label="模板名称"
+              maxlength="100"
               placeholder="模板名称（可选，默认用文件名）"
-            /><UiButton
-              :disabled="uploading || !uploadFile"
-              @click="handleUpload"
-              ><LoaderCircle v-if="uploading" :size="15" class="spin" /><Upload
+          /></label>
+          <div>
+            <label class="field-label" for="upload-category">模板分类</label>
+            <select
+              id="upload-category"
+              v-model="uploadCategory"
+              class="field-input"
+            >
+              <option v-for="category in uploadCategories" :key="category">
+                {{ category }}
+              </option>
+            </select>
+          </div>
+          <label class="field-label create-template-description"
+            >模板说明<input
+              v-model="uploadDescription"
+              class="field-input"
+              maxlength="500"
+              placeholder="用途、适用场景或填写提示（可选）"
+          /></label>
+        </div>
+        <div class="create-upload-footer">
+          <span
+            ><ScanText />自动提取 <code>【变量】</code> 和
+            <code v-pre>{{ 变量 }}</code></span
+          ><UiButton
+            :disabled="uploading || !uploadFile"
+            variant="primary"
+            @click="handleUpload"
+            ><LoaderCircle v-if="uploading" class="spin" /><Upload v-else />{{
+              uploading ? "上传中…" : "上传并入库"
+            }}</UiButton
+          >
+        </div>
+      </section>
+
+      <aside
+        class="create-template-options"
+        aria-labelledby="create-existing-heading"
+      >
+        <div class="create-section-title">
+          <div>
+            <h2 id="create-existing-heading">使用已有模板</h2>
+            <p>从工作区继续，或选一份常用文档。</p>
+          </div>
+          <UiButton
+            aria-label="重新加载模板"
+            :disabled="loadingTemplates"
+            @click="loadTemplates"
+            variant="ghost"
+            size="compact"
+            icon-only
+            ><RefreshCw :class="{ spin: loadingTemplates }"
+          /></UiButton>
+        </div>
+        <label class="field-label" for="selected-template">选择模板</label>
+        <div class="template-select-row">
+          <select
+            id="selected-template"
+            v-model="selectedTemplateName"
+            class="field-input"
+            @change="handleTemplateChange"
+          >
+            <option disabled value="">请选择工作区模板</option>
+            <option
+              v-for="template in templates"
+              :key="template.name"
+              :value="template.name"
+            >
+              {{ template.name }}
+            </option></select
+          ><UiButton
+            :disabled="!selectedTemplateName || loadingVars"
+            @click="loadVariables({ refresh: true })"
+            aria-label="提取变量"
+            icon-only
+            ><ScanText
+          /></UiButton>
+        </div>
+        <div class="create-starter-heading">
+          <h3>常用内置模板</h3>
+          <span v-if="library.length">{{ library.length }} 个可用</span>
+        </div>
+        <UiNotice v-if="libraryError" tone="error" :message="libraryError"
+          >{{ libraryError }}
+          <UiButton variant="text" @click="loadLibrary"
+            >重新加载</UiButton
+          ></UiNotice
+        >
+        <ul v-else class="create-starter-list" :aria-busy="loadingLibrary">
+          <li v-for="template in suggestedTemplates" :key="template.id">
+            <RouterLink
+              :to="{
+                path: '/templates',
+                query: { source: 'builtin', q: template.name },
+              }"
+              ><FileText aria-hidden="true" />
+              <div>
+                <strong>{{ template.name }}</strong
+                ><span
+                  >{{ template.category }} ·
+                  {{ template.variables.length }} 个可填写内容</span
+                >
+              </div>
+              <ArrowUpRight aria-hidden="true"
+            /></RouterLink>
+          </li>
+          <li v-if="loadingLibrary" class="create-starter-loading">
+            正在读取内置模板…
+          </li>
+        </ul>
+        <UiButton
+          :to="{ path: '/templates', query: { source: 'builtin' } }"
+          variant="text"
+          ><Files />浏览内置模板<ArrowRight
+        /></UiButton>
+      </aside>
+    </div>
+
+    <UiNotice v-if="status" :message="status" class="create-status" />
+    <div
+      v-if="selectedTemplateName || loadingVars"
+      class="create-variable-layout"
+    >
+      <section
+        class="editor-section create-variable-panel"
+        aria-labelledby="create-variables-heading"
+      >
+        <div class="editor-section-heading">
+          <div>
+            <h2 id="create-variables-heading">
+              填写文档内容
+              <span class="document-count">{{ variables.length }} 个变量</span>
+            </h2>
+            <p>
+              {{
+                selectedTemplateName
+                  ? "当前模板：" + selectedTemplateName
+                  : "准备好模板后，在这里填写内容。"
+              }}
+            </p>
+          </div>
+          <div class="inline-actions">
+            <UiButton
+              :disabled="aiFilling || !variables.length"
+              @click="aiFill"
+              size="compact"
+              ><LoaderCircle v-if="aiFilling" class="spin" /><Sparkles
                 v-else
-                :size="15"
-              />{{ uploading ? "上传中…" : "上传并入库" }}</UiButton
+              />AI 填充</UiButton
+            ><UiButton
+              :disabled="!variables.length"
+              @click="clearValues"
+              variant="text"
+              >清空</UiButton
             >
           </div>
-          <div class="template-upload-metadata">
-            <div>
-              <label class="field-label" for="upload-category">模板分类</label
-              ><select
-                id="upload-category"
-                v-model="uploadCategory"
-                class="field-input"
-              >
-                <option v-for="category in uploadCategories" :key="category">
-                  {{ category }}
-                </option>
-              </select>
-            </div>
-            <label class="field-label"
-              >模板说明<input
-                v-model="uploadDescription"
-                class="field-input"
-                maxlength="500"
-                placeholder="用途、适用场景或填写提示（可选）"
-            /></label>
-          </div>
-        </section>
-        <section class="editor-section">
-          <div class="editor-section-heading">
-            <div>
-              <h2>
-                变量填写
-                <span class="document-count">{{ variables.length }}</span>
-              </h2>
-              <p v-if="selectedTemplateName">
-                当前模板：{{ selectedTemplateName }}
-              </p>
-            </div>
-            <div class="inline-actions">
-              <UiButton
-                :disabled="aiFilling || !variables.length"
-                @click="aiFill"
-                size="compact"
-                ><LoaderCircle
-                  v-if="aiFilling"
-                  :size="14"
-                  class="spin"
-                /><Sparkles v-else :size="14" />AI 填充</UiButton
-              ><UiButton
-                :disabled="!variables.length"
-                @click="clearValues"
-                variant="text"
-              >
-                清空
-              </UiButton>
-            </div>
-          </div>
-          <details class="reference-disclosure">
-            <summary>
-              <BookOpen :size="16" />参考内容（可选）<ChevronDown :size="15" />
-            </summary>
-            <label class="field-label" for="upload-reference"
-              >手动参考资料<textarea
-                id="upload-reference"
-                v-model="customRagContent"
-                class="field-input"
-                rows="4"
-                placeholder="没有知识库时可手动粘贴参考内容，AI 填充会优先参考"
-              />
-            </label>
-            <p>仅在 AI 填充时使用，生成结果仍需核对。</p>
-          </details>
-          <UiEmptyState
-            v-if="loadingVars"
-            :icon="LoaderCircle"
-            description="正在提取变量…"
-            state="loading"
-            compact
-          ></UiEmptyState>
-          <UiEmptyState
-            v-else-if="!variables.length"
-            :icon="TextCursorInput"
-            description="选择或上传模板后，在这里填写变量。"
-            compact
-          ></UiEmptyState>
-          <div v-else class="variables-grid">
-            <label
-              v-for="(variable, index) in variables"
-              :key="variable.name"
-              class="field-label"
-              :for="`var-${index}`"
-              >{{ variable.name
-              }}<textarea
-                :id="`var-${index}`"
-                v-model="values[variable.name]"
-                class="field-input"
-                :placeholder="variable.description || '请输入内容'"
-                rows="3"
-              />
-            </label>
-          </div>
-        </section>
-      </div>
-      <aside class="editor-aside" aria-label="生成文档">
-        <div class="editor-aside-title">
-          <FileCheck2 :size="20" />
-          <h2>生成结果</h2>
         </div>
-        <p class="editor-help">
-          填写并核对变量后，沿用模板格式导出 Word 文档。
-        </p>
+        <details class="reference-disclosure">
+          <summary>
+            <BookOpen :size="16" />参考内容（可选）<ChevronDown :size="16" />
+          </summary>
+          <label class="field-label" for="upload-reference"
+            >手动参考资料<textarea
+              id="upload-reference"
+              v-model="customRagContent"
+              class="field-input"
+              rows="4"
+              placeholder="没有知识库时可手动粘贴参考内容，AI 填充会优先参考"
+            />
+          </label>
+          <p>仅在 AI 填充时使用，生成结果仍需核对。</p>
+        </details>
+        <UiEmptyState
+          v-if="loadingVars"
+          :icon="LoaderCircle"
+          description="正在提取变量…"
+          state="loading"
+          compact
+        />
+        <UiEmptyState
+          v-else-if="!variables.length"
+          :icon="TextCursorInput"
+          title="先准备一份模板"
+          description="上传 Word 或选择已有模板后，可填写的变量会显示在这里。"
+          compact
+        />
+        <div v-else class="variables-grid">
+          <label
+            v-for="(variable, index) in variables"
+            :key="variable.name"
+            class="field-label"
+            :for="`var-${index}`"
+            >{{ variable.name
+            }}<textarea
+              :id="`var-${index}`"
+              v-model="values[variable.name]"
+              class="field-input"
+              :placeholder="variable.description || '请输入内容'"
+              rows="3"
+            />
+          </label>
+        </div>
+      </section>
+      <aside class="create-export-panel" aria-label="生成文档">
+        <div class="editor-aside-title">
+          <FileCheck2 />
+          <h2>准备导出</h2>
+        </div>
+        <p class="editor-help">核对填写内容，生成沿用模板版式的 Word 文档。</p>
         <dl class="document-summary">
           <dt>当前模板</dt>
           <dd>{{ selectedTemplateName || "尚未选择" }}</dd>
-          <dt>变量填写</dt>
-          <dd>
-            {{
-              variables.filter((variable) =>
-                String(values[variable.name] || "").trim(),
-              ).length
-            }}
-            / {{ variables.length }}
-          </dd>
+          <dt>内容已填</dt>
+          <dd>{{ completedVariables }} / {{ variables.length }}</dd>
           <dt>导出格式</dt>
           <dd>Word · DOCX</dd>
         </dl>
@@ -220,33 +308,29 @@
           @click="generateDoc"
           class="full-width"
           variant="primary"
-          ><LoaderCircle v-if="generating" :size="16" class="spin" /><FileOutput
+          ><LoaderCircle v-if="generating" class="spin" /><FileOutput
             v-else
-            :size="16"
           />{{ generating ? "生成中…" : "生成文档" }}</UiButton
         >
-        <UiNotice v-if="status" :message="status" />
         <div v-if="downloadUrl" class="document-download">
-          <CheckCircle2 :size="22" /><strong>文档已生成</strong>
+          <CheckCircle2 /><strong>文档已生成</strong>
           <p>下载后请核对内容与排版。</p>
           <UiButton @click="downloadFile(downloadUrl)"
-            ><Download :size="16" />下载 Word
-          </UiButton>
+            ><Download />下载 Word</UiButton
+          >
         </div>
-        <div class="editor-guidance">
-          <h3>占位符规范</h3>
-          <p>
-            在 Word 模板中使用 <code>【变量】</code> 或
-            <code v-pre>{{ 变量 }}</code
-            >。上传后会自动提取，也可以重新提取变量。
-          </p>
-          <p>AI 填充需要配置生成模型，手动填写和导出无需模型。</p>
-        </div>
+        <p class="create-export-note">
+          <ShieldCheck />手动填写与导出无需模型。AI 填充使用已配置的生成模型。
+        </p>
       </aside>
     </div>
+    <p v-else class="create-start-hint">
+      <Info :size="16" />准备好模板后，可继续填写内容并导出 Word 文档。
+    </p>
   </section>
 </template>
 <script setup>
+import "../styles/create.css";
 import UiNotice from "../components/ui/UiNotice.vue";
 import UiEmptyState from "../components/ui/UiEmptyState.vue";
 import UiPageHeader from "../components/ui/UiPageHeader.vue";
@@ -255,6 +339,12 @@ import { RouterLink } from "vue-router";
 import {
   ArrowRight,
   Files,
+  Check,
+  ChevronRight,
+  ArrowUpRight,
+  ShieldCheck,
+  FileText,
+  Info,
   ArrowLeft,
   BookOpen,
   CheckCircle2,
@@ -274,12 +364,45 @@ import { downloadFile } from "../api/client";
 import { computed, onMounted, reactive, ref } from "vue";
 import {
   fetchTemplates,
+  fetchTemplateLibrary,
   fetchTemplateVariables,
   aiFillVariables,
   generateFromTemplate,
   uploadTemplate,
 } from "../api/templates";
 
+const library = ref([]),
+  loadingLibrary = ref(true),
+  libraryError = ref("");
+const suggestedTemplates = computed(() =>
+  ["project-plan", "acceptance-report", "weekly-report", "meeting-minutes"]
+    .map((id) => library.value.find((template) => template.id === id))
+    .filter(Boolean),
+);
+async function loadLibrary() {
+  loadingLibrary.value = true;
+  const { data, error } = await fetchTemplateLibrary();
+  library.value = data || [];
+  libraryError.value = error || "";
+  loadingLibrary.value = false;
+}
+const dragging = ref(false);
+const completedVariables = computed(
+  () =>
+    variables.value.filter((variable) =>
+      String(values[variable.name] || "").trim(),
+    ).length,
+);
+function formatBytes(size) {
+  return size < 1048576
+    ? (size / 1024).toFixed(1) + " KB"
+    : (size / 1048576).toFixed(1) + " MB";
+}
+function dropTemplate(event) {
+  dragging.value = false;
+  if (uploading.value) return;
+  handleFileSelect({ target: { files: event.dataTransfer.files } });
+}
 const templates = ref([]);
 const loadingTemplates = ref(false);
 const selectedTemplateName = ref("");
@@ -316,7 +439,7 @@ const currentTemplate = computed(
 );
 
 onMounted(async () => {
-  await loadTemplates();
+  await Promise.all([loadTemplates(), loadLibrary()]);
 });
 
 async function loadTemplates() {
@@ -329,10 +452,6 @@ async function loadTemplates() {
       return;
     }
     templates.value = data || [];
-    if (!selectedTemplateName.value && templates.value.length > 0) {
-      selectedTemplateName.value = templates.value[0].name;
-      await loadVariables();
-    }
   } finally {
     loadingTemplates.value = false;
   }
@@ -356,6 +475,10 @@ async function loadVariables({ refresh = false } = {}) {
   if (!selectedTemplateName.value) return;
   loadingVars.value = true;
   status.value = "";
+  if (!refresh) {
+    downloadUrl.value = "";
+    lastSources.value = [];
+  }
   try {
     // 优先使用元数据附带变量
     if (!refresh && currentTemplate.value?.variables?.length) {

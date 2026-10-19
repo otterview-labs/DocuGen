@@ -200,6 +200,7 @@ test("identical AI fill actions share the compact toolbar size", async ({
   const styles = [];
   for (const route of ["/create", "/generate/" + encodeURIComponent(name)]) {
     await page.goto(route);
+    if (route === "/create") await page.getByLabel("选择模板", { exact: true }).selectOption(name);
     const button = page.getByRole("button", { name: "AI 填充", exact: true });
     await expect(button).toBeVisible();
     styles.push(
