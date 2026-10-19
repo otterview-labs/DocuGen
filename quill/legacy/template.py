@@ -7,6 +7,7 @@ import time
 import uuid
 from pathlib import Path
 from docx import Document
+from docx.text.paragraph import Paragraph
 from docx.shared import Pt, Inches, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.oxml import OxmlElement
@@ -61,16 +62,27 @@ class BaseTemplatesGenerator:
             doc: 文档对象
             data: 用于填充的数据
         """
-        # 遍历所有段落
-        for paragraph in doc.paragraphs:
+        for paragraph in self._template_paragraphs(doc):
             self._replace_text_in_paragraph(paragraph, data)
 
-        # 遍历所有表格
-        for table in doc.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    for paragraph in cell.paragraphs:
-                        self._replace_text_in_paragraph(paragraph, data)
+    def _template_paragraphs(self, doc):
+        """Visit body, nested tables and existing header/footer definitions once."""
+        stories = [doc]
+        for section in doc.sections:
+            for story in (
+                section.header, section.footer,
+                section.first_page_header, section.first_page_footer,
+                section.even_page_header, section.even_page_footer,
+            ):
+                # Reading an undefined story would create an empty header/footer part.
+                if not story.is_linked_to_previous:
+                    stories.append(story)
+        seen = set()
+        for story in stories:
+            for element in story._element.iter(qn("w:p")):
+                if element not in seen:
+                    seen.add(element)
+                    yield Paragraph(element, story)
 
     def _replace_text_in_paragraph(self, paragraph, data: Dict[str, Any]) -> None:
         """
@@ -151,39 +163,16 @@ class BaseTemplatesGenerator:
             # 正则表达式匹配【变量名】或{{变量名}}格式
             var_pattern = re.compile(r'【([^】]+?)】|\{\{([^}]+?)\}\}')
 
-            # 从段落中提取变量
-            for paragraph in doc.paragraphs:
-                matches = var_pattern.findall(paragraph.text)
-                for match_tuple in matches:
-                    # findall会返回元组，(中文匹配, 英文匹配)，取非空的一个
-                    var_name = next((v for v in match_tuple if v), None)
-                    if var_name:
-                        var_name = var_name.strip()
-                        if var_name and var_name not in found_vars:
-                            found_vars.add(var_name)
-                            variables.append({
-                                "name": var_name,
-                                "description": f"{var_name}的值",
-                                "default_value": ""
-                            })
-
-            # 从表格中提取变量
-            for table in doc.tables:
-                for row in table.rows:
-                    for cell in row.cells:
-                        for paragraph in cell.paragraphs:
-                            matches = var_pattern.findall(paragraph.text)
-                            for match_tuple in matches:
-                                var_name = next((v for v in match_tuple if v), None)
-                                if var_name:
-                                    var_name = var_name.strip()
-                                    if var_name and var_name not in found_vars:
-                                        found_vars.add(var_name)
-                                        variables.append({
-                                            "name": var_name,
-                                            "description": f"{var_name}的值",
-                                            "default_value": ""
-                                        })
+            for paragraph in self._template_paragraphs(doc):
+                for match_tuple in var_pattern.findall(paragraph.text):
+                    var_name = next((v for v in match_tuple if v), "").strip()
+                    if var_name and var_name not in found_vars:
+                        found_vars.add(var_name)
+                        variables.append({
+                            "name": var_name,
+                            "description": f"{var_name}的值",
+                            "default_value": ""
+                        })
 
             return variables
 
@@ -207,27 +196,10 @@ class BaseTemplatesGenerator:
             # 打开模板文档
             doc = Document(template_path)
 
-            # 收集所有文本内容
-            content_parts = []
-
-            # 从段落中提取文本
-            for paragraph in doc.paragraphs:
-                if paragraph.text.strip():
-                    content_parts.append(paragraph.text)
-
-            # 从表格中提取文本
-            for table in doc.tables:
-                for row in table.rows:
-                    row_texts = []
-                    for cell in row.cells:
-                        cell_text = ' '.join(p.text.strip() for p in cell.paragraphs if p.text.strip())
-                        if cell_text:
-                            row_texts.append(cell_text)
-                    if row_texts:
-                        content_parts.append(' | '.join(row_texts))
-
-            # 合并所有内容
-            return '\n'.join(content_parts)
+            return "\n".join(
+                paragraph.text for paragraph in self._template_paragraphs(doc)
+                if paragraph.text.strip()
+            )
 
         except Exception as e:
             raise Exception(f"获取模板内容时出错: {str(e)}")

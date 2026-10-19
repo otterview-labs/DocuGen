@@ -106,6 +106,61 @@ def test_template_render_roundtrip_and_persistence(client):
     assert client.get("/download/not-a-registered-file.docx").status_code == 404
 
 
+def test_template_headers_footers_nested_tables_and_fields_roundtrip(client):
+    from docx.oxml import OxmlElement
+
+    document = Document()
+    document.add_paragraph("项目：{{项目名称}}")
+    section = document.sections[0]
+    header = section.header.paragraphs[0]
+    header.add_run("报告：{{页").bold = True
+    header.add_run("眉名称}}")
+    section.first_page_header.paragraphs[0].text = "封面：【封面名称】"
+    section.even_page_header.paragraphs[0].text = "偶数页：{{偶数页名称}}"
+    footer = section.footer.paragraphs[0]
+    footer.add_run("编制：【编制人】 页码：")
+    field = OxmlElement("w:fldSimple")
+    field.set("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}instr", "PAGE")
+    footer._p.append(field)
+    table = document.add_table(rows=1, cols=2)
+    cell = table.cell(0, 0).merge(table.cell(0, 1))
+    cell.text = "外表：{{外表值}}"
+    cell.add_table(rows=1, cols=1).cell(0, 0).text = "内表：【内表值】"
+    data = io.BytesIO()
+    document.save(data)
+    uploaded = client.post(
+        "/api/upload-template",
+        data={"template_name": "示例 · 复杂位置变量"},
+        files={"file": ("stories.docx", data.getvalue())},
+    )
+    assert uploaded.status_code == 200
+    values = {"项目名称": "本地项目", "页眉名称": "项目报告", "编制人": "示例甲",
+              "外表值": "外层", "内表值": "内层", "封面名称": "验收封面", "偶数页名称": "附录"}
+    assert {item["name"] for item in uploaded.json()["variables"]} == set(values)
+    assert len(uploaded.json()["variables"]) == len(values)
+    renderer = client.app.state.store
+    metadata = renderer.template("示例 · 复杂位置变量")
+    from quill.legacy.template import BaseTemplatesGenerator
+    text = BaseTemplatesGenerator(renderer.root / "downloads").get_template_content(
+        str(renderer.root / "templates" / (metadata["id"] + ".docx"))
+    )
+    assert "页眉名称" in text and "内表值" in text and "编制人" in text
+    rendered = client.post("/api/generate-from-template", data={
+        "template_name": "示例 · 复杂位置变量", "data": json.dumps(values),
+    })
+    assert rendered.status_code == 200
+    result = Document(io.BytesIO(client.get("/download/" + rendered.json()["filename"]).content))
+    assert result.sections[0].header.paragraphs[0].text == "报告：项目报告"
+    assert result.sections[0].header.paragraphs[0].runs[0].bold is True
+    assert result.sections[0].first_page_header.paragraphs[0].text == "封面：验收封面"
+    assert result.sections[0].even_page_header.paragraphs[0].text == "偶数页：附录"
+    assert "编制：示例甲" in result.sections[0].footer.paragraphs[0].text
+    assert result.sections[0].footer._element.xpath(".//w:fldSimple")[0].get(
+        "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}instr") == "PAGE"
+    assert "外层" in result.tables[0].cell(0, 0).text
+    assert result.tables[0].cell(0, 0).tables[0].cell(0, 0).text == "内表：内层"
+
+
 def test_invalid_upload_and_values(client):
     assert client.post("/api/upload-template", files={"file": ("x.doc", b"bad")}).status_code == 400
     assert client.post("/api/upload-template", files={"file": ("x.docx", b"bad")}).status_code == 400
