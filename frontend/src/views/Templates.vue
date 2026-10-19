@@ -387,7 +387,7 @@ async function downloadOriginal(template) {
     downloading.value = false;
   }
 }
-const searchQuery = ref(""),
+const searchQuery = ref(typeof route.query.q === "string" ? route.query.q : ""),
   selectedCategory = ref("全部"),
   viewMode = ref("grid"),
   currentPage = ref(1),

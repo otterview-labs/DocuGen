@@ -10,6 +10,7 @@ The compared DocuGen snapshot is `BetaStreetOmnis/DocuGen@5c2799899abcfba6d1aecd
 - Starter entries show actual section names from the same definition that builds the Word file. “查看结构” opens an inline structure preview, explicitly distinguished from Word pagination. Keyboard focus moves into the preview and returns on close; Escape closes it.
 - Original starter DOCX files download without model setup or installation. “使用模板” stores one editable workspace copy and opens the existing variable editor. Installation is idempotent, survives restarts, and chooses another name when a custom upload already owns the default name. Existing workspace metadata and files are preserved.
 - `/create` offers an explicit library entry and accepts a category and description for custom uploads. Generated documents continue to use the uploaded DOCX's original styles. Starter copies use A4, a title, a metadata table, headings, a header and a PAGE field.
+- The refined upload screen presents import and existing-template choices side by side, with four library shortcuts. No template is automatically selected on arrival. Selecting or uploading a template reveals the content editor and compact export summary. Switching templates clears stale download/source state; explicit variable refresh preserves confirmed fields. A shortcut opens `/templates?source=builtin&q=<name>` with the corresponding catalog filter.
 - Manual filling and export require no model or API key in the local deployment. AI filling retains the existing model dependency.
 
 ## Templates
@@ -23,6 +24,8 @@ These are reusable content frameworks with a consistent base Word layout. They a
 Backend coverage downloads, installs, fills and reads all twelve actual DOCX files. It checks values, multiline content, placeholder removal, title/table/heading styles, page size, headers and PAGE fields, plus authorization, invalid identifiers, repeated installation and same-name preservation. Browser coverage exercises the complete starter flow, original download, generation, source filters, custom upload metadata, keyboard focus and 1440/1024/390px layouts. Existing cross-route control checks continue to apply.
 
 Validation result: 55 workspace tests and Ruff passed; the full browser suite passed 33 tests, with the explicitly opt-in real-model test skipped in this run. The downloaded project-plan DOCX was rendered and visually inspected: one readable page, black title without the inherited blue rule, correctly proportioned information table, six sections, header and page number. Browser captures are local test artifacts, not shipped raster assets. Knowledge-engine source was unchanged.
+
+Subsequent upload presentation refinement: frontend build and 35 browser tests passed, with one optional real-model test skipped. New checks cover deliberate initial selection, the exact-template shortcut and an unavailable-library retry while file input remains enabled. Desktop, tablet and mobile captures at 1440/1024/390px cover initial and selected-template states with no page errors, failed APIs or horizontal overflow. Backend source and document formatting were unchanged in this refinement.
 
 ## Repository coordination
 
