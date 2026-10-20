@@ -1,5 +1,5 @@
 <template>
-  <section class="document-workspace">
+  <section class="document-workspace template-studio">
     <UiPageHeader
       :title="template?.name || '生成文档'"
       :description="template?.description || '填写占位符，生成 DOCX 文档'"
@@ -9,19 +9,33 @@
         </UiButton></template
       ></UiPageHeader
     >
-    <div class="document-editor">
+    <div class="studio-context">
+      <span :class="{ 'draft-warning': draft.warning.value }"
+        ><Save :size="15" />{{ draft.message.value }}</span
+      ><span>手动填写与导出无需模型</span>
+    </div>
+    <div v-if="!templateId" class="catalog-panel">
+      <UiEmptyState
+        title="先选择一份模板"
+        description="从模板库挑选文档，或导入自己的 Word 模板。"
+        ><UiButton to="/templates" variant="primary"
+          >浏览模板</UiButton
+        ></UiEmptyState
+      >
+    </div>
+    <div v-else class="document-editor studio-layout">
       <section class="editor-main">
         <div class="editor-section">
           <div class="editor-section-heading">
             <div>
               <h2>
-                变量填写
+                填写文档内容
                 <span class="document-count">{{ variables.length }}</span>
               </h2>
-              <p>填写内容将替换模板中对应的占位符。</p>
+              <p>先完善基本信息，再填写正文，最后核对并导出。</p>
             </div>
             <UiButton
-              :disabled="loadingVars"
+              :disabled="loadingVars || aiFilling || generating"
               @click="loadVariables({ refresh: true })"
               size="compact"
               ><RefreshCw
@@ -49,7 +63,9 @@
               </option></select
             ><UiButton
               size="compact"
-              :disabled="aiFilling || !variables.length"
+              :disabled="
+                aiFilling || generating || loadingVars || !variables.length
+              "
               @click="aiFill"
               ><LoaderCircle
                 v-if="aiFilling"
@@ -57,7 +73,7 @@
                 class="spin"
               /><Sparkles v-else :size="15" />AI 填充</UiButton
             ><UiButton
-              :disabled="!variables.length"
+              :disabled="generating || aiFilling || !variables.length"
               @click="clearValues"
               variant="text"
             >
@@ -92,34 +108,26 @@
             description="未提取到占位符，请尝试重新提取变量。"
             compact
           ></UiEmptyState>
-          <div v-else class="variables-grid">
-            <label
-              v-for="(variable, index) in variables"
-              :key="variable.name"
-              class="field-label"
-              :for="`var-${index}`"
-              >{{ variable.name
-              }}<textarea
-                :id="`var-${index}`"
-                v-model="values[variable.name]"
-                class="field-input"
-                :placeholder="variable.description || '请输入内容'"
-                rows="3"
-              />
-            </label>
-          </div>
+          <TemplateFields
+            v-else
+            :variables="variables"
+            :revision="fieldRevision"
+            :model-value="values"
+            :disabled="generating || aiFilling"
+            @update:model-value="updateValues"
+          />
         </div>
       </section>
-      <aside class="editor-aside" aria-label="生成文档">
+      <aside class="editor-aside studio-aside" aria-label="生成文档">
         <div class="editor-aside-title">
           <FileCheck2 :size="20" />
-          <h2>生成结果</h2>
+          <h2>生成与导出</h2>
         </div>
         <p class="editor-help">核对变量后生成文档，保留模板中的格式。</p>
         <dl class="document-summary">
           <dt>模板分类</dt>
           <dd>{{ template?.category || "通用" }}</dd>
-          <dt>变量填写</dt>
+          <dt>填写进度</dt>
           <dd>
             {{
               variables.filter((variable) =>
@@ -132,7 +140,11 @@
           <dd>Word · DOCX</dd>
         </dl>
         <UiButton
-          :disabled="generating || !variables.length"
+          :disabled="
+            generating || loadingVars || aiFilling || !variables.length
+          "
+          ref="exportAction"
+          id="studio-export"
           @click="generateDoc"
           class="full-width"
           variant="primary"
@@ -141,7 +153,11 @@
             :size="16"
           />{{ generating ? "生成中…" : "生成文档" }}</UiButton
         >
-        <UiNotice v-if="lastMessage" :message="lastMessage" />
+        <UiNotice
+          v-if="lastMessage"
+          :message="lastMessage"
+          :tone="lastMessage.includes('失败') ? 'error' : 'info'"
+        />
         <div v-if="downloadUrl" class="document-download">
           <CheckCircle2 :size="22" /><strong>文档已生成</strong>
           <p>下载后请核对内容与排版。</p>
@@ -157,6 +173,32 @@
             </li>
           </ul>
         </div>
+        <section
+          v-if="variables.length"
+          class="content-review"
+          aria-label="内容核对预览"
+        >
+          <header>
+            <h3>内容核对</h3>
+            <span
+              >{{ completedVariables }} / {{ variables.length }} 项已填写</span
+            >
+          </header>
+          <p>随填写更新；这里核对内容，Word 版式以下载文件为准。</p>
+          <div class="review-paper">
+            <h4>{{ template?.name }}</h4>
+            <section v-for="variable in variables" :key="variable.name">
+              <h5>{{ variable.name }}</h5>
+              <p
+                :class="{
+                  'review-empty': !String(values[variable.name] || '').trim(),
+                }"
+              >
+                {{ String(values[variable.name] || "").trim() || "待填写" }}
+              </p>
+            </section>
+          </div>
+        </section>
         <div class="editor-guidance">
           <h3>使用提示</h3>
           <p>
@@ -167,15 +209,28 @@
         </div>
       </aside>
     </div>
+    <div v-if="templateId && variables.length" class="studio-mobile-actions">
+      <span>{{ completedVariables }} / {{ variables.length }} 项已填写</span
+      ><UiButton
+        href="#studio-export"
+        variant="primary"
+        @click.prevent="focusExport"
+        >核对与导出<ArrowRight
+      /></UiButton>
+    </div>
   </section>
 </template>
 <script setup>
+import "../styles/template-studio.css";
+import TemplateFields from "../components/templates/TemplateFields.vue";
+import { useTemplateDraft } from "../composables/useTemplateDraft";
 import UiNotice from "../components/ui/UiNotice.vue";
 import UiEmptyState from "../components/ui/UiEmptyState.vue";
 import UiPageHeader from "../components/ui/UiPageHeader.vue";
 import UiButton from "../components/ui/UiButton.vue";
 import {
   ArrowLeft,
+  ArrowRight,
   BookOpen,
   CheckCircle2,
   ChevronDown,
@@ -185,11 +240,12 @@ import {
   LoaderCircle,
   RefreshCw,
   Sparkles,
+  Save,
   TextCursorInput,
 } from "@lucide/vue";
 
 import { downloadFile } from "../api/client";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   fetchTemplates,
@@ -204,23 +260,53 @@ const router = useRouter();
 
 const template = ref(null);
 const variables = ref([]);
+const fieldRevision = ref(0);
 const lastSources = ref([]);
 const values = reactive({});
-const loadingVars = ref(false);
+const loadingVars = ref(true);
 const aiFilling = ref(false);
 const generating = ref(false);
 const lastMessage = ref("");
 const downloadUrl = ref("");
+const exportAction = ref(null);
+function focusExport() {
+  exportAction.value?.focus();
+}
 const enableRag = ref(false);
 const selectedKnowledgeBase = ref("");
 const knowledgeBases = ref([]);
 const customRagContent = ref("");
 
-const templateId = computed(() => String(route.params.templateId || ""));
+const templateId = String(route.params.templateId || "");
+const completedVariables = computed(
+  () =>
+    variables.value.filter((v) => String(values[v.name] || "").trim()).length,
+);
+const draft = useTemplateDraft(templateId, variables, values, {
+  reference: customRagContent,
+  enableRag,
+  knowledgeBase: selectedKnowledgeBase,
+  sources: lastSources,
+});
+function updateValues(next) {
+  Object.assign(values, next);
+}
+watch(
+  [() => ({ ...values }), lastSources],
+  () => {
+    if (downloadUrl.value) {
+      downloadUrl.value = "";
+      lastMessage.value = "内容已更改，请重新生成文档。";
+    }
+  },
+  { deep: true, flush: "sync" },
+);
 
 onMounted(async () => {
   await loadTemplateMeta();
   await loadVariables();
+  draft.restore();
+  fieldRevision.value++;
   await loadKnowledgeBases();
 });
 
@@ -234,9 +320,9 @@ async function loadTemplateMeta() {
     lastMessage.value = `获取模板列表失败：${error}`;
     return;
   }
-  const found = (data || []).find((t) => t.name === templateId.value);
+  const found = (data || []).find((t) => t.name === templateId);
   template.value = found || {
-    name: templateId.value,
+    name: templateId,
     category: "通用",
     description: "",
   };
@@ -246,21 +332,30 @@ function resetValues(varList, preserve = false) {
   const previous = preserve ? { ...values } : {};
   Object.keys(values).forEach((k) => delete values[k]);
   (varList || []).forEach((v) => {
-    values[v.name] = Object.hasOwn(previous, v.name) ? previous[v.name] : v.default_value || "";
+    values[v.name] = Object.hasOwn(previous, v.name)
+      ? previous[v.name]
+      : v.default_value || "";
   });
+  fieldRevision.value++;
 }
 
 async function loadVariables({ refresh = false } = {}) {
-  if (!templateId.value) return;
+  if (!templateId) return;
   loadingVars.value = true;
   lastMessage.value = "";
   try {
     // 优先使用元数据中的变量
-    if (!refresh && template.value?.variables && template.value.variables.length > 0) {
+    if (
+      !refresh &&
+      template.value?.variables &&
+      template.value.variables.length > 0
+    ) {
       variables.value = template.value.variables;
       resetValues(variables.value);
     } else {
-      const { data, error } = await fetchTemplateVariables(templateId.value, { refresh });
+      const { data, error } = await fetchTemplateVariables(templateId, {
+        refresh,
+      });
       if (error) {
         lastMessage.value = `提取变量失败：${error}`;
         if (!refresh) variables.value = [];
@@ -287,12 +382,12 @@ async function loadKnowledgeBases() {
 }
 
 async function aiFill() {
-  if (!templateId.value) return;
+  if (!templateId) return;
   aiFilling.value = true;
   lastMessage.value = "AI 填充中...";
   try {
     const payload = {
-      template_name: templateId.value,
+      template_name: templateId,
       enable_rag: enableRag.value,
       custom_rag_content: customRagContent.value,
     };
@@ -306,8 +401,10 @@ async function aiFill() {
     }
     lastSources.value = data.sources || [];
     Object.entries(data.variables).forEach(([k, v]) => {
-      values[k] = v;
+      if (variables.value.some((variable) => variable.name === k))
+        values[k] = String(v ?? "");
     });
+    fieldRevision.value++;
     lastMessage.value = "AI 填充完成，请确认后生成。";
   } finally {
     aiFilling.value = false;
@@ -315,20 +412,22 @@ async function aiFill() {
 }
 
 function clearValues() {
+  lastSources.value = [];
   Object.keys(values).forEach((k) => {
     values[k] = "";
   });
+  fieldRevision.value++;
   lastMessage.value = "已清空";
 }
 
 async function generateDoc() {
-  if (!templateId.value) return;
+  if (!templateId) return;
   generating.value = true;
   lastMessage.value = "生成中...";
   downloadUrl.value = "";
   try {
     const { data, error } = await generateFromTemplate(
-      templateId.value,
+      templateId,
       values,
       lastSources.value,
     );

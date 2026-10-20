@@ -1,14 +1,28 @@
 # Document template library
 
-## Current direction — 2026-10-20
+## Current direction — template-to-document workflow, 2026-10-20
 
-Mode: Operate. The user explicitly replaced the previous warm-paper green-sidebar identity with “Vue 模板市场：深蓝顶部导航、白色内容卡片、蓝色按钮”. Current authority is `DESIGN.md`: navy horizontal top navigation, sans wordmark, white cards, cool gray ground and blue shared controls across all five routes. Preserve the document-first gallery and actual upload/fill/download behavior while adapting the original Vue visual family. Original-source references are recorded in `docs/UI_REFERENCES.md`; this is not a pixel-exact reproduction. Final human taste acceptance remains the user’s.
+Mode: Operate, code-led extension of the existing Vue 3 application. The accepted world is fixed by `DESIGN.md`: navy horizontal navigation, sans wordmark, white cards, cool gray ground and blue shared controls. Original-source references are recorded in `docs/UI_REFERENCES.md`; this is not a pixel-exact reproduction. All twelve original starter DOCX thumbnails and embedded/source-hash provenance remain intact; this extension adds no raster or shared token/component changes. Final human taste acceptance remains the user’s.
 
-The four featured real starter covers, explicit selection, compact import panel, content editor and export summary remain the current surface composition. All twelve original DOCX thumbnails and their embedded/source-hash provenance are retained. No assets are created by this visual restoration. The navy header remains horizontal at all widths and wraps to a second row at 800px; page-specific controls continue to inherit `ui.css`. The capture matrix covers initial and selected create states plus workspace/built-in catalog states at 1440px, 1024px and 390px. Final review and bounded regression/deployment evidence are recorded in `docs/VALIDATION.md`.
+## Direction contract
+
+THESIS: Make the main task explicit: catalog → dedicated content editor → Word export. The earlier four-cover gallery and inline editor on `/create` are superseded; import has its own form, and selection moves directly into filling.
+
+OWN-WORLD: Inherit navy/white/blue, the platform sans family, fine borders and existing panel/control corners. `ui.css` continues to own action text, colors, geometry and focus. Route CSS changes composition only.
+
+STORY: Inspect an authentic cover and optional variables/sections, use its workspace copy, fill grouped information and content, check live field values, generate and download. Upload and saved-template selection converge on the same editor. Manual filling/export remain model-free; reference, AI, retrieval and source records remain available.
+
+FIRST VIEWPORT: The catalog leads with real cover previews and compact primary use actions. The upload route shows its form beside existing-template choices. The editor presents fields beside a sticky export/content-review panel; under 800px these stack, with a fixed shortcut focusing the real generate button. Content review explicitly checks values rather than rendering Word layout.
+
+FORM: User-authorized, precisely scoped extension; no new concept seed or comp round. Per-template session-tab drafts restore declared fields and assistance context without mixing templates; loaded long/multiline/non-ISO values receive safe text controls that remain stable while typing. Storage failure is nonblocking, variable refresh preserves surviving values, and value/source edits invalidate stale download actions.
+
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+
+Current evidence comprises 18 captures of catalog, preview, import, studio, filled and restored states at 1440px, 1024px and 390px under `.impeccable/review/document-studio/`, plus functional and shared-control checks. Review and rollout status belong to the current extension entry in `docs/VALIDATION.md`; the earlier visual restoration’s ship verdict does not transfer to this workflow. Advanced knowledge reorganization and free-writing improvements remain separate work.
 
 ## Historical functional and composition decisions
 
-The following records describe earlier iterations. Their functional constraints and provenance remain relevant; their warm-green visual commitments are superseded by the current direction above.
+The following records describe superseded compositions, including the four-cover `/create` gallery and editor revealed on that route. Their functional constraints and provenance remain relevant; their warm-green visual commitments and upload layout are superseded by the current direction above.
 
 Mode: Operate. Preserve the accepted reading-workbench identity, shared controls, typography, warm paper and deep green navigation. User feedback: the merged `/create` surface made the original template-led workflow hard to find, and the available template content was too sparse.
 

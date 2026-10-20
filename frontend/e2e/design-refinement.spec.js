@@ -62,7 +62,7 @@ test("catalog filtering, view switch, keyboard entry, and template download", as
   await source.focus();
   await source.press("Enter");
   await expect(
-    page.getByRole("heading", { name: title, exact: true }),
+    page.getByRole("heading", { level: 1, name: title, exact: true }),
   ).toBeVisible();
   await page.getByLabel("项目名称", { exact: true }).fill("Quill 界面验收");
   await page.getByLabel("负责人", { exact: true }).fill("虚构验收人员");
@@ -85,18 +85,20 @@ for (const width of [1440, 1024, 390]) {
       "generate/" + encodeURIComponent(title),
     ]) {
       await page.goto("/" + route);
-      if (route === "create")
-        await page.getByLabel("选择模板", { exact: true }).selectOption(title);
       if (route === "templates")
         await page.getByLabel("搜索模板", { exact: true }).fill(title);
       if (route === "templates")
         await expect(
           page.getByRole("link", { name: title, exact: true }),
         ).toBeVisible();
-      else if (route === "create" || route.startsWith("generate/"))
+      else if (route.startsWith("generate/"))
         await expect(
           page.getByLabel("项目名称", { exact: true }),
         ).toBeVisible();
+      else if (route === "create")
+        await expect(
+          page.getByRole("button", { name: "上传并入库" }),
+        ).toBeDisabled();
       else
         await expect(
           page.getByRole("button", { name: "开始生成文档" }),

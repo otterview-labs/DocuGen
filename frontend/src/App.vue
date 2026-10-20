@@ -75,7 +75,7 @@
           /></a>
         </div>
       </header>
-      <main id="main-content" class="app-content"><RouterView /></main>
+      <main id="main-content" class="app-content"><RouterView :key="route.path" /></main>
     </div>
   </div>
 </template>

@@ -14,7 +14,7 @@ test("starter library previews, downloads and generates a real Word document wit
   expect(response.status()).toBe(200);
   expect((await response.json()).templates).toHaveLength(12);
   await page.goto("/create");
-  await page.getByRole("link", { name: "浏览内置模板" }).click();
+  await page.getByRole("link", { name: "浏览模板库", exact: true }).click();
   await expect(page.getByRole("tab", { name: /内置模板/ })).toHaveAttribute(
     "aria-selected",
     "true",
@@ -27,6 +27,7 @@ test("starter library previews, downloads and generates a real Word document wit
   await page.getByRole("button", { name: "预览工作周报", exact: true }).click();
   const preview = page.getByRole("region", { name: "模板结构预览" });
   await expect(preview).toBeFocused();
+  await preview.locator(".preview-structure-details > summary").click();
   await expect(
     preview.getByRole("heading", { name: "本周完成" }),
   ).toBeVisible();
@@ -82,14 +83,12 @@ test("upload preserves category and description for catalog filtering", async ({
   );
   const name = "示例 · 自定义纪要 " + Date.now();
   await page.goto("/create");
-  await page
-    .locator('input[type="file"]')
-    .setInputFiles({
-      name: "minutes.docx",
-      mimeType:
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      buffer: await source.body(),
-    });
+  await page.locator('input[type="file"]').setInputFiles({
+    name: "minutes.docx",
+    mimeType:
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    buffer: await source.body(),
+  });
   await page.getByLabel("模板名称", { exact: true }).fill(name);
   await page.getByLabel("模板分类", { exact: true }).selectOption("报告");
   await page.getByLabel("模板说明", { exact: true }).fill("保留会议纪要版式");

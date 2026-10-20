@@ -66,16 +66,20 @@
           <div class="template-paper">
             <p class="template-paper-header">{{ preview.name }} · DOCX</p>
             <h2>{{ preview.name }}</h2>
-            <dl class="template-paper-fields">
-              <template v-for="field in preview.fields" :key="field"
-                ><dt>{{ field }}</dt>
-                <dd>{{ placeholder(field) }}</dd></template
-              >
-            </dl>
-            <section v-for="section in preview.sections" :key="section.field">
-              <h3>{{ section.title }}</h3>
-              <p>{{ placeholder(section.field) }}</p>
-            </section>
+            <TemplateCover class="catalog-page-preview" :template="preview" />
+            <details class="preview-structure-details">
+              <summary>查看可填写的变量与章节</summary>
+              <dl class="template-paper-fields">
+                <template v-for="field in preview.fields" :key="field"
+                  ><dt>{{ field }}</dt>
+                  <dd>{{ placeholder(field) }}</dd></template
+                >
+              </dl>
+              <section v-for="section in preview.sections" :key="section.field">
+                <h3>{{ section.title }}</h3>
+                <p>{{ placeholder(section.field) }}</p>
+              </section>
+            </details>
           </div>
           <aside class="template-structure-info">
             <div class="editor-section-heading">
@@ -118,8 +122,8 @@
               ><Download />下载 Word 模板</UiButton
             >
             <p>
-              此处展示内容结构。Word 的实际分页与字体以下载文件为准，可在 Word
-              中调整版式后重新上传。
+              首屏图片展示模板原始版式，变量与章节可展开查看。实际分页与字体以下载文件为准，可在
+              Word 中调整版式后重新上传。
             </p>
           </aside>
         </section>
@@ -195,10 +199,18 @@
             "
             class="template-entry"
           >
-            <TemplateCover
+            <button
               v-if="template.origin === 'builtin'"
-              :template="template"
-            />
+              class="template-cover-trigger"
+              :aria-label="'查看' + template.name + '版式预览'"
+              :aria-expanded="preview?.id === template.id"
+              aria-controls="template-structure"
+              @click="openPreview(template, $event)"
+            >
+              <TemplateCover :template="template" decorative /><span
+                >查看版式预览</span
+              >
+            </button>
             <div v-else class="template-sheet" aria-hidden="true">
               <FileText :size="27" :stroke-width="1.3" /><span>DOCX</span>
             </div>
@@ -239,7 +251,8 @@
                 >
                 <UiButton
                   v-if="template.origin === 'builtin'"
-                  variant="text"
+                  variant="primary"
+                  size="compact"
                   :disabled="!!using"
                   :aria-label="'使用' + template.name"
                   @click="useTemplate(template)"
@@ -252,7 +265,8 @@
                     name: 'generate',
                     params: { templateId: template.name },
                   }"
-                  variant="text"
+                  variant="primary"
+                  size="compact"
                   >使用模板<ArrowRight :size="15"
                 /></UiButton>
               </div>

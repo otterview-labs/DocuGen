@@ -35,13 +35,9 @@ for (const width of [1440, 1024, 390]) {
     ]) {
       await page.goto(route);
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-      if (route === "/create")
-        await page
-          .getByLabel("选择模板", { exact: true })
-          .selectOption(template.name);
       if (route === "/knowledge")
         await expect(page.locator(".library-title h2")).toBeVisible();
-      if (route === "/create" || route.startsWith("/generate/"))
+      if (route.startsWith("/generate/"))
         await expect(
           page.getByLabel("项目名称", { exact: true }),
         ).toBeVisible();
