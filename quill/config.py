@@ -18,4 +18,7 @@ class Settings(BaseSettings):
     llm_timeout: float = Field(120, gt=0, le=600)
     llm_max_tokens: int = Field(4096, ge=128, le=32768)
     max_upload_mb: int = Field(20, ge=1, le=100)
+    max_expanded_mb: int = Field(100, ge=1, le=100)
+    demo_mode: bool = False
+    demo_cookie_secure: bool = True
     frontend_dir: Path = Path(__file__).resolve().parent.parent / "frontend" / "dist"

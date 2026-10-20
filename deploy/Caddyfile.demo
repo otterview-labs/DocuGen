@@ -1,0 +1,16 @@
+# Add as a separate site to the existing Caddy configuration after validating
+# both configurations. The A record must resolve to the deployment server.
+docugen.otterview.ai {
+    encode zstd gzip
+    request_body {
+        max_size 6MB
+    }
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy same-origin
+        X-Frame-Options DENY
+    }
+    reverse_proxy 127.0.0.1:18080 {
+        header_up X-Real-IP {remote_host}
+    }
+}

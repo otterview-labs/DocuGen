@@ -149,7 +149,7 @@ def knowledge_router(config: Settings, store: Store) -> APIRouter:
         if len(data) > limit:
             raise HTTPException(413, f"单个文件不能超过 {config.max_upload_mb} MB。")
         try:
-            text = await asyncio.to_thread(extract_text, data, name)
+            text = await asyncio.to_thread(extract_text, data, name, config.max_expanded_mb)
         except ImportError as exc:
             raise HTTPException(422, str(exc)) from exc
         stored_name = uuid4().hex + Path(name).suffix.lower()

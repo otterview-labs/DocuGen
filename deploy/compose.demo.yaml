@@ -1,0 +1,46 @@
+# docker compose -f compose.yaml -f deploy/compose.demo.yaml -p docugen-demo up -d --build
+# Exactly one ASGI worker owns the bounded, expiring visitor registry.
+services:
+  workspace:
+    command: ["uvicorn", "quill.demo:create_demo", "--factory", "--host", "0.0.0.0", "--port", "8080", "--workers", "1", "--no-proxy-headers", "--limit-concurrency", "32"]
+    ports: !override
+      - "127.0.0.1:${DOCUGEN_DEMO_PORT:-18080}:8080"
+    environment:
+      QUILL_DEMO_MODE: "true"
+      QUILL_DEMO_COOKIE_SECURE: "true"
+      QUILL_LLM_MODEL: ""
+      QUILL_LLM_API_KEY: ""
+      QUILL_MAX_UPLOAD_MB: "5"
+      QUILL_MAX_EXPANDED_MB: "20"
+      PYTHONDONTWRITEBYTECODE: "1"
+    read_only: true
+    tmpfs:
+      - /tmp:size=67108864,mode=1777
+    mem_limit: 768m
+    cpus: "0.75"
+    pids_limit: 128
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+  knowledge:
+    mem_limit: 512m
+    cpus: "0.5"
+    pids_limit: 128
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+  postgres:
+    mem_limit: 256m
+    cpus: "0.5"
+    pids_limit: 128
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}

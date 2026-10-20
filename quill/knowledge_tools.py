@@ -68,6 +68,8 @@ def tools_router(config, store):
                         "embedding": "尚未配置 Embedding 模型。",
                     }[dependency]
                     break
+            if config.demo_mode:
+                reason = "公开演示仅开放隔离的资料导入、预览与关键词检索；高级引擎工具请自部署使用。"
             operations.append(
                 {"id": key, **asdict(operation), "available": registered and not reason, "reason": reason}
             )

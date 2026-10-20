@@ -15,7 +15,7 @@ class ImportError(Exception):
     pass
 
 
-def extract_text(data: bytes, filename: str) -> str:
+def extract_text(data: bytes, filename: str, max_expanded_mb: int = 100) -> str:
     suffix = Path(filename).suffix.lower()
     if suffix not in SUPPORTED:
         raise ImportError("支持 PDF、DOCX、Markdown、TXT、CSV 和 JSON，请先转换其他格式。")
@@ -34,7 +34,7 @@ def extract_text(data: bytes, filename: str) -> str:
             text = "\n\n".join(parts)
         elif suffix == ".docx":
             with zipfile.ZipFile(io.BytesIO(data)) as archive:
-                if sum(item.file_size for item in archive.infolist()) > 100 * 1024 * 1024:
+                if sum(item.file_size for item in archive.infolist()) > max_expanded_mb * 1024 * 1024:
                     raise ImportError("Word 文档解压后过大，请拆分后导入。")
             document = Document(io.BytesIO(data))
             parts = []

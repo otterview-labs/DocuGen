@@ -61,7 +61,7 @@ class FillRequest(BaseModel):
     custom_rag_content: str = Field(default="", max_length=12000)
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, *, knowledge_factory=KnowledgeClient) -> FastAPI:
     config = settings or Settings()
     store = Store(config.data_dir)
     templates = BaseTemplatesGenerator(store.root / "downloads", store.root / "templates")
@@ -70,7 +70,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(app: FastAPI):
         store.recover()
         async with httpx.AsyncClient() as client:
-            app.state.knowledge = KnowledgeClient(config, client)
+            app.state.knowledge = knowledge_factory(config, client)
             app.state.llm = LLMClient(config, client)
             service = GenerationService(store, app.state.knowledge, app.state.llm)
             app.state.generation = service
@@ -107,7 +107,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "model_configured": bool(config.llm_model),
             "model": config.llm_model,
             "authentication": bool(config.api_key),
-            "workspace": "single-shared-workspace",
+            "workspace": "ephemeral-browser-demo" if config.demo_mode else "single-shared-workspace",
+            "demo": config.demo_mode,
         }
 
     @app.get("/api/kb/list", dependencies=secured)
@@ -227,7 +228,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise HTTPException(413, "模板超过上传大小限制。")
         try:
             with zipfile.ZipFile(io.BytesIO(data)) as archive:
-                if sum(info.file_size for info in archive.infolist()) > 100 * 1024 * 1024:
+                if sum(info.file_size for info in archive.infolist()) > config.max_expanded_mb * 1024 * 1024:
                     raise ValueError("expanded size")
                 if "word/document.xml" not in archive.namelist():
                     raise ValueError("invalid document")

@@ -64,7 +64,9 @@
           <span class="model-state" :class="{ ready: modelConfigured }"
             ><span class="status-dot"></span
             >{{
-              modelConfigured === null
+              demoMode
+                ? "公开演示"
+                : modelConfigured === null
                 ? "未连接工作区"
                 : modelConfigured
                   ? "生成模型已配置"
@@ -75,12 +77,18 @@
           /></a>
         </div>
       </header>
-      <main id="main-content" class="app-content"><RouterView :key="route.path" /></main>
+      <main id="main-content" class="app-content">
+        <UiNotice v-if="demoMode" tone="info">
+          公开演示 · 访客资料互相隔离，服务器资料 2 小时后清理，请及时下载。单文件 5 MB，最多 3 个知识库、20 份资料，请勿上传敏感信息。支持手动填写、Word 导出和关键词检索；AI 与高级工具请自部署使用。
+        </UiNotice>
+        <RouterView :key="route.path" />
+      </main>
     </div>
   </div>
 </template>
 <script setup>
 import UiButton from "./components/ui/UiButton.vue";
+import UiNotice from "./components/ui/UiNotice.vue";
 import { computed, onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
 import {
@@ -102,6 +110,7 @@ const route = useRoute();
 const accessKey = ref(sessionStorage.getItem("quill-key") || "");
 const modelConfigured = ref(null);
 const authenticationRequired = ref(false);
+const demoMode = ref(false);
 const navigation = [
   { path: "/knowledge", label: "知识库", icon: Library },
   { path: "/writing", label: "文档写作", icon: PenLine },
@@ -118,6 +127,7 @@ onMounted(async () => {
     const { data } = await api.get("/api/v1/status");
     modelConfigured.value = data.model_configured;
     authenticationRequired.value = data.authentication;
+    demoMode.value = Boolean(data.demo);
   } catch (error) {
     authenticationRequired.value = error.response?.status === 401;
     /* Each workspace screen shows its own actionable connection error. */

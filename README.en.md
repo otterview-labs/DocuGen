@@ -10,7 +10,11 @@ Released under [Apache-2.0](LICENSE). The project owner has authorized public re
 
 ## Access the workspace
 
-DocuGen is currently self-hosted; **there is no publicly hosted interactive demo**. Follow [Run locally](#run-locally) below or the [Docker deployment instructions](README.md#启动完整知识引擎), then open:
+**[Open the public demo](https://docugen.43.153.213.96.sslip.io/templates?source=builtin)** · [Demo scope and deployment](docs/PUBLIC_DEMO.md)
+
+The key-free demo supports template filling, Word export, document import and keyword search. Server-side data is isolated per anonymous browser session and expires two hours after creation. Download your work promptly and do not upload sensitive material. Each session allows files up to 5 MB, three collections and 20 documents. AI, vector and advanced engine tools remain available in the self-hosted version. This is a temporary HTTPS address; DNS setup for `docugen.otterview.ai` is still pending.
+
+For self-hosting, follow [Run locally](#run-locally) below or the [Docker deployment instructions](README.md#启动完整知识引擎), then open:
 
 | Entry | URL after startup |
 | --- | --- |
@@ -19,7 +23,7 @@ DocuGen is currently self-hosted; **there is no publicly hosted interactive demo
 | Knowledge workspace | [http://127.0.0.1:8080/knowledge](http://127.0.0.1:8080/knowledge) |
 | API documentation | [http://127.0.0.1:8080/docs](http://127.0.0.1:8080/docs) |
 
-`127.0.0.1` refers to your own computer and requires a running installation. This repository and the Otterview project website linked in About do not host the interactive workspace. Local access, manual template filling and Word export need no access/model key. AI features require a configured model service; a local model can also run without a model API key.
+`127.0.0.1` refers to your own computer and requires a running installation. Local access, manual template filling and Word export need no access/model key. AI features require a configured model service; a local model can also run without a model API key. Ordinary self-hosting provides a single shared workspace; use the dedicated demo configuration for public anonymous access.
 
 Choosing or importing a template opens the dedicated editor, with grouped basic/prose fields and a live content-check panel. Drafts are saved in the current browser tab and recover after refresh. Download the Word file to check its actual pagination and fonts.
 
