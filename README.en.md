@@ -8,6 +8,21 @@ This repository integrates the JetLinks knowledge runtime with selected DocuGen 
 
 Released under [Apache-2.0](LICENSE). The project owner has authorized public release of the imported knowledge-runtime and DocuGen adaptations. See the [Chinese guide](README.md) for configuration and deployment details, and [provenance](docs/PROVENANCE.md) and [NOTICE](NOTICE) for upstream revisions and attribution.
 
+## Access the workspace
+
+DocuGen is currently self-hosted; **there is no publicly hosted interactive demo**. Follow [Run locally](#run-locally) below or the [Docker deployment instructions](README.md#启动完整知识引擎), then open:
+
+| Entry | URL after startup |
+| --- | --- |
+| Template library: preview, choose and fill a document | [http://127.0.0.1:8080/templates?source=builtin](http://127.0.0.1:8080/templates?source=builtin) |
+| Import a Word template | [http://127.0.0.1:8080/create](http://127.0.0.1:8080/create) |
+| Knowledge workspace | [http://127.0.0.1:8080/knowledge](http://127.0.0.1:8080/knowledge) |
+| API documentation | [http://127.0.0.1:8080/docs](http://127.0.0.1:8080/docs) |
+
+`127.0.0.1` refers to your own computer and requires a running installation. This repository and the Otterview project website linked in About do not host the interactive workspace. Local access, manual template filling and Word export need no access/model key. AI features require a configured model service; a local model can also run without a model API key.
+
+Choosing or importing a template opens the dedicated editor, with grouped basic/prose fields and a live content-check panel. Drafts are saved in the current browser tab and recover after refresh. Download the Word file to check its actual pagination and fonts.
+
 ![Knowledge workspace and source preview](docs/images/knowledge-workspace.png)
 
 The Chinese interface is shown with explicitly labeled synthetic acceptance material.
