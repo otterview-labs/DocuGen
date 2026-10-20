@@ -10,9 +10,9 @@ Released under [Apache-2.0](LICENSE). The project owner has authorized public re
 
 ## Access the workspace
 
-**[Open the public demo](https://docugen.43.153.213.96.sslip.io/templates?source=builtin)** · [Demo scope and deployment](docs/PUBLIC_DEMO.md)
+**[Open the public demo](https://docugen.otterview.ai/templates?source=builtin)** · [Demo scope and deployment](docs/PUBLIC_DEMO.md)
 
-The key-free demo supports template filling, Word export, document import and keyword search. Server-side data is isolated per anonymous browser session and expires two hours after creation. Download your work promptly and do not upload sensitive material. Each session allows files up to 5 MB, three collections and 20 documents. AI, vector and advanced engine tools remain available in the self-hosted version. This is a temporary HTTPS address; DNS setup for `docugen.otterview.ai` is still pending.
+The key-free demo supports template filling, Word export, document import and keyword search. Server-side data is isolated per anonymous browser session and expires two hours after creation. Download your work promptly and do not upload sensitive material. Each session allows files up to 5 MB, three collections and 20 documents. AI, vector and advanced engine tools remain available in the self-hosted version.
 
 For self-hosting, follow [Run locally](#run-locally) below or the [Docker deployment instructions](README.md#启动完整知识引擎), then open:
 

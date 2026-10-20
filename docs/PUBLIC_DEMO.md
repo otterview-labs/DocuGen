@@ -1,5 +1,7 @@
 # 公开演示部署
 
+在线体验：[docugen.otterview.ai](https://docugen.otterview.ai/templates?source=builtin)。
+
 普通 `compose.yaml` 是单个共享工作区，不提供用户或租户隔离，不应直接无密钥公开。匿名演示使用独立入口 `quill.demo:create_demo --factory`，不改变自部署版的共享工作区行为。
 
 ## 演示范围
