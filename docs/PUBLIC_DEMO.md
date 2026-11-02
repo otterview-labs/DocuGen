@@ -40,3 +40,27 @@ docker compose -f compose.yaml -f deploy/compose.demo.yaml -p docugen-demo up -d
 ## 回退
 
 移除新增的 DocuGen Caddy 站点并校验 reload，再执行同样 Compose 参数下的 `stop`。保留数据卷供排查；不要运行全机 Docker prune 或更改其他项目的网络、数据库、端口。用户资料随演示过期清理，不作为长期资料库保存。
+
+## Migration and recovery
+
+Include this separate stack and its Caddy site in server migration plans. Follow the
+[public demo recovery runbook](demo-operations.md) to restore dependencies in order and verify
+Word generation, downloads and browser isolation after a reinstall.
+
+### Trusted proxy address behind Docker
+
+`X-Real-IP` is accepted only from exact addresses in `QUILL_DEMO_TRUSTED_PROXY_IPS`
+(default `["127.0.0.1","::1"]`). When Caddy reaches the loopback-published workspace through
+Docker DNAT, the workspace may see its dedicated network gateway as the peer instead of loopback.
+Check the actual peer and gateway, then set the Compose interpolation variable privately, for example:
+
+```dotenv
+# Example only: replace the bridge address with your deployment's verified gateway.
+DOCUGEN_DEMO_TRUSTED_PROXY_IPS=["127.0.0.1","::1","172.19.0.1"]
+```
+
+Keep the workspace bound to host loopback and keep Caddy's `header_up X-Real-IP {remote_host}`.
+Do not accept the header from every peer or trust a whole Docker subnet. CIDRs and hostnames are
+rejected at startup. Without the correct trusted gateway, all visitors share the proxy's rate
+bucket and the demo can return 429 after a few new sessions. This setting affects rate attribution;
+it does not relax cookie ownership, storage quotas, session expiry or request limits.

@@ -92,8 +92,9 @@ class DemoGateway:
 
     def client_ip(self, scope, headers):
         value = scope.get("client", ("unknown", 0))[0]
-        # Deployment's Caddy overwrites this header; never trust it from direct clients.
-        if value in {"127.0.0.1", "::1"}:
+        # Caddy overwrites this header. Docker DNAT can present the dedicated bridge
+        # gateway as its peer; deployments must opt in to that exact address.
+        if value in self.settings.demo_trusted_proxy_ips:
             forwarded = headers.get("x-real-ip", value)
             try:
                 return str(ipaddress.ip_address(forwarded))

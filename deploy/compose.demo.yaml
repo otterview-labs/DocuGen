@@ -8,6 +8,7 @@ services:
     environment:
       QUILL_DEMO_MODE: "true"
       QUILL_DEMO_COOKIE_SECURE: "true"
+      QUILL_DEMO_TRUSTED_PROXY_IPS: '${DOCUGEN_DEMO_TRUSTED_PROXY_IPS:-["127.0.0.1","::1"]}'
       QUILL_LLM_MODEL: ""
       QUILL_LLM_API_KEY: ""
       QUILL_MAX_UPLOAD_MB: "5"

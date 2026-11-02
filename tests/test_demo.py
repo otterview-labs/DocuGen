@@ -41,6 +41,37 @@ def test_https_demo_cookie_uses_host_prefix(tmp_path):
         assert len(app.visitors) == 1
 
 
+def test_docker_proxy_keeps_visitor_rate_limits_independent(tmp_path):
+    app = DemoGateway(Settings(
+        data_dir=tmp_path, demo_cookie_secure=False,
+        demo_trusted_proxy_ips=["127.0.0.1", "::1", "172.19.0.1"], _env_file=None,
+    ))
+
+    async def proxy(scope, receive, send):
+        if scope["type"] == "http":
+            scope = {**scope, "client": ("172.19.0.1", 12345)}
+        await app(scope, receive, send)
+
+    with TestClient(proxy) as client:
+        for _ in range(8):
+            client.cookies.clear()
+            assert client.get("/api/v1/status", headers={"x-real-ip": "198.51.100.10"}).status_code == 200
+        client.cookies.clear()
+        assert client.get("/api/v1/status", headers={"x-real-ip": "198.51.100.10"}).status_code == 429
+        assert client.get("/api/v1/status", headers={"x-real-ip": "198.51.100.11"}).status_code == 200
+
+
+def test_real_ip_header_requires_exact_trusted_peer(demo):
+    headers = {"x-real-ip": "198.51.100.10"}
+    assert demo.client_ip({"client": ("127.0.0.1", 1)}, headers) == "198.51.100.10"
+    assert demo.client_ip({"client": ("172.19.0.1", 1)}, headers) == "172.19.0.1"
+    demo.settings.demo_trusted_proxy_ips = ["172.19.0.1"]
+    assert demo.client_ip({"client": ("172.19.0.2", 1)}, headers) == "172.19.0.2"
+    assert demo.client_ip({"client": ("172.19.0.1", 1)}, {"x-real-ip": "invalid"}) == "172.19.0.1"
+    with pytest.raises(ValueError):
+        Settings(demo_trusted_proxy_ips=["172.19.0.0/16"], _env_file=None)
+
+
 def test_anonymous_visitors_cannot_read_templates_downloads_or_jobs(demo):
     with TestClient(demo) as client:
         a = client.get("/api/v1/status")

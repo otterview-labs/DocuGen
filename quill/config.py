@@ -1,6 +1,7 @@
+from ipaddress import ip_address
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -21,4 +22,11 @@ class Settings(BaseSettings):
     max_expanded_mb: int = Field(100, ge=1, le=100)
     demo_mode: bool = False
     demo_cookie_secure: bool = True
+    demo_trusted_proxy_ips: list[str] = ["127.0.0.1", "::1"]
     frontend_dir: Path = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+
+    @field_validator("demo_trusted_proxy_ips")
+    @classmethod
+    def validate_demo_proxy_ips(cls, values: list[str]) -> list[str]:
+        # Exact addresses only; accepting a subnet would also trust other containers.
+        return [str(ip_address(value)) for value in values]
