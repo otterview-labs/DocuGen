@@ -129,4 +129,4 @@ async def get_chunking_strategies():
 
     except Exception as e:
         logger.error(f"获取分块策略失败: {e}")
-        return ResponseHelper.error(f"获取分块策略失败: {str(e)}", status=500)
+        return ResponseHelper.error('获取分块策略失败', status=500)

@@ -222,6 +222,7 @@ def test_compat_search_wraps_service_failure(monkeypatch, tmp_path) -> None:
     assert payload["success"] is False
     assert payload["status"] == 500
     assert "检索失败" in payload["message"]
+    assert "backend unavailable" not in response.text
 
 
 # ---------------------------------------------------------------------------

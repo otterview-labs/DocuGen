@@ -1517,4 +1517,4 @@ async def get_document_chunks(
 
     except Exception as e:
         logger.error(f"查询文档分块失败: {str(e)}")
-        return ResponseHelper.error(f"查询失败: {str(e)}", status=500)
+        return ResponseHelper.error('查询失败', status=500)

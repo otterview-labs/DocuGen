@@ -194,7 +194,7 @@ async def compat_resource_search(
         return ResponseHelper.success(result=mapped, message="success")
     except Exception as exc:
         logger.error("兼容层检索失败: {}", exc, exc_info=True)
-        return ResponseHelper.error(message=f"检索失败: {exc}", status=500)
+        return ResponseHelper.error(message='检索失败', status=500)
 
 
 # ---------------------------------------------------------------------------
@@ -275,4 +275,4 @@ async def compat_query_knowledge_graph(
         )
     except Exception as exc:
         logger.error("兼容层知识图谱查询失败: {}", exc, exc_info=True)
-        return ResponseHelper.error(message=f"知识图谱查询失败: {exc}", status=500)
+        return ResponseHelper.error(message='知识图谱查询失败', status=500)

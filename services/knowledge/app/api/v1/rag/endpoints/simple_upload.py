@@ -77,7 +77,7 @@ async def upload_and_process(
             try:
                 parse_options = json.loads(parse_options_json)
             except Exception as exc:
-                return ResponseHelper.error(f"parse_options_json 不是合法JSON: {exc}", status=400)
+                return ResponseHelper.error('parse_options_json 不是合法JSON', status=400)
 
         # 调用处理服务
         result = await process_multimodal_upload(
@@ -129,7 +129,7 @@ async def upload_and_process(
                 os.remove(temp_path)
             except:
                 pass
-        return ResponseHelper.error(f"上传处理失败: {str(e)}", status=500)
+        return ResponseHelper.error('上传处理失败', status=500)
 
 
 @router.post("/process-url", summary="通过URL处理文档")
@@ -185,7 +185,7 @@ async def process_from_url(
             try:
                 parse_options = json.loads(parse_options_json)
             except Exception as exc:
-                return ResponseHelper.error(f"parse_options_json 不是合法JSON: {exc}", status=400)
+                return ResponseHelper.error('parse_options_json 不是合法JSON', status=400)
 
         # 调用处理服务
         result = await process_multimodal_upload(
@@ -216,4 +216,4 @@ async def process_from_url(
 
     except Exception as e:
         logger.error(f"URL处理失败: {e}")
-        return ResponseHelper.error(f"URL处理失败: {str(e)}", status=500)
+        return ResponseHelper.error('URL处理失败', status=500)

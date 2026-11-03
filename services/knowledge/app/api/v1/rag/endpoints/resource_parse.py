@@ -653,7 +653,7 @@ async def batch_parse_resources(
 
     except Exception as e:
         logger.error(f"批量解析启动失败: {e}")
-        return ResponseHelper.error(f"启动失败: {str(e)}", status=500)
+        return ResponseHelper.error('启动失败', status=500)
 
 
 @router.post("/batch-status")
@@ -714,7 +714,7 @@ async def get_batch_status(request: BatchStatusRequest, db: Session = Depends(ge
 
     except Exception as e:
         logger.error(f"获取批量状态失败: {e}")
-        return ResponseHelper.error(f"获取状态失败: {str(e)}", status=500)
+        return ResponseHelper.error('获取状态失败', status=500)
 
 
 class MarkdownFetchRequest(BaseModel):
@@ -796,4 +796,4 @@ async def get_resource_markdown(
 
     except Exception as e:
         logger.error(f"获取资源Markdown失败: {e}")
-        return ResponseHelper.error(f"查询失败: {str(e)}", status=500)
+        return ResponseHelper.error('查询失败', status=500)

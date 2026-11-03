@@ -520,7 +520,7 @@ async def query_knowledge_graph(
         )
     except Exception as exc:
         logger.error("知识图谱查询失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(message=f"知识图谱查询失败: {exc}", status=500)
+        return ResponseHelper.error(message='知识图谱查询失败', status=500)
 
 
 @router.post("/analysis/association", response_model=Dict)
@@ -562,7 +562,7 @@ async def analyze_entity_associations(
         )
     except Exception as exc:
         logger.error("实体关联分析失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(message=f"关联分析失败: {exc}", status=500)
+        return ResponseHelper.error(message='关联分析失败', status=500)
 
 
 @router.get("/statistics/knowledge-graph", response_model=Dict)
@@ -596,4 +596,4 @@ async def get_knowledge_graph_statistics():
         )
     except Exception as exc:
         logger.error("获取知识图谱统计失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(message=f"获取统计信息失败: {exc}", status=500)
+        return ResponseHelper.error(message='获取统计信息失败', status=500)

@@ -101,7 +101,7 @@ async def upload_file(file: UploadFile = File(...)):
         )
     except Exception as e:
         logger.error(f"文件上传失败: {e}")
-        return ResponseHelper.error(f"上传失败: {str(e)}", status=500)
+        return ResponseHelper.error('上传失败', status=500)
 
 # 以下接口已删除，不再使用路径参数
 # - GET /processing-status/{process_id} - 已删除

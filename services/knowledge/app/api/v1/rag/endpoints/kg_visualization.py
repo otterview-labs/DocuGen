@@ -335,7 +335,7 @@ async def get_graph_visualization_data(
         )
     except Exception as exc:
         logger.error("获取图谱可视化数据失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(message=f"获取图谱数据失败: {exc}")
+        return ResponseHelper.error(message='获取图谱数据失败')
 
 
 @router.get("/statistics/knowledge-graph", response_model=Dict)
@@ -368,7 +368,7 @@ async def get_knowledge_graph_statistics():
         )
     except Exception as exc:
         logger.error("获取图谱统计信息失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(message=f"获取统计信息失败: {exc}")
+        return ResponseHelper.error(message='获取统计信息失败')
 
 
 @router.post("/analysis/association", response_model=Dict)
@@ -407,4 +407,4 @@ async def analyze_entity_associations(request: AssociationAnalysisRequest):
         )
     except Exception as exc:
         logger.error("实体关联分析失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(message=f"关联分析失败: {exc}")
+        return ResponseHelper.error(message='关联分析失败')

@@ -57,7 +57,8 @@ def test_build_health_report_returns_degraded_when_optional_redis_fails(monkeypa
     assert payload["status"] == "degraded"
     assert payload["checks"]["database"]["status"] == "healthy"
     assert payload["checks"]["redis"]["status"] == "unhealthy"
-    assert "redis down" in payload["checks"]["redis"]["detail"]
+    assert "redis down" not in str(payload)
+    assert "服务日志" in payload["checks"]["redis"]["detail"]
 
 
 def test_build_health_report_returns_unhealthy_when_database_check_fails(monkeypatch, tmp_path) -> None:
@@ -69,3 +70,19 @@ def test_build_health_report_returns_unhealthy_when_database_check_fails(monkeyp
     assert status_code == 503
     assert payload["status"] == "unhealthy"
     assert payload["checks"]["database"]["status"] == "unhealthy"
+
+
+def test_vector_health_failure_is_private_but_logged(monkeypatch, tmp_path, caplog):
+    service = _import_health_service(monkeypatch, tmp_path, VECTOR_DB_TYPE="milvus")
+    monkeypatch.setattr(service.settings.health, "CHECK_VECTOR_DB", True)
+    private = "synthetic-secret internal-db.example /private/config"
+
+    def fail(*args):
+        raise RuntimeError(private)
+
+    monkeypatch.setattr(service, "_tcp_ping", fail)
+    payload, status = service.build_health_report()
+    assert status == 503
+    assert payload["checks"]["vector_db"]["status"] == "unhealthy"
+    assert private not in str(payload)
+    assert private in caplog.text

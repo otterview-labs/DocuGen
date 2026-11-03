@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import sys
+from pathlib import Path
 
 import pytest
 from fastapi import APIRouter
@@ -19,6 +20,28 @@ from tests.helpers import (
 
 
 pytestmark = pytest.mark.api
+
+
+def test_legacy_frame_route_serves_only_validated_local_files(monkeypatch, tmp_path):
+    main = _load_main_module(monkeypatch, tmp_path)
+    # Use the configured storage root rather than an arbitrary filesystem path.
+    uploads = Path(main.settings.storage.STATIC_DIR) / "uploads"
+    uploads.mkdir(parents=True, exist_ok=True)
+    (uploads / "synthetic.png").write_bytes(b"synthetic media")
+    private = tmp_path / "private.png"
+    private.write_bytes(b"private sentinel")
+    (uploads / "escape.png").symlink_to(private)
+    app = main.FastAPI()
+    main.register_routes(app)
+    with TestClient(app) as client:
+        normal = client.get("/optimized_frames/synthetic.png", follow_redirects=False)
+        assert normal.status_code == 200
+        assert normal.content == b"synthetic media"
+        assert "location" not in normal.headers
+        for path in ("escape.png", "%2F%2Fevil.example", "%2E%2E%2Fprivate.png"):
+            response = client.get("/optimized_frames/" + path, follow_redirects=False)
+            assert response.status_code == 404
+            assert "location" not in response.headers
 
 
 class _PassThroughMiddleware(BaseHTTPMiddleware):
