@@ -1,12 +1,14 @@
 # Otterview DocuGen
 
+**English** · [简体中文](README.zh-CN.md)
+
 A self-hosted knowledge and document workspace. Organize source material, retrieve evidence, fill Word templates, and generate documents section by section.
 
 Twelve starter templates cover common documents such as implementation plans, acceptance reports and meeting minutes. Uploaded templates keep their own formatting; historical runtime templates require a separate data migration.
 
 This repository integrates the JetLinks knowledge runtime with selected DocuGen template and Word rendering methods. It is an early local integration, version 0.2.1, for a **single shared workspace**. Local use requires no workspace key by default. An optional shared access key protects its API and generated files when enabled; it does not provide per-user isolation or multi-tenancy.
 
-Released under [Apache-2.0](LICENSE). The project owner has authorized public release of the imported knowledge-runtime and DocuGen adaptations. See the [Chinese guide](README.md) for configuration and deployment details, and [provenance](docs/PROVENANCE.md) and [NOTICE](NOTICE) for upstream revisions and attribution.
+Released under [Apache-2.0](LICENSE). The project owner has authorized public release of the imported knowledge-runtime and DocuGen adaptations. See the [Chinese guide](README.zh-CN.md) for configuration and deployment details, and [provenance](docs/PROVENANCE.md) and [NOTICE](NOTICE) for upstream revisions and attribution.
 
 ## Access the workspace
 
@@ -14,7 +16,7 @@ Released under [Apache-2.0](LICENSE). The project owner has authorized public re
 
 The online workspace requires no model key and supports template filling, Word export, document import and keyword search. Server-side data is isolated per anonymous browser session and expires two hours after creation. Download your work promptly and do not upload sensitive material. Each session allows files up to 5 MB, three collections and 20 documents. AI, vector and advanced engine tools remain available in the self-hosted version.
 
-For self-hosting, follow [Run locally](#run-locally) below or the [Docker deployment instructions](README.md#启动完整知识引擎), then open:
+For self-hosting, follow [Run locally](#run-locally) below or the [Docker deployment instructions](README.zh-CN.md#启动完整知识引擎), then open:
 
 | Entry | URL after startup |
 | --- | --- |
