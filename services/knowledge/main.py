@@ -172,52 +172,46 @@ def register_routes(app: FastAPI):
     app.mount("/temp/uploads", StaticFiles(directory=temp_uploads_dir), name="temp_uploads")
 
     def _resolve_media_file(file_path: str):
-        import glob
         from pathlib import Path
+        from app.shared.utils.safe_paths import contained_path, relative_file_name
 
-        roots: list[Path] = []
-        for candidate_root in (
+        try:
+            relative_file_name(file_path)
+        except ValueError:
+            return None
+        roots = [
             Path(settings.storage.STATIC_DIR) / "uploads",
             Path(settings.storage.UPLOADS_DIR),
             Path(settings.storage.TEMP_DIR) / "resource_downloads",
             Path(settings.storage.TEMP_DIR),
-        ):
-            try:
-                resolved_root = candidate_root.resolve()
-                if resolved_root not in roots:
-                    roots.append(resolved_root)
-            except Exception:
-                continue
-
+        ]
         for root in roots:
             try:
-                candidate = (root / file_path).resolve()
-                # 防止路径穿越：candidate 必须仍在 root 下
-                if not candidate.is_relative_to(root):
-                    continue
-                if candidate.exists() and candidate.is_file():
+                candidate = contained_path(root, file_path)
+                if candidate.is_file():
                     return candidate
-            except Exception:
+            except (ValueError, OSError):
                 continue
 
-        # 兼容旧平台只传文件名的 /api/file/{filename} 请求。
+        # Legacy clients pass a bare filename for processed video frames.
+        # Enumerate server-owned paths; never interpolate request text into a glob.
         filename = Path(file_path).name
-        if filename:
-            for root in roots:
+        for root in roots:
+            try:
+                candidate = contained_path(root, filename)
+                if candidate.is_file():
+                    return candidate
+            except (ValueError, OSError):
+                continue
+        base_dir = Path(settings.storage.STATIC_DIR) / "uploads" / "processed"
+        for entry in base_dir.glob("*/*/optimized_frames/*"):
+            if entry.name == filename:
                 try:
-                    candidate = (root / filename).resolve()
-                    if candidate.exists() and candidate.is_file():
+                    candidate = contained_path(base_dir, entry)
+                    if candidate.is_file():
                         return candidate
-                except Exception:
+                except (ValueError, OSError):
                     continue
-
-        # 如果常规目录找不到，尝试在视频处理目录中搜索优化帧
-        base_dir = (Path(settings.storage.STATIC_DIR).resolve() / "uploads" / "processed")
-        if base_dir.exists() and filename:
-            pattern = str(base_dir / "*" / "*" / "optimized_frames" / filename)
-            files = glob.glob(pattern)
-            if files and Path(files[0]).exists():
-                return Path(files[0])
 
         return None
 

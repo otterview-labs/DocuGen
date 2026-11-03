@@ -8,9 +8,9 @@ easyocr==1.7.2
 opencv-python==4.10.0.84
 
 # 本地文本 embedding / rerank HTTP 兼容之外的重模型栈
-sentence-transformers==3.3.1
+sentence-transformers>=5.6.0,<6
 
 # 本地视觉向量 / 视觉模型
-transformers==4.46.3
+transformers>=5.10.0,<6
 torch>=2.0.0
 torchvision>=0.15.0

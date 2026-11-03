@@ -26,6 +26,7 @@ try:
 except ImportError:
     IMAGEIO_FFMPEG_AVAILABLE = False
 
+from app.shared.utils.safe_paths import local_media_path
 from app.shared.utils.logger_util import get_logger
 
 logger = get_logger("MediaProcessor")
@@ -140,6 +141,8 @@ class MediaProcessor:
 
     def get_media_info(self, input_path: str) -> Dict[str, Any]:
         """获取媒体文件信息"""
+
+        input_path = str(local_media_path(input_path))
 
         # 尝试使用imageio-ffmpeg
         if IMAGEIO_FFMPEG_AVAILABLE:
@@ -270,7 +273,7 @@ class MediaProcessor:
                         'codec': video_stream.get('codec_name') if video_stream else None,
                         'width': int(video_stream.get('width', 0)) if video_stream else 0,
                         'height': int(video_stream.get('height', 0)) if video_stream else 0,
-                        'fps': eval(video_stream.get('r_frame_rate', '0/1')) if video_stream else 0,
+                        'fps': self._safe_parse_fps(video_stream.get('r_frame_rate', '0/1')) if video_stream else 0,
                         'bitrate': int(video_stream.get('bit_rate', 0)) if video_stream else 0
                     },
                     'audio': {
@@ -288,7 +291,7 @@ class MediaProcessor:
             'ffprobe', '-v', 'quiet',
             '-print_format', 'json',
             '-show_format', '-show_streams',
-            input_path
+            '-i', input_path
         ]
 
         try:
@@ -306,7 +309,7 @@ class MediaProcessor:
                     'codec': video_stream.get('codec_name') if video_stream else None,
                     'width': int(video_stream.get('width', 0)) if video_stream else 0,
                     'height': int(video_stream.get('height', 0)) if video_stream else 0,
-                    'fps': eval(video_stream.get('r_frame_rate', '0/1')) if video_stream else 0,
+                    'fps': self._safe_parse_fps(video_stream.get('r_frame_rate', '0/1')) if video_stream else 0,
                     'bitrate': int(video_stream.get('bit_rate', 0)) if video_stream else 0
                 },
                 'audio': {
@@ -672,6 +675,7 @@ def is_video_processable(video_path: str, max_duration: int = 7200) -> Tuple[boo
         (是否可处理, 检查结果信息)
     """
     try:
+        video_path = str(local_media_path(video_path))
         if not os.path.exists(video_path):
             return False, "视频文件不存在"
 

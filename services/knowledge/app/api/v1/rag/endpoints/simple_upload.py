@@ -14,6 +14,7 @@ import os
 import uuid
 import aiofiles
 
+from app.shared.utils.safe_paths import contained_path, relative_file_name
 from app.db.session import get_db
 from app.services.multimodal_upload_service import multimodal_service, process_multimodal_upload
 from app.shared.response_models import ResponseHelper
@@ -51,7 +52,7 @@ async def upload_and_process(
             return ResponseHelper.error("未选择文件", status=400)
 
         # 保存文件到临时目录
-        temp_filename = f"{uuid.uuid4().hex}_{Path(file.filename).name}"
+        temp_filename = uuid.uuid4().hex + Path(file.filename).suffix.lower()
         temp_path = TEMP_UPLOAD_DIR / temp_filename
 
         async with aiofiles.open(temp_path, "wb") as out:
@@ -150,8 +151,11 @@ async def process_from_url(
         if not url.startswith("/uploads/"):
             return ResponseHelper.error("无效的文件URL", status=400)
 
-        filename = url.replace("/uploads/", "")
-        file_path = Path("storage/static/uploads") / filename
+        try:
+            filename = relative_file_name(url.removeprefix("/uploads/"))
+            file_path = contained_path("storage/static/uploads", filename)
+        except ValueError:
+            return ResponseHelper.error("无效的文件URL", status=400)
 
         if not file_path.exists():
             return ResponseHelper.error("文件不存在", status=404)
