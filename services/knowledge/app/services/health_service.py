@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import logging
 import socket
 from datetime import datetime, timezone
 from typing import Any, Dict, Tuple
@@ -13,6 +14,8 @@ from urllib.parse import urlparse
 
 from app.config import settings
 from app.db.session import test_db_connection
+
+logger = logging.getLogger(__name__)
 
 
 def _check_result(name: str, status: str, *, required: bool, detail: str, extra: Dict[str, Any] | None = None) -> Dict[str, Any]:
@@ -74,8 +77,9 @@ def _check_redis() -> Dict[str, Any]:
             )
         client.ping()
         return _check_result("redis", "healthy", required=False, detail="Redis 连接正常")
-    except Exception as exc:
-        return _check_result("redis", "unhealthy", required=False, detail=f"Redis 连接失败: {exc}")
+    except Exception:
+        logger.exception("Dependency health check failed")
+        return _check_result("redis", "unhealthy", required=False, detail="Redis 连接失败，请检查服务日志")
 
 
 def _check_vector_db(database_check: Dict[str, Any]) -> Dict[str, Any]:
@@ -118,8 +122,9 @@ def _check_vector_db(database_check: Dict[str, Any]) -> Dict[str, Any]:
                 detail="Qdrant 连接正常",
                 extra={"type": vector_type, "host": settings.vector_db.QDRANT_HOST, "port": settings.vector_db.QDRANT_PORT},
             )
-    except Exception as exc:
-        return _check_result("vector_db", "unhealthy", required=True, detail=f"{vector_type} 连接失败: {exc}", extra={"type": vector_type})
+    except Exception:
+        logger.exception("Dependency health check failed")
+        return _check_result("vector_db", "unhealthy", required=True, detail="向量库连接失败，请检查服务日志", extra={"type": vector_type})
 
     return _check_result("vector_db", "unknown", required=True, detail=f"未实现的向量库检查: {vector_type}", extra={"type": vector_type})
 
@@ -150,8 +155,9 @@ def _check_graph_db(database_check: Dict[str, Any]) -> Dict[str, Any]:
         finally:
             driver.close()
         return _check_result("graph_db", "healthy", required=False, detail="Neo4j 兼容后端连接正常", extra={"type": graph_type})
-    except Exception as exc:
-        return _check_result("graph_db", "unhealthy", required=False, detail=f"Neo4j 兼容后端连接失败: {exc}", extra={"type": graph_type})
+    except Exception:
+        logger.exception("Dependency health check failed")
+        return _check_result("graph_db", "unhealthy", required=False, detail="Neo4j 兼容后端连接失败，请检查服务日志", extra={"type": graph_type})
 
 
 def build_health_report() -> Tuple[Dict[str, Any], int]:

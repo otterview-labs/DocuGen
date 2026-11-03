@@ -1,14 +1,32 @@
 # Otterview DocuGen
 
-把手头的资料放进知识库，查原文、填 Word 模板，或者按章节起草文档。
+用自己的资料查原文、填 Word 模板，按章节起草文档。
 
-内置 12 种常用模板，包括项目实施方案、验收报告和会议纪要，采用统一的基础 Word 版式。也可以上传自己的模板，沿用其排版。旧运行环境另外上传的历史模板需要单独迁移。
+[![检查](https://github.com/otterview-labs/DocuGen/actions/workflows/checks.yml/badge.svg)](https://github.com/otterview-labs/DocuGen/actions/workflows/checks.yml)
+[Apache-2.0](LICENSE) · [English](README.md) · **简体中文**
 
-已有 Word 模板时，可以上传模板，识别里面的变量，手动填写或让模型根据参考资料填入，再下载 Word。需要从头写文档时，可以先改大纲，再按章节生成，回头核对取用的资料。
+**[打开在线工作台](https://docugen.otterview.ai/templates?source=builtin)** · [本地启动](#本地启动工作台) · [架构说明](docs/ARCHITECTURE.md) · [反馈问题](https://github.com/otterview-labs/DocuGen/issues)
 
-当前为 **0.2.1**，按 [Apache-2.0](LICENSE) 发布。采用一个共享工作区，本机使用默认无需访问密钥，也可按需启用共享访问密钥，适合个人或可信团队自部署。没有多租户、独立用户权限或协同编辑。来源记录表示模型取材依据，不等同于逐句事实核验。
+[![DocuGen 知识工作台，使用已标注的合成验收资料](docs/images/knowledge-workspace.png)](https://docugen.otterview.ai/templates?source=builtin)
 
-[English](README.md) · [架构与边界](docs/ARCHITECTURE.md) · [界面设计参考](docs/UI_REFERENCES.md) · [源码来源与发布条件](docs/PROVENANCE.md)
+*实际界面，图中为已标注的合成验收资料。*
+
+## 从手头的材料开始
+
+| 手头有什么 | 可以怎么用 |
+| --- | --- |
+| 已有 Word 模板 | 上传模板、填写识别出的变量，下载沿用模板排版的 Word 文档。 |
+| 一批参考资料 | 导入知识库，检索内容，对照原文和来源。 |
+| 一份待写的文档 | 先改大纲，再按章节检索资料、生成草稿，保留取材快照。AI 功能需要配置模型。 |
+
+内置 12 种常用模板，包括项目实施方案、验收报告和会议纪要。
+手动填写和 Word 导出无需模型。生成的文字、分页和字体仍需人工检查。
+
+当前版本为 **0.2.1**，按 [Apache-2.0](LICENSE) 发布。
+自部署使用一个共享工作区，可按需设置共享访问密钥，适合个人或可信团队。
+没有多租户、独立用户权限或协同编辑。来源快照记录取材依据，不代表逐句事实核验。
+上传模板沿用原排版；旧运行环境的历史模板需要单独迁移。
+[源码来源与发布条件](docs/PROVENANCE.md) · [界面设计参考](docs/UI_REFERENCES.md)
 
 ## 使用入口
 
@@ -29,7 +47,6 @@
 
 选择模板或完成上传后会进入独立填写工作台。基本信息与正文分组，内容核对区随填写更新；草稿保存在当前浏览器标签页中，可在刷新后恢复。Word 的实际分页与字体以下载文件为准。
 
-![知识库列表和原文预览](docs/images/knowledge-workspace.png)
 
 资料列表和原文放在一起，查到内容后可以接着写作。截图使用明确标注的虚构验收资料。
 

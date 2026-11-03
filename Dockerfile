@@ -6,6 +6,9 @@ COPY frontend/ ./
 RUN npm run build
 
 FROM python:3.11-slim
+ARG SOURCE_REVISION=unknown
+LABEL org.opencontainers.image.title="Otterview DocuGen workspace" \
+      org.opencontainers.image.revision="${SOURCE_REVISION}"
 WORKDIR /app
 COPY pyproject.toml ./
 RUN python -c 'import tomllib; print("\n".join(tomllib.load(open("pyproject.toml", "rb"))["project"]["dependencies"]))' > /tmp/requirements.txt

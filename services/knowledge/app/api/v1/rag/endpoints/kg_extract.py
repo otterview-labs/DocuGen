@@ -208,10 +208,10 @@ async def extract_knowledge_graph(
 
         return ResponseHelper.success(result=result, message="知识图谱抽取成功")
     except ValueError as exc:
-        return ResponseHelper.error(str(exc), status=400 if "必须提供" in str(exc) or "为空" in str(exc) else 404)
+        return ResponseHelper.error('文档标识、内容或解析状态无效', status=400 if "必须提供" in str(exc) or "为空" in str(exc) else 404)
     except Exception as exc:
         logger.error("知识图谱抽取失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(f"知识图谱抽取失败: {exc}", status=500)
+        return ResponseHelper.error('知识图谱抽取失败', status=500)
 
 
 @router.post("/build-graph", response_model=Dict)
@@ -254,10 +254,10 @@ async def build_knowledge_graph(
             message="知识图谱构建成功",
         )
     except ValueError as exc:
-        return ResponseHelper.error(str(exc), status=400 if "必须提供" in str(exc) or "为空" in str(exc) else 404)
+        return ResponseHelper.error('文档标识、内容或解析状态无效', status=400 if "必须提供" in str(exc) or "为空" in str(exc) else 404)
     except Exception as exc:
         logger.error("知识图谱构建失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(f"知识图谱构建失败: {exc}", status=500)
+        return ResponseHelper.error('知识图谱构建失败', status=500)
 
 
 @router.post("/get-entities", response_model=Dict)
@@ -301,4 +301,4 @@ async def get_content_entities(
         )
     except Exception as exc:
         logger.error("获取文档实体失败: %s", exc, exc_info=True)
-        return ResponseHelper.error(f"获取文档实体失败: {exc}", status=500)
+        return ResponseHelper.error('获取文档实体失败', status=500)

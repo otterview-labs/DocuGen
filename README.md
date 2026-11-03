@@ -1,14 +1,27 @@
 # Otterview DocuGen
 
-**English** · [简体中文](README.zh-CN.md)
+Fill Word templates and draft documents from your own sources.
 
-A self-hosted knowledge and document workspace. Organize source material, retrieve evidence, fill Word templates, and generate documents section by section.
+[![Checks](https://github.com/otterview-labs/DocuGen/actions/workflows/checks.yml/badge.svg)](https://github.com/otterview-labs/DocuGen/actions/workflows/checks.yml)
+[Apache-2.0](LICENSE) · **English** · [简体中文](README.zh-CN.md)
 
-Twelve starter templates cover common documents such as implementation plans, acceptance reports and meeting minutes. Uploaded templates keep their own formatting; historical runtime templates require a separate data migration.
+**[Try the live workspace](https://docugen.otterview.ai/templates?source=builtin)** · [Run locally](#run-locally) · [Architecture](docs/ARCHITECTURE.md) · [Report an issue](https://github.com/otterview-labs/DocuGen/issues)
 
-This repository integrates the JetLinks knowledge runtime with selected DocuGen template and Word rendering methods. It is an early local integration, version 0.2.1, for a **single shared workspace**. Local use requires no workspace key by default. An optional shared access key protects its API and generated files when enabled; it does not provide per-user isolation or multi-tenancy.
+[![DocuGen knowledge workspace with synthetic source material](docs/images/knowledge-workspace.png)](https://docugen.otterview.ai/templates?source=builtin)
 
-Released under [Apache-2.0](LICENSE). The project owner has authorized public release of the imported knowledge-runtime and DocuGen adaptations. See the [Chinese guide](README.zh-CN.md) for configuration and deployment details, and [provenance](docs/PROVENANCE.md) and [NOTICE](NOTICE) for upstream revisions and attribution.
+*Actual Chinese interface with labeled synthetic acceptance material.*
+
+## Pick a starting point
+
+| You have | What to do |
+| --- | --- |
+| A Word template | Upload it, fill the detected variables, and download a Word document with the template's formatting. |
+| A folder of reference material | Import it into a collection, search it, and open the original sources alongside the results. |
+| A document to write | Edit the outline, retrieve evidence for each section, and generate a draft with source snapshots. AI features require a configured model. |
+
+Twelve starter templates include implementation plans, acceptance reports and meeting minutes.
+Manual template filling and Word export work without a model. Generated text and final Word layout
+still need review.
 
 ## Access the workspace
 
@@ -29,13 +42,11 @@ For self-hosting, follow [Run locally](#run-locally) below or the [Docker deploy
 
 Choosing or importing a template opens the dedicated editor, with grouped basic/prose fields and a live content-check panel. Drafts are saved in the current browser tab and recover after refresh. Download the Word file to check its actual pagination and fonts.
 
-![Knowledge workspace and source preview](docs/images/knowledge-workspace.png)
-
-The Chinese interface is shown with explicitly labeled synthetic acceptance material.
-
 ![Word template variables](docs/images/word-template.png)
 
 ## Upgrading from earlier versions
+
+Version 0.2.1 is an early integration of the JetLinks knowledge runtime with selected DocuGen template and Word rendering methods. It is released under [Apache-2.0](LICENSE), with public release authorized by the project owner. [Provenance](docs/PROVENANCE.md) and [NOTICE](NOTICE) record source revisions and attribution. Historical runtime templates require a separate data migration.
 
 This mainline integrates the former Quill workspace under the Otterview DocuGen name.
 The original DocuGen is preserved on [`legacy/docugen-20261019`](https://github.com/otterview-labs/DocuGen/tree/legacy/docugen-20261019)

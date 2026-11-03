@@ -36,3 +36,32 @@ async def test_process_url_validates_before_invoking_parser(monkeypatch, tmp_pat
     result = await process_from_url(url='/uploads/sample.txt', title=None, collection_id='default', parse_options_json=None, db=None)
     assert result['success'] is True
     assert calls[0]['file_path'] == str(good)
+
+
+@pytest.mark.asyncio
+async def test_process_url_hides_parser_errors_and_rejects_bad_options(monkeypatch, tmp_path):
+    configure_runtime_env(monkeypatch, tmp_path)
+    clear_modules()
+    monkeypatch.chdir(tmp_path)
+    uploads = tmp_path / 'storage/static/uploads'
+    uploads.mkdir(parents=True)
+    (uploads / 'sample.txt').write_text('synthetic upload')
+    private = 'synthetic-secret /private/parser/config'
+
+    async def broken_parser(**kwargs):
+        raise RuntimeError(private)
+
+    monkeypatch.setitem(sys.modules, 'app.services.multimodal_upload_service', make_stub_module(
+        'app.services.multimodal_upload_service', multimodal_service=SimpleNamespace(),
+        process_multimodal_upload=broken_parser,
+    ))
+    from app.api.v1.rag.endpoints.simple_upload import process_from_url
+
+    result = await process_from_url(url='/uploads/sample.txt', title=None,
+        collection_id='default', parse_options_json=None, db=None)
+    assert result['status'] == 500
+    assert private not in str(result)
+    result = await process_from_url(url='/uploads/sample.txt', title=None,
+        collection_id='default', parse_options_json='{invalid', db=None)
+    assert result['status'] == 400
+    assert result['message'] == 'parse_options_json 不是合法JSON'

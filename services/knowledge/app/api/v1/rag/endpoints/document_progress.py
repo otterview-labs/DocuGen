@@ -113,8 +113,9 @@ async def cancel_processing_task(
             message="任务取消成功"
         )
 
-    except Exception as e:
-        return ResponseHelper.error(f"取消任务失败: {str(e)}", status=500)
+    except Exception:
+        logger.exception("文档进度操作失败")
+        return ResponseHelper.error('取消任务失败', status=500)
 
 # 已删除的接口：
 # - GET /task-status/{task_id} - 已删除，不再使用路径参数
@@ -138,8 +139,9 @@ async def get_user_tasks():
             message=f"获取到 {len(tasks)} 个任务"
         )
 
-    except Exception as e:
-        return ResponseHelper.error(f"获取任务列表失败: {str(e)}", status=500)
+    except Exception:
+        logger.exception("文档进度操作失败")
+        return ResponseHelper.error('获取任务列表失败', status=500)
 
 
         completed_tasks = len([t for t in tracker.tasks.values() if t.status.value == "completed"])
@@ -162,8 +164,9 @@ async def get_user_tasks():
             message="统计信息获取成功"
         )
 
-    except Exception as e:
-        return ResponseHelper.error(f"获取统计失败: {str(e)}", status=500)
+    except Exception:
+        logger.exception("文档进度操作失败")
+        return ResponseHelper.error('获取统计失败', status=500)
 
 
 # 辅助函数

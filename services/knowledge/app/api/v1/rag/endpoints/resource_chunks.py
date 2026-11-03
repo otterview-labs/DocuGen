@@ -122,7 +122,7 @@ async def get_resource_chunks(
 
         except Exception as e:
             logger.error(f"Milvus查询失败: {e}")
-            milvus_error = str(e)
+            milvus_error = "向量库查询失败，请检查服务日志"
         finally:
             try:
                 connections.disconnect("resource_query")
@@ -184,4 +184,4 @@ async def get_resource_chunks(
 
     except Exception as e:
         logger.exception(f"查询资源分块失败: {resource_id}")
-        return ResponseHelper.error(f"查询失败: {str(e)}", status=500)
+        return ResponseHelper.error('查询失败', status=500)

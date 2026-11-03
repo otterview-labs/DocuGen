@@ -248,10 +248,8 @@ def register_routes(app: FastAPI):
         兼容旧的优化帧访问路径
         重定向到统一的 /uploads/{filename} 路径
         """
-        from fastapi.responses import RedirectResponse
-
-        # 使用301永久重定向，告诉客户端更新链接
-        return RedirectResponse(url=f"/uploads/{filename}", status_code=301)
+        # Serve through the same validated file handler; never turn input into a Location header.
+        return await serve_media_file(filename)
 
     # 包含API路由
     app.include_router(api_router, prefix="/api/v1")
