@@ -9,7 +9,7 @@ Fill Word templates and draft documents from your own sources.
 
 [![DocuGen knowledge workspace with synthetic source material](docs/images/knowledge-workspace.png)](https://docugen.otterview.ai/templates?source=builtin)
 
-*Actual Chinese interface with labeled synthetic acceptance material.*
+*Public workspace captured on 3 November 2026. Chinese interface; all source material is labeled synthetic test data.*
 
 ## Pick a starting point
 
