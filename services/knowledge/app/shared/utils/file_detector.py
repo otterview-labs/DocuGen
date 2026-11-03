@@ -12,6 +12,7 @@ from typing import Dict, Any, Optional, Tuple
 import hashlib
 
 from app.shared.response_models import ResponseHelper
+from app.shared.utils.safe_paths import local_media_path
 
 class FileTypeDetector:
     """增强的文件类型检测器"""
@@ -86,7 +87,7 @@ class FileTypeDetector:
 
     def calculate_file_hash(self, file_path: str) -> str:
         """计算文件MD5哈希值"""
-        file_path = Path(file_path)
+        file_path = local_media_path(file_path)
         if not file_path.exists():
             return ""
 
@@ -101,7 +102,7 @@ class FileTypeDetector:
 
     def detect_file_type_by_content(self, file_path: str) -> Tuple[str, str]:
         """基于文件内容检测类型"""
-        file_path = Path(file_path)
+        file_path = local_media_path(file_path)
         if not file_path.exists():
             return "unknown", "文件不存在"
 
@@ -140,7 +141,7 @@ class FileTypeDetector:
             验证结果字典
         """
         try:
-            file_path = Path(file_path).resolve()
+            file_path = local_media_path(file_path)
 
             # 基础验证
             if not file_path.exists():

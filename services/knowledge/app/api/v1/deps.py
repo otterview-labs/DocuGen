@@ -7,15 +7,16 @@ from typing import Generator, Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 try:
-    from jose import JWTError, jwt
+    import jwt
+    from jwt import InvalidTokenError as JWTError
 except ModuleNotFoundError:
     class JWTError(Exception):
-        """缺少 python-jose 时的兜底异常类型。"""
+        """缺少 PyJWT 时的兜底异常类型。"""
 
     class _JWTFallback:
         @staticmethod
         def decode(*args, **kwargs):
-            raise JWTError("python-jose is required for token decoding")
+            raise JWTError("PyJWT is required for token decoding")
 
     jwt = _JWTFallback()
 from sqlalchemy.orm import Session

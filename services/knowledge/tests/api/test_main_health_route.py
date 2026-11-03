@@ -34,6 +34,7 @@ def _load_main_module(monkeypatch, tmp_path):
     api_compat_pkg = make_package_stub("app.api.compat")
     services_pkg = make_package_stub("app.services")
     shared_utils_pkg = make_package_stub("app.shared.utils")
+    shared_utils_pkg.__path__ = [str(REPO_ROOT / "app/shared/utils")]
 
     monkeypatch.setitem(sys.modules, "app.api.quill_ingest", make_stub_module("app.api.quill_ingest", router=APIRouter()))
     api_router_module = make_stub_module("app.api.v1.router", router=APIRouter())
@@ -146,3 +147,29 @@ def test_legacy_api_file_route_serves_static_upload(monkeypatch, tmp_path) -> No
 
     assert response.status_code == 200
     assert response.text == "knowledge upload"
+
+
+def test_media_routes_reject_symlink_escape_and_encoded_traversal(monkeypatch, tmp_path):
+    main_module = _load_main_module(monkeypatch, tmp_path)
+
+    async def noop():
+        return None
+
+    main_module.initialize_services = noop
+    main_module.cleanup_services = noop
+    from app.config import settings
+    from pathlib import Path
+    uploads = Path(settings.storage.STATIC_DIR) / 'uploads'
+    private = tmp_path / 'private.txt'
+    private.write_text('private sentinel')
+    (uploads / 'escape.txt').symlink_to(private)
+    processed = uploads / 'processed' / 'one' / 'two' / 'optimized_frames'
+    processed.mkdir(parents=True)
+    (processed / 'frame.jpg').write_bytes(b'synthetic frame')
+    (processed / 'leaked.jpg').symlink_to(private)
+    with TestClient(main_module.create_app()) as client:
+        assert client.get('/api/file/frame.jpg').content == b'synthetic frame'
+        for url in ('/uploads/escape.txt', '/api/file/leaked.jpg', '/uploads/%2e%2e/private.txt', '/api/file/..%5cprivate.txt'):
+            response = client.get(url)
+            assert response.status_code == 404, url
+            assert 'private sentinel' not in response.text
