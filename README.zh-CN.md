@@ -9,7 +9,7 @@
 
 [![DocuGen 知识工作台，使用已标注的合成验收资料](docs/images/knowledge-workspace.png)](https://docugen.otterview.ai/templates?source=builtin)
 
-*实际界面，图中为已标注的合成验收资料。*
+*2026 年 11 月 3 日在线演示实拍，图中资料均已标注为合成测试数据。*
 
 ## 从手头的材料开始
 
